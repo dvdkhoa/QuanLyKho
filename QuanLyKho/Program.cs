@@ -1,4 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using QuanLyKho.Models.EF;
+
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.AddDbContext<AppDbContext>( options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("QLKHO");
+    options.UseSqlServer(connectionString);
+});
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -18,6 +29,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

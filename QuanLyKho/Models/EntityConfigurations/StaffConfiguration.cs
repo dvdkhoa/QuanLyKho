@@ -22,9 +22,9 @@ namespace QuanLyKho.Models.EntityConfigurations
                     .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(s => s.User)
-                    .WithOne(u=>u.Staff)
+                    .WithOne()
                     .HasForeignKey<Staff>(s => s.UserId)
-                    .HasForeignKey<AppUser>(u=>u.StaffId);
+                    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

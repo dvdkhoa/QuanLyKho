@@ -9,7 +9,7 @@
         public double Price { get; set; }
         public string Unit { get; set; }
         public string Supplier { get; set; }
-        public string CategoryId { get; set; }
+        public int CategoryId { get; set; }
         public Category Category { get; set; }
         public List<ProductWareHouse> ProductWareHouses { get; set; }
         public List<ReceiptDetail> ReceiptDetails { get; set; }
