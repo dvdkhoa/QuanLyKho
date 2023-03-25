@@ -1,0 +1,45 @@
+﻿@page
+@model QuanLyKho.Areas.Admin.Pages.User.IndexModel
+@{
+    ViewData["title"] = "Danh sách User";
+    ViewData["page"] = "Tài khoản";
+}
+
+@await Html.PartialAsync("_StatusMessage",Model.StatusMessage) 
+
+<div class="row">
+    <div class="col-8 offset-2">
+        <h3>Danh sách các User</h3>
+      
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Vai trò(Role)</th>
+                    <th>Tác vụ</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>
+                            @if (string.IsNullOrEmpty(user.RoleNames))
+                            {
+                                <a class="text-dark btn-link" asp-page="AddRole" asp-route-id="@user.Id">+ Thêm vai trò</a>
+                            }
+                            else
+                            {
+                                <a class="" asp-page="AddRole" asp-route-id="@user.Id">@user.RoleNames</a>
+                            }
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-primary" asp-page="SetPassword" asp-route-id="@user.Id">Đặt mật khẩu</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

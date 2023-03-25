@@ -1,0 +1,39 @@
+﻿@page
+@model QuanLyKho.Areas.Admin.Pages.Role.IndexModel
+@{
+    ViewData["title"] = "Danh sách các vai trò";
+    ViewData["page"] = "Vai trò";
+}
+
+@await Html.PartialAsync("_StatusMessage", Model.StatusMessage)
+
+
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-6">
+        <h3>@ViewData["title"]</h3>
+
+        <div>
+            <a asp-page="./Create">Tạo thêm vai trò</a>
+        </div>
+
+        <hr />
+        <table class="table table-bordered text-center">
+            <tr>
+                <td>Tên vai trò</td>
+                <td>Tác vụ</td>
+            </tr>
+            @foreach (var role in Model.Roles)
+            {
+                <tr>
+                    <td>@role.Name</td>
+                    <td class="d-flex justify-content-sm-center ">
+                        <a class="btn btn-sm btn-secondary" asp-page="./Edit" asp-route-roleId="@role.Id">Sửa</a>
+                        <a class="btn btn-sm btn-danger ml-2" asp-page="./Delete" asp-route-roleId="@role.Id">Xóa</a>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="col-4"></div>
+</div>
