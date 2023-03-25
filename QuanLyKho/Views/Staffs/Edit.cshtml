@@ -1,69 +1,92 @@
 ﻿@model QuanLyKho.Models.Entities.Staff
+@using QuanLyKho.Models.Entities;
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
 
-<h4>Staff</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DateOfBirth" class="control-label"></label>
-                <input asp-for="DateOfBirth" class="form-control" />
-                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Gender" class="control-label"></label>
-                <select asp-for="Gender" class="form-control"></select>
-                <span asp-validation-for="Gender" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StartDay" class="control-label"></label>
-                <input asp-for="StartDay" class="form-control" />
-                <span asp-validation-for="StartDay" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WareHouseId" class="control-label"></label>
-                <select asp-for="WareHouseId" class="form-control" asp-items="ViewBag.WareHouseId"></select>
-                <span asp-validation-for="WareHouseId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<section class="content pb-2">
+    <form asp-action="Edit" method="post">
+        <div class="row ">
+            <div class="col-md-8 offset-2">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Update Staff</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="display: block;">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <input asp-for="Id" type="hidden" class="form-control">
+
+                        <div class="form-group">
+                            <label asp-for="Name">Name</label>
+                            <input asp-for="Name" type="text" class="form-control">
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="DateOfBirth">Date Of Birth</label>
+                            <input asp-for="DateOfBirth" type="date" class="form-control">
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Gender">Gender</label>
+                            <select asp-for="Gender" class="form-control custom-select">
+                                <option selected="" disabled="">Select one</option>
+                                @foreach (Gender gender in Enum.GetValues(typeof(Gender)))
+                                {
+                                    <option value="@gender">@gender.ToString()</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber">PhoneNumber</label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Address">Address</label>
+                            <textarea asp-for="Address" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="StartDay">Start day</label>
+                            <input asp-for="StartDay" type="date" class="form-control">
+                            <span asp-validation-for="StartDay" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="WareHouseId">Warehouse</label>
+                            <select class="form-control custom-select" asp-for="WareHouseId" asp-items="@ViewBag.WareHouseId">
+                                <option selected="">Select Warehouse</option>
+                            </select>
+                            <span asp-validation-for="WareHouseId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                <input type="submit" value="Update Staff" class="btn btn-success float-right">
+            </div>
+        </div>
+    </form>
+</section>
+
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
