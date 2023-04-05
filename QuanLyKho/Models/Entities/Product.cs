@@ -13,5 +13,11 @@
         public Category? Category { get; set; }
         public List<ProductWareHouse>? ProductWareHouses { get; set; }
         public List<ReceiptDetail>? ReceiptDetails { get; set; }
+
+        public Product()
+        {
+            this.Status = Status.Show;
+        }
+
     }
 }

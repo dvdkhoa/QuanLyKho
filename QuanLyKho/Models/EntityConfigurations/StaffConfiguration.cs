@@ -12,6 +12,8 @@ namespace QuanLyKho.Models.EntityConfigurations
 
             builder.Property(s => s.Name).IsRequired();
 
+            builder.Property(s=>s.Email).IsRequired();
+
             builder.Property(s => s.DateOfBirth).IsRequired();
 
             builder.Property(s => s.Gender).IsRequired();

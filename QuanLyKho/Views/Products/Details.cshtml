@@ -1,60 +1,77 @@
-﻿@model QuanLyKho.Models.Entities.Product
+﻿@model QuanLyKho.DTO.ProductInfoModel
+@using QuanLyKho.Extensions
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<div class="card">
+    <!-- /.card-header -->
+    <div class="card-body">
 
-<div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Unit)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Unit)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Supplier)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Supplier)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category.Name)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Id)</td>
+                <td>@Model.Id</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Name)</td>
+                <td>@Model.Name</td>
+            </tr>
+
+            <tr>
+                <td>Total Quantity</td>
+                <td>@Model.Quantity</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Category)</td>
+                <td>@Html.DisplayFor(m => m.Category.Name)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Description)</td>
+                <td>@Html.DisplayFor(m => m.Category.Description)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Unit)</td>
+                <td>@Html.DisplayFor(m => m.Unit)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Price)</td>
+                <td class="text-bold">@(Helpers.PriceToVND(Model.Price)) vnd </td>
+            </tr>
+
+        </table>
+        <hr />
+
+        <div>
+            <a class="btn btn-link" asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+            <a class="btn btn-link" asp-action="Index">Back to List</a>
+        </div>
+
+        <hr />
+        @{
+            if (Model.ProductWarehouses != null)
+            {
+                <p class="text-bold">Product quantity details:</p>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Warehouse</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var pw in Model.ProductWarehouses)
+                        {
+                            <tr>
+                                <td>@pw.WareHouseId</td>
+                                <td>@pw.Quantity</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+
+    </div>
 </div>

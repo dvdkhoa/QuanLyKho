@@ -9,24 +9,27 @@ using Microsoft.EntityFrameworkCore;
 using QuanLyKho.Models;
 using QuanLyKho.Models.EF;
 using QuanLyKho.Models.Entities;
+using QuanLyKho.Services;
 
 namespace QuanLyKho.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IProductService _productService;
         public string PrimaryTitle = "Product";
 
-        public ProductsController(AppDbContext context)
+        public ProductsController(AppDbContext context, IProductService productService)
         {
             _context = context;
+            _productService = productService;
         }
 
         // GET: Products
         public async Task<IActionResult> Index()
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
-            var appDbContext = _context.Products.Include(p => p.Category);
+            var appDbContext = _context.Products.Where(product => product.Status == Status.Show).Include(p => p.Category);
             return View(await appDbContext.ToListAsync());
         }
 
@@ -39,15 +42,14 @@ namespace QuanLyKho.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .Include(p => p.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
+            var productInfo = _productService.getProductInfo(id);
+
+            if (productInfo == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            return View(productInfo);
         }
 
         // GET: Products/Create
@@ -132,44 +134,21 @@ namespace QuanLyKho.Controllers
             return View(product);
         }
 
-        // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        [HttpPost]
+        public async Task<IActionResult> DeleteAsync(string? id)
         {
-            ViewData["PrimaryTitle"] = PrimaryTitle;
-            if (id == null || _context.Products == null)
-            {
+            if (string.IsNullOrEmpty(id) || _context.Products is null)
+                return BadRequest();
+
+            var product = _context.Products.Find(id);
+            if(product is null)
                 return NotFound();
-            }
 
-            var product = await _context.Products
-                .Include(p => p.Category)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+            product.Status = Status.Hide;
 
-            return View(product);
-        }
-
-        // POST: Products/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            ViewData["PrimaryTitle"] = PrimaryTitle;
-            if (_context.Products == null)
-            {
-                return Problem("Entity set 'AppDbContext.Products'  is null.");
-            }
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
-            {
-                _context.Products.Remove(product);
-            }
-            
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return Ok();
         }
 
         private bool ProductExists(string id)

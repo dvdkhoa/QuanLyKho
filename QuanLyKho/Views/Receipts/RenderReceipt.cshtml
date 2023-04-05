@@ -1,0 +1,76 @@
+﻿@model QuanLyKho.Models.Entities.Receipt
+@using QuanLyKho.Extensions
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Phiếu nhập kho</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
+    <!-- <link rel="stylesheet" href="style.css"> -->
+</head>
+<body>
+    <div class="container-fluid pt-5">
+        <div id="print" class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <div class="card ">
+                    <div class="card-header text-center">
+                        <h1 class="card-title">Phiếu nhập kho</h1>
+                        <p class="card-subtitle mb-2 text-muted">Ngày nhập: @Model.DateCreated.ToShortDateString()</p>
+                    </div>
+                    <div class="card-body px-5">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Mã hàng</th>
+                                    <th>Tên hàng</th>
+                                    <th>Số lượng</th>
+                                    <th>Đơn giá(vnd)</th>
+                                    <th>Thành tiền(vnd)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detail in Model.ReceiptDetails)
+                                {
+                                    <tr>
+                                        <td>@detail.ProductId</td>
+                                        <td>@detail.Product.Name</td>
+                                        <td class="font-weight-bold">@detail.Quantity</td>
+                                        <td class="font-weight-bold">@Helpers.PriceToVND(detail.Product.Price)</td>
+                                        <td class="font-weight-bold">@detail.getAmountToVND()</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td colspan="4" class="text-right font-weight-bold">Tổng tiền:</td>
+                                    <td class="font-weight-bold">@(Model.getTotalPrice()) vnd</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pb-5 pt-4 d-flex flex-row justify-content-around">
+                        <div class="col-3 pb-5 text-center">
+                            <h6 class="mb-0  font-weight-bold">Thủ kho</h6>
+                            <p>(Ký, họ tên)</p>
+                        </div>
+                        <div class="col-3 pb-5 text-center">
+                            <h6 class="mb-0  font-weight-bold">Thủ kho</h6>
+                            <p>(Ký, họ tên)</p>
+                        </div>
+                        <div class="col-3 pb-5 text-center">
+                            <h6 class="mb-0  font-weight-bold">Thủ kho</h6>
+                            <p>(Ký, họ tên)</p>
+                        </div><div class="col-3 pb-5 text-center">
+                            <h6 class="mb-0  font-weight-bold">Thủ kho</h6>
+                            <p>(Ký, họ tên)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
+

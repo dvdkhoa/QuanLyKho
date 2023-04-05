@@ -225,32 +225,91 @@
                                         <p>Dashboard v1</p>
                                     </a>
                                 </li>*@
+
+                                @*<li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-chart-pie"></i>
+                                        <p>
+                                            Charts
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+                                        <li class="nav-item">
+                                            <a href="pages/charts/chartjs.html" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>ChartJS</p>
+                                            </a>
+                                        </li>
+                                        
+                                    </ul>
+                                </li>*@
+
+
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-action="Index" asp-controller="Warehouses">
+                                    <a class="nav-link" >
                                         <i class="nav-icon fas fa-warehouse"></i>
                                         <p>
                                             WareHouses
-                                            @*<span class="right badge badge-danger">New</span>*@
+                                            <i class="right fas fa-angle-left"></i>
                                         </p>
                                     </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+                                        <li class="nav-item">
+                                            <a class="nav-link" asp-action="Create" asp-controller="Warehouses">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Add warehouse</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" asp-action="Index" asp-controller="Warehouses">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>List warehouses</p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-action="Index" asp-controller="Categories">
+                                    <a class="nav-link" >
                                         <i class="nav-icon fas fa-th"></i>
                                         <p>
                                             Categories
-                                            @*<span class="right badge badge-danger">New</span>*@
+                                            <i class="right fas fa-angle-left"></i>
                                         </p>
                                     </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+                                        <li class="nav-item">
+                                            <a asp-action="Create" asp-controller="Categories" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Add category</p>
+                                            </a>
+                                            <a asp-action="Index" asp-controller="Categories" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>List categories</p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-action="Index" asp-controller="Products">
+                                    <a class="nav-link" >
                                         <i class="nav-icon fas fa-cookie-bite"></i>
                                         <p>
                                             Products
-                                            @*<span class="right badge badge-danger">New</span>*@
+                                            <i class="right fas fa-angle-left"></i>
                                         </p>
                                     </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+                                        <li class="nav-item">
+                                            <a asp-action="Create" asp-controller="Products" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Add product</p>
+                                            </a>
+                                            <a asp-action="Index" asp-controller="Products" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>List products</p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" asp-action="Index" asp-controller="Receipts">
@@ -262,15 +321,64 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-action="Index" asp-controller="Staffs">
+                                    <a class="nav-link" >
                                         <i class="nav-icon fas fa-users"></i>
                                         <p>
                                             Staffs
-                                            @*<span class="right badge badge-danger">New</span>*@
+                                            <i class="right fas fa-angle-left"></i>
                                         </p>
                                     </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+                                        <li class="nav-item">
+                                            <a asp-action="Create" asp-controller="Staffs" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Add staff</p>
+                                            </a>
+                                            <a asp-action="Index" asp-controller="Staffs" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>List staffs</p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
-                                
+                                <li class="nav-item">
+                                    <a class="nav-link">
+                                        <i class="nav-icon fas fa-user-circle"></i>
+                                        <p>
+                                            Accounts
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+                                        <li class="nav-item">
+                                            <a asp-area="Admin" asp-page="/User/Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>List accounts</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link">
+                                        <i class="nav-icon fas fa-universal-access"></i>
+                                        <p>
+                                            Roles
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+                                        <li class="nav-item">
+                                            <a asp-area="Admin" asp-Page="/Role/Create" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Add role</p>
+                                            </a>
+                                            <a asp-area="Admin" asp-Page="/Role/Index" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>List roles</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
                     </ul>

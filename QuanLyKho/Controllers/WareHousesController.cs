@@ -7,23 +7,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyKho.Models.EF;
 using QuanLyKho.Models.Entities;
+using QuanLyKho.Services;
 
 namespace QuanLyKho.Controllers
 {
     public class WareHousesController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IProductService _productService;
 
-        public WareHousesController(AppDbContext context)
+        public WareHousesController(AppDbContext context, IProductService productService)
         {
             _context = context;
+            _productService = productService;
         }
 
         // GET: WareHouses
         public async Task<IActionResult> Index()
         {
               return _context.WareHouses != null ? 
-                          View(await _context.WareHouses.ToListAsync()) :
+                          View(await _context.WareHouses.Where(warehouse => warehouse.Status == Status.Show).ToListAsync()) :
                           Problem("Entity set 'AppDbContext.WareHouses'  is null.");
         }
 
@@ -118,46 +121,73 @@ namespace QuanLyKho.Controllers
             return View(wareHouse);
         }
 
-        // GET: WareHouses/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        [HttpPost]
+        public async Task<IActionResult> DeleteAsync(string id)
         {
-            if (id == null || _context.WareHouses == null)
-            {
+            if (string.IsNullOrEmpty(id) || _context.WareHouses is null )
+                return BadRequest();
+            var warehouse = _context.WareHouses.Find(id);
+            if (warehouse == null)
                 return NotFound();
-            }
 
-            var wareHouse = await _context.WareHouses
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (wareHouse == null)
-            {
-                return NotFound();
-            }
-
-            return View(wareHouse);
-        }
-
-        // POST: WareHouses/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            if (_context.WareHouses == null)
-            {
-                return Problem("Entity set 'AppDbContext.WareHouses'  is null.");
-            }
-            var wareHouse = await _context.WareHouses.FindAsync(id);
-            if (wareHouse != null)
-            {
-                _context.WareHouses.Remove(wareHouse);
-            }
-            
+            warehouse.Status = Status.Hide;
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return Ok();
         }
+
+        //// GET: WareHouses/Delete/5
+        //public async Task<IActionResult> Delete(string id)
+        //{
+        //    if (id == null || _context.WareHouses == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var wareHouse = await _context.WareHouses
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (wareHouse == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(wareHouse);
+        //}
+
+        //// POST: WareHouses/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(string id)
+        //{
+        //    if (_context.WareHouses == null)
+        //    {
+        //        return Problem("Entity set 'AppDbContext.WareHouses'  is null.");
+        //    }
+        //    var wareHouse = await _context.WareHouses.FindAsync(id);
+        //    if (wareHouse != null)
+        //    {
+        //        _context.WareHouses.Remove(wareHouse);
+        //    }
+            
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         private bool WareHouseExists(string id)
         {
           return (_context.WareHouses?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+
+        [HttpGet("/api/warehouses")]
+        public IActionResult GetProductByWarehouseId(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+
+            var products = _productService.GetProductByWarehouseId(id);
+
+            return Json(products);
         }
     }
 }

@@ -1,28 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using QuanLyKho.Extensions;
 using QuanLyKho.Models.EF;
 using QuanLyKho.Models.Entities;
+using QuanLyKho.Services;
+using QuanLyKho.Services.Implement;
+using QuanLyKho.Migrations;
 
 namespace QuanLyKho.Controllers
 {
     public class StaffsController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IStaffService _staffService;
 
-        public StaffsController(AppDbContext context)
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly ILogger<StaffsController> _logger;
+        private readonly IEmailSender _emailSender;
+
+        public StaffsController(AppDbContext context, IStaffService staffService, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager,ILogger<StaffsController> logger, IEmailSender emailSender)
         {
             _context = context;
+            _staffService = staffService;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _logger = logger;
+            _emailSender = emailSender;
         }
 
         // GET: Staffs
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Staffs.Include(s => s.User).Include(s => s.WareHouse);
+            var appDbContext = _context.Staffs.Where(staff => staff.Status == Status.Show).Include(s => s.User).Include(s => s.WareHouse);
             return View(await appDbContext.ToListAsync());
         }
 
@@ -59,17 +79,31 @@ namespace QuanLyKho.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,DateOfBirth,Gender,PhoneNumber,Address,StartDay,WareHouseId,UserId")] Staff staff)
+        public async Task<IActionResult> Create([Bind("Name,DateOfBirth,Gender, Email, PhoneNumber,Address,StartDay,WareHouseId,UserId")] Staff staff)
         {
-            if (ModelState.IsValid)
+            using(var transaction = _context.Database.BeginTransaction())
             {
-                _context.Add(staff);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ModelState.Remove("Id");
+
+                if (ModelState.IsValid)
+                {
+                    bool result = await _staffService.CreateStaff(staff);
+
+                    if (result)
+                    {
+                        var result_CreateUser = await this.CreateUserAsync(staff);
+                        if(result_CreateUser)
+                        {
+                            transaction.Commit();
+                            return RedirectToAction(nameof(Index));
+                        }    
+                        transaction.Rollback();
+                    }
+                }
+                ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", staff.UserId);
+                ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id", staff.WareHouseId);
+                return View(staff);
             }
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", staff.UserId);
-            ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id", staff.WareHouseId);
-            return View(staff);
         }
 
         // GET: Staffs/Edit/5
@@ -169,6 +203,42 @@ namespace QuanLyKho.Controllers
         private bool StaffExists(string id)
         {
           return (_context.Staffs?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+
+        public async Task<bool> CreateUserAsync(Staff staff)
+        {
+            var user = new AppUser { UserName = staff.Email, Email = staff.Email };
+            var result = await _userManager.CreateAsync(user, "111111");
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User created a new account with password.");
+
+                var userId = await _userManager.GetUserIdAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+                var callbackURL = Url.Page(
+                "/Account/ConfirmEmail",
+                pageHandler: null,
+                values: new { userId = userId, code = code, area = "identity" },
+                Request.Scheme
+                );
+
+                //var callbackURL = $"/Identity/Account/ConfirmEmail?userId={userId}&code={code}";
+
+
+                await _emailSender.SendEmailAsync(staff.Email, "Confirm your email",
+                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackURL)}'>clicking here</a>.");
+
+                return true;
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+            return false;
         }
     }
 }

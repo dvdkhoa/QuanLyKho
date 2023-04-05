@@ -1,42 +1,103 @@
-﻿@model QuanLyKho.Models.Entities.Receipt
-
+﻿@model QuanLyKho.DTO.ReceiptInfoModel
+@using QuanLyKho.Extensions
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<div class="card">
+    <!-- /.card-header -->
+    <div class="card-body">
+        <button id="btn-export" class="btn btn-primary mb-3">Xuất phiếu</button>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <td>ReceiptID</td>
+                <td>@Model.Receipt.Id</td>
+            </tr>
+            <tr>
+                <td>Type</td>
+                <td>@Model.Receipt.Type</td>
+            </tr>
+            <tr>
+                <td>DateCreated</td>
+                <td>@Model.Receipt.DateCreated.ToString("dd/MM/yyyy (HH:mm)")</td>
+            </tr>
 
-<div>
-    <h4>Receipt</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateCreated)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateCreated)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.WareHouse)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.WareHouse.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Staff)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Staff.Id)
-        </dd>
-    </dl>
+            <tr>
+                <td>Staff</td>
+                <td>@(Model.Receipt.Staff.Name)(@Model.Receipt.StaffId)</td>
+            </tr>
+            <tr>
+                <td>Warehouse</td>
+                <td>@(Model.Receipt.WareHouse.Name)(@Model.Receipt.WareHouseId)</td>
+            </tr>
+            <tr class="text-bold">
+                <td>*Total</td>
+                <td>@Model.Receipt.getTotalPrice() VND</td>
+            </tr>
+        </table> 
+
+        <hr />
+        @if(Model.ReceiptDetails.Count > 0)
+        {
+            <p class="text-bold">Receipt Details:</p>
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>ProductId</th>
+                        <th>ProductName</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var detail in Model.ReceiptDetails)
+                    {
+                        <tr>
+                            <td>@detail.ProductId</td>
+                            <td>@detail.Product.Name</td>
+                            <td>@(Helpers.PriceToVND(detail.Product.Price)) vnd</td>
+                            <td>@detail.Quantity</td>
+                            <td class="text-bold">@detail.getAmountToVND() VND</td>
+                            <td class="text-center">
+                                <a style="cursor: pointer" class="btn-sm btn-danger btn-delete" data-id="@detail.Id">
+                                    <i class="fas fa-trash"></i>
+                                </a
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+        <div>
+            <a class="btn btn-link" asp-action="Edit" asp-route-id="@Model.Receipt.Id">Edit</a> |
+            <a class="btn btn-link" asp-action="Index">Back to List</a>
+        </div>
+
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        $('#btn-export').click(function(){
+           $.ajax({
+               url: '/Receipts/RenderReceipt/'+@Model.Receipt.Id
+           }).done((res) =>{
+               var opt = {
+                  margin:       1,
+                  filename:     'myfile.pdf',
+                  image:        { type: 'jpeg', quality: 1 },
+                  html2canvas:  { scale: 2 },
+                  jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+                  pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                };
+               html2pdf(res, opt);
+           })
+        })
+   
+        
+    </script>
+}
