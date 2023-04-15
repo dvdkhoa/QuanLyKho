@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace QuanLyKho.Models.Entities
 {
@@ -9,7 +10,11 @@ namespace QuanLyKho.Models.Entities
         public string ProductId { get; set; }
         public int Quantity { get; set; }
         public Status Status { get; set; }
+
+        [JsonIgnore]
         public Receipt Receipt { get; set; }
+
+        [JsonIgnore]
         public Product Product { get; set; }
 
         public ReceiptDetail()

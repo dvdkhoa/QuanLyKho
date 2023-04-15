@@ -72,6 +72,8 @@ builder.Services.Configure<IdentityOptions>( options =>
 builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IReceiptService, ReceiptService>();
+builder.Services.AddScoped<IStatisticService, StatisticService>();
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

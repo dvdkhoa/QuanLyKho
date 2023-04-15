@@ -1,4 +1,6 @@
-﻿namespace QuanLyKho.Models.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace QuanLyKho.Models.Entities
 {
     public class Staff
     {
@@ -13,7 +15,10 @@
         public string? WareHouseId { get; set; }
         public string? UserId { get; set; }
         public Status Status { get; set; }
+
+        [JsonIgnore]
         public WareHouse? WareHouse { get; set; }
+        [JsonIgnore]
         public AppUser? User { get; set; }
 
         public Staff()

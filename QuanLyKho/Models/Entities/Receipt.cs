@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text.Json.Serialization;
 
 namespace QuanLyKho.Models.Entities
 {
@@ -9,8 +10,12 @@ namespace QuanLyKho.Models.Entities
         public ReceiptType Type { get; set; }
         public Status Status { get; set; }
         public string WareHouseId { get; set; }
+
+        [JsonIgnore]
         public WareHouse WareHouse { get; set; }
         public string StaffId { get; set; }
+
+        [JsonIgnore]
         public Staff Staff { get; set; }
         public List<ReceiptDetail> ReceiptDetails { get; set; }
 

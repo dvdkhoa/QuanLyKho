@@ -17,6 +17,8 @@ using QuanLyKho.Services;
 using DinkToPdf;
 using Microsoft.CodeAnalysis.RulesetToEditorconfig;
 using DinkToPdf.Contracts;
+using Microsoft.AspNetCore.DataProtection.Repositories;
+using QuanLyKho.DTO;
 
 namespace QuanLyKho.Controllers
 {
@@ -382,6 +384,97 @@ namespace QuanLyKho.Controllers
             var stream = new MemoryStream(bytes);
 
             return File(stream, "application/pdf");
+        }
+
+
+        [HttpPost("/api/receipts/statistic")]
+        public async Task<IActionResult> StatisticReceipts(char time, string type, DateTime from, DateTime to, string baseAs, string baseId)
+        {
+            var receipts = _context.Receipts.AsEnumerable();
+
+            // Check dua tren loai phieu
+            if (type == "all")
+            {
+                // khong lam gi ca
+            }
+            else if (type == "import")
+            {
+                receipts = receipts.Where(rc => rc.Type == ReceiptType.Import);
+            }
+            else if (type == "export")
+            {
+                receipts = receipts.Where(rc => rc.Type == ReceiptType.Export);
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+            // Check dua tren baseAs
+            if (string.IsNullOrEmpty(baseAs) || baseAs == "all") // neu de trong thi coi nhu la all
+            {
+                // lay het tat ca, khong loc, bo trong =)))
+            }
+            else if (baseAs == "staff") // loc dua tren nhan vien
+            {
+                receipts = receipts.Where(rc => rc.StaffId == baseId);
+            }
+            else if (baseAs == "warehouse") // loc dua tren nha kho
+            {
+                receipts = receipts.Where(rc => rc.WareHouseId == baseId);
+            }
+            else
+                return BadRequest();
+
+
+            // Check dua tren thoi gian
+            if (time == 't')
+            {
+                receipts = receipts.Where(rc => rc.DateCreated.Date >= from.Date && rc.DateCreated.Date <= to.Date);
+            }
+            else if (time == 'd')
+            {
+                receipts = receipts.Where(rc => rc.DateCreated.Date == DateTime.Now.Date);
+            }
+            else if (time == 'w')
+            {
+                var startDate = DateTime.Today.AddDays(-7);
+                var endDate = DateTime.Today;
+                receipts = receipts.Where(rc =>
+                {
+                    return rc.DateCreated.Date >= startDate && rc.DateCreated.Date <= endDate;
+                });
+            }
+            else if (time == 'm')
+            {
+                receipts = receipts.Where(rc =>
+                {
+                    var year = rc.DateCreated.Year;
+                    var month = rc.DateCreated.Month;
+
+                    return year == DateTime.Now.Year && month == DateTime.Now.Month;
+                });
+            }
+            else if (time == 'q')
+            {
+                var quarter = (DateTime.Today.Month - 1) / 3 + 1; // Tính quý hiện tại;
+                var year = DateTime.Today.Year; // Năm hiện tại;
+
+                // Tính ngày bắt đầu và kết thúc của quý hiện tại
+                var startQuarter = new DateTime(year, 3 * quarter - 2, 1);
+                var endQuarter = startQuarter.AddMonths(3).AddDays(-1);
+
+                receipts = receipts.Where(rc =>
+                {
+                    return rc.DateCreated.Date >= startQuarter && rc.DateCreated.Date <= endQuarter;
+                });
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+            return Json(receipts);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace QuanLyKho.Services.Implement
             if (product is null)
                 return null;
 
-            int quantity = _context.ProductWareHouses.Where(pw => pw.ProductId == productId).Sum(pw => pw.Quantity);
+            int quantity = this.GetProductQuantity(productId);
             List<ProductWareHouse> productWareHouses = _context.ProductWareHouses.Where(pw => pw.ProductId == productId).ToList();
 
             var productInfo = new ProductInfoModel
@@ -61,6 +61,11 @@ namespace QuanLyKho.Services.Implement
                 return false;
 
             return true;
+        }
+
+        public int GetProductQuantity(string productId)
+        {
+            return _context.ProductWareHouses.Where(pw => pw.ProductId == productId).Sum(pw => pw.Quantity);
         }
     }
 }
