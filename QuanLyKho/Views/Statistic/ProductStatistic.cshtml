@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="~/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="~/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
-  
+
 }
 
 <div class="card">
@@ -18,14 +18,15 @@
     </div>
     <div class="card-body">
         <div class="row mb-2">
+
             <div class="col-lg-6">
-                <select id="type" name="type" class="form-control p-2" aria-label="Default select example">
-                    <option selected>Choose the statistic type</option>
-                    <option value="d">In day</option>
-                    <option value="w">In week</option>
-                    <option value="m">In month</option>
-                    <option value="q">In Quarter</option>
-                    <option value="t">Other</option>
+                <select id="base" name="type" class="form-control p-2" aria-label="Default select example">
+                    <option selected disabled>Choose warehouse</option>
+                    <option value="all">All</option>
+                    @foreach (var w in warehouses)
+                    {
+                        <option value="@w.Id">@w.Id</option>
+                    }
                 </select>
             </div>
 
@@ -56,6 +57,18 @@
             </div>
 
         </div>
+        <div class="row">
+            <div class="col-lg-6" id="select-type">
+                <select id="type" name="type" class="form-control p-2" aria-label="Default select example">
+                    <option selected>Choose the statistic type</option>
+                    <option value="d">In day</option>
+                    <option value="w">In week</option>
+                    <option value="m">In month</option>
+                    <option value="q">In Quarter</option>
+                    <option value="t">Other</option>
+                </select>
+            </div>
+        </div>
         <div id="tuychon" class="row g-3 mb-3">
             <div class="col">
                 <label for="dateFrom">From:</label>
@@ -65,19 +78,6 @@
                 <label class="form-label" for="dateTo">To:</label>
                 <input type="date" id="dateTo" name="dateTo" class="form-control">
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <select id="base" name="type" class="form-control p-2" aria-label="Default select example">
-                    <option selected disabled>Choose warehouse</option>
-                    <option value="all">All</option>
-                    @foreach (var w in warehouses)
-                    {
-                        <option value="@w.Id">@w.Id</option>
-                    }
-                </select>
-            </div>
-            
         </div>
         <div class="row">
             <button id="btnOK" class="btn btn-sm btn-primary ml-2 my-2">Statistic</button>
@@ -93,6 +93,7 @@
                     <th>Imported Number</th>
                     <th>Imported Date</th>
                     <th>Input Money</th>
+                    <th>Warehouse Id</th>
                     <th>Inventory Number</th>
             </thead>
             <tbody>
@@ -113,14 +114,11 @@
             InputMa.prop('disabled', true)
 
             $("input[name=type]").on('change', () => { // Xử lý change radio trong này, để đó khoan hẳn sử lý.
-                if ($("input[name=type]:checked").val() === 'import') {
-
-                }
-                else if ($("input[name=type]:checked").val() === 'export') {
-
+                if ($("input[name=type]:checked").val() === 'out_of_stock') {
+                    $('#select-type').hide(500)
                 }
                 else {
-
+                    $('#select-type').show(500)
                 }
             })
         })
@@ -161,13 +159,18 @@
 
     <script src="~/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
 
-
+     
 
     <script>
         $(function () {
             const table = $("#example1").DataTable({
                 "responsive": true, "lengthChange": false, "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+                "buttons": ["copy", "csv", { 
+                    extend: 'excel',
+                    text: 'Excel',
+                    title: 'Product statistic',
+                    filename: 'ProductStatistic'
+                }, "pdf", "print", "colvis"]
             })
             table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
@@ -216,8 +219,8 @@
                     console.log('Kết quả trả về: ', res)
 
                     Date.prototype.formatMMDDYYYY = function () {
-                        return (this.getMonth() + 1) +
-                            "/" + this.getDate() +
+                        return this.getDate() +
+                            "/" + (this.getMonth() + 1) +
                             "/" + this.getFullYear();
                     }
 
@@ -228,10 +231,10 @@
                             i.price,
                             i.unit,
                             i.imported,
-                            (new Date(i.dateImported)).formatMMDDYYYY(),
+                            i.dateImported != null ? (new Date(i.dateImported)).formatMMDDYYYY() : '',
                             i.inputMoney,
+                            i.warehouseId,
                             i.inventoryNumber
-
                         ]
                     })
 

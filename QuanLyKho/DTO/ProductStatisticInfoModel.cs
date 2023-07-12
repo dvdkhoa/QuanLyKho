@@ -1,7 +1,11 @@
-﻿using QuanLyKho.Models.Entities;
+﻿
+using Newtonsoft.Json;
+using QuanLyKho.Models.Entities;
+using System.Text.Json.Serialization;
 
 namespace QuanLyKho.DTO
 {
+    
     public class ProductStatisticInfoModel
     {
         public String Id { get; set; }
@@ -12,8 +16,10 @@ namespace QuanLyKho.DTO
         public int? Imported { get; set; }
         public string InputMoney { get; set; }
         public int? InventoryNumber { get; set; }
-        public DateTime DateImported { get; set; }
 
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public DateTime? DateImported { get; set; }
+        public string WarehouseId { get; set; }
 
     }
 }

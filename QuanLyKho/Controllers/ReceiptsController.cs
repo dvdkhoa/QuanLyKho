@@ -19,9 +19,14 @@ using Microsoft.CodeAnalysis.RulesetToEditorconfig;
 using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.DataProtection.Repositories;
 using QuanLyKho.DTO;
+using Microsoft.AspNetCore.Authorization;
+using System.Text;
+using QuanLyKho.Extensions;
+using Org.BouncyCastle.Ocsp;
 
 namespace QuanLyKho.Controllers
 {
+    [Authorize]
     public class ReceiptsController : Controller
     {
         private readonly AppDbContext _context;
@@ -341,6 +346,8 @@ namespace QuanLyKho.Controllers
                 return View("Create", receipt);
             }
         }
+
+        [AllowAnonymous]
         public async Task<IActionResult> RenderReceipt(int id)
         {
             if (id == 0)
@@ -357,23 +364,30 @@ namespace QuanLyKho.Controllers
             return View(receipt);
         }
 
-        public async Task<IActionResult> Test(int id)
+        public async Task<IActionResult> ExportReceipt(int id)
         {
+            var receipt = _context.Receipts.Include(r => r.ReceiptDetails).FirstOrDefault(r => r.Id == id);
+            if(receipt == null)
+                return NotFound(); 
 
-            var doc = new HtmlToPdfDocument()
+            var stylesPath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "lib", "bootstrap", "dist", "css", "bootstrap.css");
+            var doc = new HtmlToPdfDocument() 
             {
                 GlobalSettings = {
-                ColorMode = ColorMode.Color,
-                Orientation = Orientation.Portrait,
-                PaperSize = DinkToPdf.PaperKind.A4Plus,
-                Margins = new MarginSettings() { Top = 10, Bottom=20, Left=20, Right=20 },
-                },
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Portrait,
+                    PaperSize = DinkToPdf.PaperKind.A4,
+                    Margins = new MarginSettings() { Top = 10, Bottom=20, Left=20, Right=20 },
+                },  
                 Objects = {
                             new ObjectSettings()
                             {
                                 Page = "https://localhost:7055/Receipts/RenderReceipt/"+id,
+                                //HtmlContent = this.generateHtml(receipt), 
                                 PagesCount = true,
-                                WebSettings = { DefaultEncoding = "utf-8", UserStyleSheet = "https://localhost:7055/lib/bootstrap/dist/css/bootstrap.css" }
+                                WebSettings = { DefaultEncoding = "utf-8", UserStyleSheet = stylesPath,  },
+                                HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
+                                FooterSettings = { FontName = "Arial", FontSize = 10, Line = true, Center = "Inventory management", Spacing = 5,}
                             },
 
                         }
@@ -475,6 +489,79 @@ namespace QuanLyKho.Controllers
             }
 
             return Json(receipts);
+        }
+
+        public string generateHtml(Receipt receipt)
+        {
+            var receiptName = receipt.Type == ReceiptType.Import ? "Phiếu nhập kho" : "Phiếu xuất kho";
+            StringBuilder sb = new StringBuilder();
+            sb.Append(@$"
+                        <html>
+                            <head>
+                                <meta charset=""UTF-8"">
+                                <title>{receiptName}</title>
+                            </head>
+                            <body>
+                                <div class=""container-fluid pt-5"">
+                                    <div id=""print"" class=""row justify-content-center"">
+                                        <div class=""col-md-10 col-lg-8"">
+                                            <div class=""card "">
+                                                <div class=""card-header text-center"">
+                                                    <h1 class=""card-title"">{receiptName}</h1>
+                                                    <p class=""card-subtitle mb-2 text-muted"">Ngày nhập: {receipt.DateCreated.ToShortDateString()}</p>
+                                                </div>
+                                                <div class=""card-body px-5"">
+                                                    <table class=""table"">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Mã hàng</th>
+                                                                <th>Tên hàng</th>
+                                                                <th>Số lượng</th>
+                                                                <th>Đơn giá(vnd)</th>
+                                                                <th>Thành tiền(vnd)</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>");
+
+            foreach (var detail in receipt.ReceiptDetails)
+            {
+                var product = _context.Products.Find(detail.ProductId);
+                sb.AppendFormat(@$"<tr>
+                                        <td>{detail.ProductId}</td>
+                                        <td>{product.Name}</td>
+                                        <td class=""font-weight-bold"">{detail.Quantity}</td>
+                                        <td class=""font-weight-bold"">{Helpers.PriceToVND(detail.Product.Price)}</td>
+                                        <td class=""font-weight-bold"">{detail.getAmountToVND()}</td>
+                                    </tr>");
+            }
+            sb.Append(@"</tbody>
+                                                    </table>
+                                                </div>
+                                                <div class=""pb-5 pt-4 d-flex flex-row justify-content-around"">
+                                                    <div class=""col-3 pb-5 text-center"">
+                                                        <h6 class=""mb-0  font-weight-bold"">Thủ kho</h6>
+                                                        <p>(Ký, họ tên)</p>
+                                                    </div>
+                                                    <div class=""col-3 pb-5 text-center"">
+                                                        <h6 class=""mb-0  font-weight-bold"">Thủ kho</h6>
+                                                        <p>(Ký, họ tên)</p>
+                                                    </div>
+                                                    <div class=""col-3 pb-5 text-center"">
+                                                        <h6 class=""mb-0  font-weight-bold"">Thủ kho</h6>
+                                                        <p>(Ký, họ tên)</p>
+                                                    </div><div class=""col-3 pb-5 text-center"">
+                                                        <h6 class=""mb-0  font-weight-bold"">Thủ kho</h6>
+                                                        <p>(Ký, họ tên)</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </body>
+                            </html>");
+
+            return sb.ToString();
         }
     }
 }

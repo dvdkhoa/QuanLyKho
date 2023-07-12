@@ -16,9 +16,11 @@ using QuanLyKho.Models.Entities;
 using QuanLyKho.Services;
 using QuanLyKho.Services.Implement;
 using QuanLyKho.Migrations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuanLyKho.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class StaffsController : Controller
     {
         private readonly AppDbContext _context;

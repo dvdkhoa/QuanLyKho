@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using QuanLyKho.DTO;
 using QuanLyKho.Models;
 using QuanLyKho.Models.EF;
 using QuanLyKho.Models.Entities;
@@ -13,6 +15,7 @@ using QuanLyKho.Services;
 
 namespace QuanLyKho.Controllers
 {
+    [Authorize]
     public class ProductsController : Controller
     {
         private readonly AppDbContext _context;
@@ -141,7 +144,7 @@ namespace QuanLyKho.Controllers
                 return BadRequest();
 
             var product = _context.Products.Find(id);
-            if(product is null)
+            if (product is null)
                 return NotFound();
 
             product.Status = Status.Hide;
@@ -151,9 +154,27 @@ namespace QuanLyKho.Controllers
             return Ok();
         }
 
+
+        public IActionResult ImportHistory(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+            var product = _context.Products.Find(id);
+            if (product is null)
+                return NotFound();
+
+            var inventoryHistorys = _context.ReceiptDetails.Include(rd => rd.Product).Include(rd => rd.Receipt).Include(rd => rd.Receipt.WareHouse).ToList();
+
+            var model = inventoryHistorys.Select(h => new InventoryHistory { Product = h.Product, WareHouse = h.Receipt.WareHouse, ReceiptDetail = h }).ToList();
+
+
+            return View(model);
+        }
+
+
         private bool ProductExists(string id)
         {
-          return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

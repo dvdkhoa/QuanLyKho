@@ -7,7 +7,8 @@
 <div class="card">
     <!-- /.card-header -->
     <div class="card-body">
-        <button id="btn-export" class="btn btn-primary mb-3">Xuất phiếu</button>
+        @*<button id="btn-export" class="btn btn-primary mb-3">Xuất phiếu</button>*@
+        <a class="btn btn-primary mb-3" target="_blank" asp-action="ExportReceipt" asp-route-id="@Model.Receipt.Id">Xuất phiếu</a>
         <table class="table table-bordered table-striped">
             <tr>
                 <td>ReceiptID</td>

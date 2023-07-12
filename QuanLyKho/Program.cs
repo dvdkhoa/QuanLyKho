@@ -53,8 +53,8 @@ builder.Services.Configure<IdentityOptions>( options =>
     options.Password.RequiredUniqueChars = 0; // Số ký tự riêng biệt
 
     // Cấu hình Lockout - khóa user
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3); // Khóa 5 phút
-    options.Lockout.MaxFailedAccessAttempts = 5; // Thất bại 5 lần thì khóa
+    //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3); // Khóa 5 phút
+    //options.Lockout.MaxFailedAccessAttempts = 5; // Thất bại 5 lần thì khóa
     options.Lockout.AllowedForNewUsers = true;
 
     // Cấu hình về User.
@@ -76,7 +76,7 @@ builder.Services.AddScoped<IStatisticService, StatisticService>();
 
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddNewtonsoftJson();
 builder.Services.AddRazorPages();
 
 

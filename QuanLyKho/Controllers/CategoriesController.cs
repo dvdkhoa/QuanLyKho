@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using QuanLyKho.Models.Entities;
 
 namespace QuanLyKho.Controllers
 {
+    [Authorize]
     public class CategoriesController : Controller
     {
         private readonly AppDbContext _context;
@@ -27,8 +29,8 @@ namespace QuanLyKho.Controllers
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
 
-            return _context.Categories != null ? 
-                          View("Index1",await _context.Categories.Where( cate => cate.Status == Status.Show).ToListAsync()) :
+            return _context.Categories != null ?
+                          View("Index1", await _context.Categories.Where(cate => cate.Status == Status.Show).ToListAsync()) :
                           Problem("Entity set 'AppDbContext.Categories'  is null.");
         }
 
@@ -42,7 +44,7 @@ namespace QuanLyKho.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
+            var category = await _context.Categories.Include(c => c.Products)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (category == null)
             {
@@ -139,7 +141,7 @@ namespace QuanLyKho.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int? id)
         {
-            if(id is null || _context.Categories == null) 
+            if (id is null || _context.Categories == null)
                 return NotFound();
 
             var category = _context.Categories.Find(id);
@@ -188,14 +190,14 @@ namespace QuanLyKho.Controllers
         //        //_context.Categories.Remove(category);
         //        category.Status = Status.Hide;
         //    }
-            
+
         //    await _context.SaveChangesAsync();
         //    return RedirectToAction(nameof(Index));
         //}
 
         private bool CategoryExists(int id)
         {
-          return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -23,9 +23,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.13" />
     <PackageReference Include="MimeKit" Version="3.6.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Select.HtmlToPdf.NetCore" Version="22.2.0" />
-    <PackageReference Include="Syncfusion.HtmlToPdfConverter.Net.Windows" Version="21.1.38" />
   </ItemGroup>
 
 </Project>

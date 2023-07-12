@@ -2,12 +2,13 @@
 @using QuanLyKho.Extensions
 @{
     Layout = null;
+    var title = Model.Type == QuanLyKho.Models.Entities.ReceiptType.Import ? "Phiếu nhập kho" : "Phiếu xuất kho";
 }
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Phiếu nhập kho</title>
+    <title>@title</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css">
     <!-- <link rel="stylesheet" href="style.css"> -->
 </head>
@@ -17,11 +18,11 @@
             <div class="col-md-10 col-lg-8">
                 <div class="card ">
                     <div class="card-header text-center">
-                        <h1 class="card-title">Phiếu nhập kho</h1>
+                        <h1 class="card-title">@title</h1>
                         <p class="card-subtitle mb-2 text-muted">Ngày nhập: @Model.DateCreated.ToShortDateString()</p>
                     </div>
                     <div class="card-body px-5">
-                        <table class="table">
+                        <table class="table mt-3">
                             <thead>
                                 <tr>
                                     <th>Mã hàng</th>
@@ -49,28 +50,40 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="pb-5 pt-4 d-flex flex-row justify-content-around">
-                        <div class="col-3 pb-5 text-center">
-                            <h6 class="mb-0  font-weight-bold">Thủ kho</h6>
-                            <p>(Ký, họ tên)</p>
-                        </div>
-                        <div class="col-3 pb-5 text-center">
-                            <h6 class="mb-0  font-weight-bold">Thủ kho</h6>
-                            <p>(Ký, họ tên)</p>
-                        </div>
-                        <div class="col-3 pb-5 text-center">
-                            <h6 class="mb-0  font-weight-bold">Thủ kho</h6>
-                            <p>(Ký, họ tên)</p>
-                        </div><div class="col-3 pb-5 text-center">
-                            <h6 class="mb-0  font-weight-bold">Thủ kho</h6>
-                            <p>(Ký, họ tên)</p>
-                        </div>
+              
+                    <div style="height: 650px">
                     </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="text-center">
+                                <td>Người lập phiếu<p>(ký tên, ghi rõ họ tên)</p></td>
+                                <td>Người giao hàng<p>(ký tên, ghi rõ họ tên)</p></td>
+                                <td>Thủ kho<p>(ký tên, ghi rõ họ tên)</p></td>
+                                <td>Kế toán trưởng<p>(ký tên, ghi rõ họ tên)</p></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <p style="height: 100px"></p>
+                                </td>
+                                <td>
+                                    <p style="height: 100px"></p>
+                                </td>
+                                <td>
+                                    <p style="height: 100px"></p>
+                                </td>
+                                <td>
+                                    <p style="height: 100px"></p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-    
+
 </body>
 </html>
 

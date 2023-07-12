@@ -70,8 +70,10 @@
     class: 'mr-1'
   }).on('click', function () {
     if ($(this).is(':checked')) {
+      document.cookie = 'isDarkTheme=1'
       $('body').addClass('dark-mode')
     } else {
+      document.cookie = 'isDarkTheme=0'
       $('body').removeClass('dark-mode')
     }
   })

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,13 @@ using QuanLyKho.Services;
 
 namespace QuanLyKho.Controllers
 {
+    [Authorize]
     public class WareHousesController : Controller
     {
         private readonly AppDbContext _context;
         private readonly IProductService _productService;
+
+        public string PrimaryTitle = "Warehouse";
 
         public WareHousesController(AppDbContext context, IProductService productService)
         {
@@ -25,7 +29,8 @@ namespace QuanLyKho.Controllers
         // GET: WareHouses
         public async Task<IActionResult> Index()
         {
-              return _context.WareHouses != null ? 
+            ViewData["PrimaryTitle"] = PrimaryTitle;
+            return _context.WareHouses != null ?
                           View(await _context.WareHouses.Where(warehouse => warehouse.Status == Status.Show).ToListAsync()) :
                           Problem("Entity set 'AppDbContext.WareHouses'  is null.");
         }
@@ -33,17 +38,22 @@ namespace QuanLyKho.Controllers
         // GET: WareHouses/Details/5
         public async Task<IActionResult> Details(string id)
         {
+            ViewData["PrimaryTitle"] = PrimaryTitle;
             if (id == null || _context.WareHouses == null)
             {
                 return NotFound();
             }
 
-            var wareHouse = await _context.WareHouses
+            var wareHouse = await _context.WareHouses.Include(wh => wh.ProductWareHouses)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (wareHouse == null)
             {
                 return NotFound();
             }
+            wareHouse.ProductWareHouses.ForEach(pw =>
+            {
+                pw.Product = _context.Products.Find(pw.ProductId);
+            });
 
             return View(wareHouse);
         }
@@ -51,6 +61,7 @@ namespace QuanLyKho.Controllers
         // GET: WareHouses/Create
         public IActionResult Create()
         {
+            ViewData["PrimaryTitle"] = PrimaryTitle;
             return View();
         }
 
@@ -61,6 +72,7 @@ namespace QuanLyKho.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,PhoneNumber,Address")] WareHouse wareHouse)
         {
+            ViewData["PrimaryTitle"] = PrimaryTitle;
             if (ModelState.IsValid)
             {
                 _context.Add(wareHouse);
@@ -73,6 +85,7 @@ namespace QuanLyKho.Controllers
         // GET: WareHouses/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
+            ViewData["PrimaryTitle"] = PrimaryTitle;
             if (id == null || _context.WareHouses == null)
             {
                 return NotFound();
@@ -93,6 +106,7 @@ namespace QuanLyKho.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,Name,PhoneNumber,Address")] WareHouse wareHouse)
         {
+            ViewData["PrimaryTitle"] = PrimaryTitle;
             if (id != wareHouse.Id)
             {
                 return NotFound();
@@ -124,7 +138,8 @@ namespace QuanLyKho.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAsync(string id)
         {
-            if (string.IsNullOrEmpty(id) || _context.WareHouses is null )
+            ViewData["PrimaryTitle"] = PrimaryTitle;
+            if (string.IsNullOrEmpty(id) || _context.WareHouses is null)
                 return BadRequest();
             var warehouse = _context.WareHouses.Find(id);
             if (warehouse == null)
@@ -168,20 +183,21 @@ namespace QuanLyKho.Controllers
         //    {
         //        _context.WareHouses.Remove(wareHouse);
         //    }
-            
+
         //    await _context.SaveChangesAsync();
         //    return RedirectToAction(nameof(Index));
         //}
 
         private bool WareHouseExists(string id)
         {
-          return (_context.WareHouses?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.WareHouses?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
 
         [HttpGet("/api/warehouses")]
         public IActionResult GetProductByWarehouseId(string id)
         {
+            ViewData["PrimaryTitle"] = PrimaryTitle;
             if (string.IsNullOrEmpty(id))
                 return NotFound();
 

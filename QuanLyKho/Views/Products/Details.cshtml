@@ -6,6 +6,11 @@
 }
 
 <div class="card">
+    <div class="card-header">
+        <div class="float-right">
+            <a asp-action="ImportHistory" asp-route-id="@Model.Id">Import history</a>
+        </div>
+    </div>
     <!-- /.card-header -->
     <div class="card-body">
 
@@ -50,7 +55,7 @@
 
         <hr />
         @{
-            if (Model.ProductWarehouses != null)
+            if (Model.ProductWarehouses != null && Model.ProductWarehouses.Count > 0)
             {
                 <p class="text-bold">Product quantity details:</p>
                 <table class="table table-bordered table-striped">
