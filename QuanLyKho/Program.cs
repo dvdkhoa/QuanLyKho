@@ -19,6 +19,9 @@ builder.Services.AddDbContext<AppDbContext>( options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("QLKHO");
     options.UseSqlServer(connectionString);
+
+    //var mySql_ConnectionString = builder.Configuration.GetConnectionString("QLKHO_MYSQL");
+    //options.UseMySQL(mySql_ConnectionString);
 });
 
 builder.Services.AddOptions();

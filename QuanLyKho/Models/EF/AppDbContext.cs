@@ -33,6 +33,17 @@ namespace QuanLyKho.Models.EF
             builder.ApplyConfiguration(new ReceiptDetailConfiguration());
             builder.ApplyConfiguration(new StaffConfiguration());
             builder.ApplyConfiguration(new WareHouseConfiguration());
+            builder.ApplyConfiguration(new ClassificationConfiguration());
+            builder.ApplyConfiguration(new ProductClassificationConfiguration());
+            builder.ApplyConfiguration(new ProductImageConfiguration());
+            builder.ApplyConfiguration(new OrderConfiguration());
+            builder.ApplyConfiguration(new OrderDetailConfiguration());
+            builder.ApplyConfiguration(new CustomerConfiguration());
+            builder.ApplyConfiguration(new CartConfiguration());
+            builder.ApplyConfiguration(new CartDetailConfiguration());
+            builder.ApplyConfiguration(new NewConfiguration());
+            builder.ApplyConfiguration(new PromotionConfiguration());
+            builder.ApplyConfiguration(new ProductPromotionConfiguration());
 
 
             // Cấu hình các bảng Identity

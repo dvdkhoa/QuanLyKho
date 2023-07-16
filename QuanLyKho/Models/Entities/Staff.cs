@@ -15,6 +15,11 @@ namespace QuanLyKho.Models.Entities
         public string? WareHouseId { get; set; }
         public string? UserId { get; set; }
         public Status Status { get; set; }
+        public DateTime CreatedTime { get; set; }
+        public DateTime LastUpdated { get; set; }
+
+        public List<Order> Orders { get; set; }
+
 
         [JsonIgnore]
         public WareHouse? WareHouse { get; set; }
