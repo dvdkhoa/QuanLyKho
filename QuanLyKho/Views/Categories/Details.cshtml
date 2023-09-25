@@ -27,8 +27,27 @@
                     <td>@Model.Name</td>
                 </tr>
                 <tr>
+                    <td>Icon</td>
+                    <td>
+                        <img src="@Model.Icon" width="32px" />
+                    </td>
+                </tr>
+                <tr>
                     <td>Description</td>
-                    <td>@Model.Description</td>
+                    <td>@Html.Raw(Model.Description)</td>
+                </tr>
+                <tr>
+                    <td>Configurations</td>
+                    <td>
+                        @if(Model.CategoryDetailedConfigs?.Count > 0){
+                            <ul>
+                                @foreach (var config in Model.CategoryDetailedConfigs)
+                                {
+                                    <li>@config.DetailedConfig.Name</li>
+                                }
+                            </ul>
+                        }
+                    </td>
                 </tr>
             </tbody>
         </table>

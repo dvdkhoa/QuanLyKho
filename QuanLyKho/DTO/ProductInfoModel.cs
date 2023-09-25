@@ -11,9 +11,17 @@ namespace QuanLyKho.DTO
         public double Price { get; set; }
         public string? Unit { get; set; }
         public string? Supplier { get; set; }
+        public string? Origin { get; set; }
+        public string? Weight { get; set; }
+        public DateTime? Expiry { get; set; }
+        public DateTime? ManufacturingDate { get; set; }
+        public DateTime? CreatedTime { get; set; }
+        public DateTime? LastUpdated { get; set; }
+        public double? PromotionPrice { get; set; }
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
         public int Quantity { get;set; }
         public List<ProductWareHouse>? ProductWarehouses { get; set; }
+        public List<ProductImage>? ProductImages { get; set; }
     }
 }

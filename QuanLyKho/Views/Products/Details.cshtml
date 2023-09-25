@@ -5,6 +5,10 @@
     ViewData["Title"] = "Details";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/lib/spotlight/spotlight.min.css">
+}
+
 <div class="card">
     <div class="card-header">
         <div class="float-right">
@@ -34,7 +38,7 @@
             </tr>
             <tr>
                 <td>@Html.DisplayNameFor(m => m.Description)</td>
-                <td>@Html.DisplayFor(m => m.Category.Description)</td>
+                <td>@Html.Raw(Model.Description)</td>
             </tr>
             <tr>
                 <td>@Html.DisplayNameFor(m => m.Unit)</td>
@@ -44,7 +48,64 @@
                 <td>@Html.DisplayNameFor(m => m.Price)</td>
                 <td class="text-bold">@(Helpers.PriceToVND(Model.Price)) vnd </td>
             </tr>
-
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Supplier)</td>
+                <td>@Html.DisplayFor(m => m.Supplier)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Origin)</td>
+                <td>@Html.DisplayFor(m => m.Origin)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Weight)</td>
+                <td>@Html.DisplayFor(m => m.Weight)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Expiry)</td>
+                <td>@Model.Expiry?</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.ManufacturingDate)</td>
+                <td>@Model.ManufacturingDate?.ToShortDateString()</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.CreatedTime)</td>
+                <td>@Model.CreatedTime?.ToShortDateString()</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.LastUpdated)</td>
+                <td>@Model.LastUpdated?.ToShortDateString()</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.PromotionPrice)</td>
+                <td>@Html.DisplayFor(m => m.PromotionPrice)</td>
+            </tr>
+            <tr>
+                <td>
+                    Images
+                    <br>
+                    <a asp-action="EditImages" asp-route-id="@Model.Id">Edit images</a>
+                </td>
+                <td>
+                    @{
+                        if (Model.ProductImages != null)
+                        {
+                            foreach (var image in Model.ProductImages)
+                            {
+                                <a class="spotlight" href="@image.Path" data-animation="slide,fade,scale">
+                                    <img src="@image.Path" class="img-thumbnail" width="100" height="100" />
+                                </a>
+                            }
+                        }
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>Detailed configurations</td>
+                <td>
+                    <a asp-action="ProductConfigs" asp-route-id="@Model.Id">Edit detailed configurations</a>
+                </td>
+            </tr>
         </table>
         <hr />
 
@@ -80,3 +141,7 @@
 
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/lib/spotlight/spotlight.min.js"></script>
+}

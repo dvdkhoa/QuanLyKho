@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Microsoft.EntityFrameworkCore;
+using QuanLyKho.Extensions;
 using QuanLyKho.Models.EF;
 using QuanLyKho.Models.Entities;
 
@@ -44,7 +47,7 @@ namespace QuanLyKho.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories.Include(c => c.Products)
+            var category = await _context.Categories.Include(c => c.CategoryDetailedConfigs).ThenInclude(c => c.DetailedConfig).Include(c => c.Products)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (category == null)
             {
@@ -66,7 +69,7 @@ namespace QuanLyKho.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Status")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Status")] Category category, IFormFile iconFile)
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
 
@@ -74,6 +77,14 @@ namespace QuanLyKho.Controllers
             {
                 // Status mặc định là Show
                 category.Status = Status.Show;
+
+                if(iconFile != null)
+                {
+                    var imagePath = await CloudinaryHelper.UploadFileToCloudinary(iconFile, "Categories");
+                    category.Icon = imagePath;
+                }
+
+                category.UpdateTime();
 
                 _context.Add(category);
                 await _context.SaveChangesAsync();
@@ -93,10 +104,17 @@ namespace QuanLyKho.Controllers
             }
 
             var category = await _context.Categories.FindAsync(id);
+
+            var selectedValues = _context.CategoryDetailedConfigs.Where(cdc => cdc.CategoryId == id).Select(cdc => cdc.ConfigId).ToList();
+
             if (category == null)
             {
                 return NotFound();
             }
+
+            ViewData["Configurations"] = _context.DetailedConfigs;
+            ViewData["SelectedValues"] = selectedValues;
+
             return View(category);
         }
 
@@ -105,7 +123,7 @@ namespace QuanLyKho.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Status")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Icon,Status")] Category category, int[] configs, IFormFile? iconFile)
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
 
@@ -118,9 +136,65 @@ namespace QuanLyKho.Controllers
             {
                 try
                 {
+                    if (iconFile != null)
+                    {
+                        if(category.Icon != null) // Đã có icon trước đó rồi => xóa icon cũ => khúc này làm sau :v
+                        {
+                            bool isDelete =  await CloudinaryHelper.DeteleImage(category.Icon, "Categories");
+                            
+                        }
+                        var imagePath = await CloudinaryHelper.UploadFileToCloudinary(iconFile, "Categories");
+                        category.Icon = imagePath;
+                    }
+
                     _context.Update(category);
+                    await _context.SaveChangesAsync(); // Cập nhật thông tin cơ bản của category
+
+                    var oldConfigIds = await _context.CategoryDetailedConfigs.Where(cdc => cdc.CategoryId == category.Id).Select(cdc => cdc.ConfigId).ToListAsync();
+
+                    var addConfigIds = new List<int>();
+                    var removeConfigIds = new List<int>();
+
+                    foreach (var configId in configs)
+                    {
+                        if (!oldConfigIds.Contains(configId)) // không chứa trong list cũ thì thêm vào ds cần thêm
+                        {
+                            addConfigIds.Add(configId); // thêm vào để xíu xử lý
+                        }// ngược lại => đã chứa trong list cũ => thì thôi :v => không làm gì cả
+                    }
+                    foreach (var configId in oldConfigIds)
+                    {
+                        if (!configs.Contains(configId)) // không chứa trong list mới thì thêm vào ds cần xóa
+                        {
+                            removeConfigIds.Add(configId);
+                            // Xóa productDetailedConfig luôn
+                            var productConfig = await _context.ProductDetailedConfigs.Include(pdc => pdc.Product).Where(pdc => pdc.ConfigId == configId && pdc.Product.CategoryId == category.Id).FirstOrDefaultAsync();
+                            if(productConfig != null)
+                                _context.Remove(productConfig);
+                        }
+                    }
+
+                    // Duyệt 2 ds cần thêm và cần xóa
+                    foreach (var item in addConfigIds)
+                    {
+                        var cdc = new CategoryDetailedConfig
+                        {
+                            CategoryId = category.Id,
+                            ConfigId = item,
+                        };
+                        await _context.CategoryDetailedConfigs.AddAsync(cdc);
+                        cdc.UpdateTime();
+                    }
+
+                    foreach (var item in removeConfigIds)
+                    {
+                        var cdc = await _context.CategoryDetailedConfigs.Where(cdc => cdc.ConfigId == item && cdc.CategoryId == category.Id).FirstOrDefaultAsync();
+                        if (cdc != null)
+                            _context.CategoryDetailedConfigs.Remove(cdc);
+                    }
                     await _context.SaveChangesAsync();
                 }
+
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!CategoryExists(category.Id))
@@ -132,8 +206,13 @@ namespace QuanLyKho.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), category);
             }
+
+            var selectedValues = _context.CategoryDetailedConfigs.Where(cdc => cdc.CategoryId == id).Select(cdc => cdc.ConfigId).ToList();
+
+            ViewData["Configurations"] = _context.DetailedConfigs;
+            ViewData["SelectedValues"] = selectedValues;
             return View(category);
         }
 

@@ -16,8 +16,9 @@ namespace QuanLyKho.Models.EntityConfigurations
 
             builder.HasOne(r => r.WareHouse)
                     .WithMany(w => w.Receipts)
-                    .HasForeignKey(p => p.WareHouseId)
+                    .HasForeignKey(r => r.WareHouseId)
                     .OnDelete(DeleteBehavior.Restrict);
+            
         }
     }
 }

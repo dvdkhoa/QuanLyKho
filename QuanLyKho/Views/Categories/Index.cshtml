@@ -13,12 +13,11 @@
     <table class="table">
         <thead>
             <tr>
+                <th>Icon</th>
                 <th>
                     @Html.DisplayNameFor(model => model.Name)
                 </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
+                
                 <th>
                     @Html.DisplayNameFor(model => model.Status)
                 </th>
@@ -30,11 +29,12 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Name)
+                        <img src="@item.Icon" >
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Description)
+                        @Html.DisplayFor(modelItem => item.Name)
                     </td>
+                    
                     <td>
                         @Html.DisplayFor(modelItem => item.Status)
                     </td>

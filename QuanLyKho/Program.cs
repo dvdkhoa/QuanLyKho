@@ -11,6 +11,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.Routing;
 using DinkToPdf.Contracts;
 using DinkToPdf;
+using AutoMapper;
+using QuanLyKho.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +74,9 @@ builder.Services.Configure<IdentityOptions>( options =>
 });
 
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
 builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IReceiptService, ReceiptService>();
@@ -101,9 +106,11 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
 
 app.Run();

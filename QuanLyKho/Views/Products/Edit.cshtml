@@ -1,4 +1,4 @@
-﻿@model QuanLyKho.Models.Entities.Product;
+﻿@model QuanLyKho.DTO.EditProductModel;
 @using QuanLyKho.Models.Entities;
 
 @{
@@ -10,6 +10,7 @@
 <section class="content pb-3">
     <div class="row">
         <div class="col-md-8 offset-2">
+            <div asp-validation-summary="All" class="text-danger"></div>
             <form asp-action="Edit" method="post">
                 <div class="card card-primary">
                     <div class="card-header">
@@ -58,6 +59,26 @@
                             <span asp-validation-for="CategoryId" class="text-danger"></span>
                         </div>
                         <div class="form-group">
+                            <label asp-for="Origin">Origin</label>
+                            <input asp-for="Origin" class="form-control">
+                            <span asp-validation-for="Origin" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Weight">Weight</label>
+                            <input asp-for="Weight" class="form-control">
+                            <span asp-validation-for="Weight" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Expiry">Expiry</label>
+                            <input asp-for="Expiry" type="date" class="form-control">
+                            <span asp-validation-for="Expiry" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ManufactoringDate">ManufacturingDate</label>
+                            <input asp-for="ManufactoringDate" type="date" class="form-control">
+                            <span asp-validation-for="ManufactoringDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
                             <label asp-for="Status">Status</label>
                             <select asp-for="Status" class="form-control custom-select">
                                 <option selected="" disabled="">Select one</option>
@@ -89,4 +110,5 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    @await Html.PartialAsync("_Summernote", new {height = 200, selector = "#Description"})
 }

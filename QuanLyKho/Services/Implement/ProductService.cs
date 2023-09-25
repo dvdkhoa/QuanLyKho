@@ -22,7 +22,7 @@ namespace QuanLyKho.Services.Implement
 
         public ProductInfoModel? getProductInfo(string productId)
         {
-            var product = _context.Products.Include(i => i.Category).FirstOrDefault(p => p.Id == productId);
+            var product = _context.Products.Include(i => i.Category).Include(p => p.ProductImages).FirstOrDefault(p => p.Id == productId);
 
             if (product is null)
                 return null;
@@ -41,8 +41,16 @@ namespace QuanLyKho.Services.Implement
                 Status = product.Status,
                 Supplier = product.Supplier,
                 Unit = product.Unit,
+                Origin = product.Origin,
+                Weight = product.Weight,
+                ManufacturingDate = product.ManufactoringDate,
+                CreatedTime = product.CreatedTime,
+                Expiry = product.Expiry,
+                PromotionPrice =product.PromotionPrice,
                 Quantity = quantity,
-                ProductWarehouses = productWareHouses
+                LastUpdated = product.LastUpdated,
+                ProductWarehouses = productWareHouses,
+                ProductImages = product.ProductImages
             };
 
             return productInfo;

@@ -44,6 +44,10 @@ namespace QuanLyKho.Models.EF
             builder.ApplyConfiguration(new NewConfiguration());
             builder.ApplyConfiguration(new PromotionConfiguration());
             builder.ApplyConfiguration(new ProductPromotionConfiguration());
+            builder.ApplyConfiguration(new CategoryDetailedConfigConfiguration());
+            builder.ApplyConfiguration(new DetailedConfigConfiguration());
+            builder.ApplyConfiguration(new ProductDetailedConfigConfiguration());
+
 
 
             // Cấu hình các bảng Identity
@@ -69,6 +73,19 @@ namespace QuanLyKho.Models.EF
         public DbSet<Receipt> Receipts { get; set; }
         public DbSet<ReceiptDetail> ReceiptDetails { get; set; }
         public DbSet<Staff> Staffs { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
+        public DbSet<ProductClassification> ProductClassifications { get; set; }
+        public DbSet<Classification> Classifications { get; set; }
+        public DbSet<DetailedConfig> DetailedConfigs { get; set; }
+        public DbSet<CategoryDetailedConfig> CategoryDetailedConfigs { get; set; }
+        public DbSet<ProductDetailedConfig> ProductDetailedConfigs { get; set; }
+        public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<ProductPromotion> ProductPromotions { get; set; }
+        public DbSet<New> News { get; set; }
+
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartDetail> CartDetails { get; set; }
+
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 using System.Text.Json.Serialization;
 
 namespace QuanLyKho.Models.Entities
@@ -12,12 +13,18 @@ namespace QuanLyKho.Models.Entities
         public string WareHouseId { get; set; }
 
         [JsonIgnore]
-        public WareHouse WareHouse { get; set; }
+        [InverseProperty("Receipts")]
+        public WareHouse? WareHouse { get; set; }
+
+        public string? DestinationWarehouseId { get; set; }
+
+        [ForeignKey("DestinationWarehouseId")]
+        public WareHouse? DestinationWarehouse { get; set; }
         public string StaffId { get; set; }
 
         [JsonIgnore]
-        public Staff Staff { get; set; }
-        public List<ReceiptDetail> ReceiptDetails { get; set; }
+        public Staff? Staff { get; set; }
+        public List<ReceiptDetail>? ReceiptDetails { get; set; }
 
         public Receipt()
         {

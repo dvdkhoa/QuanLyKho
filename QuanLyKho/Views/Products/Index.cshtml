@@ -27,7 +27,7 @@
             <thead>
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.Id)</th>
-                    <th>@Html.DisplayNameFor(model => model.Name)</th>
+                    <th class="w-50">@Html.DisplayNameFor(model => model.Name)</th>
                     <th>@(Html.DisplayNameFor(model => model.Price))(vnd)</th>
                     <th>Quantity</th>
                     <th>@Html.DisplayNameFor(model => model.Unit)</th>
@@ -37,6 +37,7 @@
             </thead>
             <tbody>
                 @foreach (var product in Model)
+
                 {
                     var productInfo = productService.getProductInfo(product.Id);
                     <tr>

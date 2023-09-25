@@ -76,6 +76,7 @@ namespace QuanLyKho.Controllers
             if (ModelState.IsValid)
             {
                 _context.Add(wareHouse);
+                wareHouse.UpdateTime();
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -116,6 +117,7 @@ namespace QuanLyKho.Controllers
             {
                 try
                 {
+                    wareHouse.UpdateTime();
                     _context.Update(wareHouse);
                     await _context.SaveChangesAsync();
                 }
@@ -146,6 +148,7 @@ namespace QuanLyKho.Controllers
                 return NotFound();
 
             warehouse.Status = Status.Hide;
+            warehouse.UpdateTime();
             await _context.SaveChangesAsync();
 
             return Ok();

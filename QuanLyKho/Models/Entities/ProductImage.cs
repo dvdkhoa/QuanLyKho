@@ -6,6 +6,7 @@
         public string ProductId { get; set; }
         public string Path { get; set; }
         public string? Description { get; set; }
+        public int? Order { get; set; }
         public DateTime CreatedTime { get; set; }
         public DateTime LastUpdated { get; set; }
         public Status Status { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using QuanLyKho.Models.Entities;
+using System.Globalization;
 
 namespace QuanLyKho.Extensions
 {
@@ -53,6 +54,19 @@ namespace QuanLyKho.Extensions
             string totalString = price.ToString("#,###", cul.NumberFormat);
 
             return totalString;
+        }
+
+        public static string ToCustomDateTimeStr(this DateTime dateTime)
+        {
+            return dateTime.ToString("dd/MM/yyyy - HH\\hmm");
+        }
+
+        public static Status ChangeStatus(this Status status)
+        {
+            if(status is Status.Hide)
+                return Status.Show;
+            else
+                return Status.Hide;
         }
     }
 }

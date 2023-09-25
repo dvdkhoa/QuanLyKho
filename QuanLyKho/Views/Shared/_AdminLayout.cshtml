@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dashboard</title>
+    <title>@ViewData["title"]</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -300,6 +300,27 @@
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link">
+                                        <i class="nav-icon fas fa-tools"></i>
+                                        <p>
+                                            Detail Configurations
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+                                        <li class="nav-item">
+                                            <a asp-action="Create" asp-controller="DetailConfiguration" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Add detail configurations</p>
+                                            </a>
+                                            <a asp-action="Index" asp-controller="DetailConfiguration" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>List detail configurations</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link">
                                         <i class="nav-icon fas fa-cookie-bite"></i>
                                         <p>
                                             Products
@@ -319,6 +340,29 @@
                                         </li>
                                     </ul>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link">
+                                        <i class="nav-icon fa-solid fa-percent"></i>
+                                        <p>
+                                            Promotions
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview" style="display: none;">
+                                        <li class="nav-item">
+                                            <a asp-action="Create" asp-controller="Promotions" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>Add promotion</p>
+                                            </a>
+                                            <a asp-action="Index" asp-controller="Promotions" class="nav-link">
+                                                <i class="far fa-circle nav-icon"></i>
+                                                <p>List promotions</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
                                 <li class="nav-item">
                                     <a class="nav-link" asp-action="Index" asp-controller="Receipts">
                                         <i class="nav-icon fas fa-receipt"></i>

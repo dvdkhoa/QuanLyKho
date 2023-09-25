@@ -20,3 +20,4 @@ namespace QuanLyKho.Models.EntityConfigurations
         }
     }
 }
+
