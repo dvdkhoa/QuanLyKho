@@ -29,7 +29,11 @@
             </tr>
             <tr>
                 <td>Warehouse</td>
-                <td>@(Model.Receipt.WareHouse.Name)(@Model.Receipt.WareHouseId)</td>
+                <td>@(Model.Receipt.WareHouse?.Name)(id: @Model.Receipt.WareHouseId)</td>
+            </tr>
+            <tr>
+                <td>Destination warehouse</td>
+                <td>@(Model.Receipt.DestinationWarehouse?.Name)(id: @Model.Receipt.DestinationWarehouseId)</td>
             </tr>
             <tr class="text-bold">
                 <td>*Total</td>

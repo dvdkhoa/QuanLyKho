@@ -36,6 +36,7 @@ namespace QuanLyKho.Services.Implement
             var receipt = await _context.Receipts
                .Include(r => r.Staff)
                .Include(r => r.WareHouse)
+               .Include(r=>r.DestinationWarehouse)
                .FirstOrDefaultAsync(m => m.Id == receiptId);
 
             ReceiptInfoModel receiptInfo = new ReceiptInfoModel

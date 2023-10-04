@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<QuanLyKho.Models.Entities.Product>
 @inject QuanLyKho.Services.IProductService productService
 @using QuanLyKho.Extensions
+@using QuanLyKho.Models.Entities
 
 @{
     ViewData["Title"] = "Index";
@@ -23,6 +24,27 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
+
+        <form asp-action="Index" method="get">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label>Display based on type:</label>
+                        <select class="form-control" id="display-select" asp-for="@ViewData["filter"]" name="filter">
+                            <option value="Show">Show</option>
+                            <option value="Hide">Hide</option>
+                            <option value="All">All</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-sm btn-app mt-3" id="filter-btn">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </div>
+        </form>
+
         <table id="example1" class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -30,8 +52,7 @@
                     <th class="w-50">@Html.DisplayNameFor(model => model.Name)</th>
                     <th>@(Html.DisplayNameFor(model => model.Price))(vnd)</th>
                     <th>Quantity</th>
-                    <th>@Html.DisplayNameFor(model => model.Unit)</th>
-                    
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -45,12 +66,12 @@
                         <td>@product.Name</td>
                         <td class="text-bold">@Helpers.PriceToVND(product.Price)</td>
                         <td>@productInfo.Quantity</td>
-                        <td>@product.Unit</td>
+                        <td>@product.Status</td>
                         <td class="text-center">
                             <a class="btn-sm btn-primary" asp-action="Details" asp-route-id="@product.Id"><i class="fas fa-info-circle"></i></a>
                             <a class="btn-sm btn-secondary" asp-action="Edit" asp-route-id="@product.Id"><i class="fas fa-tools"></i></a>
+                            <a class="btn-sm btn-outline-success border @(product.Status == Status.Show ? "border-success" : "")" asp-action="Display" asp-route-id="@product.Id"><i class="fa-solid fa-eye"></i></a>
                             <a class="btn-sm btn-danger btn-delete" data-id="@product.Id" role="button" ><i class="fas fa-trash"></i></a>
-
                             @*<a class="btn-sm btn-danger" data-toggle="modal" data-target="#modal-sm"><i class="fas fa-trash"></i></a>*@
                         </td>
                     </tr>

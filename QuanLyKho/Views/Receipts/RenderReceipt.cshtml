@@ -1,8 +1,9 @@
 ﻿@model QuanLyKho.Models.Entities.Receipt
 @using QuanLyKho.Extensions
+@using QuanLyKho.Models.Entities;
 @{
     Layout = null;
-    var title = Model.Type == QuanLyKho.Models.Entities.ReceiptType.Import ? "Phiếu nhập kho" : "Phiếu xuất kho";
+    var title = Model.Type == ReceiptType.Transfer ? "Transfer receipt" : Model.Type == ReceiptType.Import ? "Import receipt" : "Export receipt";
 }
 <!DOCTYPE html>
 <html>
@@ -19,17 +20,24 @@
                 <div class="card ">
                     <div class="card-header text-center">
                         <h1 class="card-title">@title</h1>
-                        <p class="card-subtitle mb-2 text-muted">Ngày nhập: @Model.DateCreated.ToShortDateString()</p>
+                        <p class="card-subtitle mb-2 text-muted">DateCreated: @Model.DateCreated.ToShortDateString()</p>
                     </div>
                     <div class="card-body px-5">
+                        <div class="d-flex flex-column justify-content-between">
+                            <h2>Warehouse: @Model.WareHouse?.Name</h2>
+                            @if (Model.Type == ReceiptType.Transfer)
+                            {
+                                <h2>Destination warehouse: @Model.DestinationWarehouse?.Name</h2>
+                            }
+                        </div>
                         <table class="table mt-3">
                             <thead>
                                 <tr>
-                                    <th>Mã hàng</th>
-                                    <th>Tên hàng</th>
-                                    <th>Số lượng</th>
-                                    <th>Đơn giá(vnd)</th>
-                                    <th>Thành tiền(vnd)</th>
+                                    <th>Product id</th>
+                                    <th>Product name</th>
+                                    <th>Quantity</th>
+                                    <th>Price(vnd)</th>
+                                    <th>Amount(vnd)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -44,7 +52,7 @@
                                     </tr>
                                 }
                                 <tr>
-                                    <td colspan="4" class="text-right font-weight-bold">Tổng tiền:</td>
+                                    <td colspan="4" class="text-right font-weight-bold">Total:</td>
                                     <td class="font-weight-bold">@(Model.getTotalPrice()) vnd</td>
                                 </tr>
                             </tbody>
@@ -56,10 +64,10 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr class="text-center">
-                                <td>Người lập phiếu<p>(ký tên, ghi rõ họ tên)</p></td>
-                                <td>Người giao hàng<p>(ký tên, ghi rõ họ tên)</p></td>
-                                <td>Thủ kho<p>(ký tên, ghi rõ họ tên)</p></td>
-                                <td>Kế toán trưởng<p>(ký tên, ghi rõ họ tên)</p></td>
+                                <td>Receipt creator<p>(Sign and write full name)</p></td>
+                                <td>Shipper<p>(Sign and write full name)</p></td>
+                                <td>Storekeeper<p>(Sign and write full name)</p></td>
+                                <td>Accountant<p>(Sign and write full name)</p></td>
                             </tr>
                         </thead>
                         <tbody>

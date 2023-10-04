@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using QuanLyKho.Extensions;
 using QuanLyKho.Models.EF;
 using QuanLyKho.Models.Entities;
 using QuanLyKho.Services;
@@ -27,12 +28,23 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: WareHouses
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string filter = "All")
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
-            return _context.WareHouses != null ?
-                          View(await _context.WareHouses.Where(warehouse => warehouse.Status == Status.Show).ToListAsync()) :
-                          Problem("Entity set 'AppDbContext.WareHouses'  is null.");
+
+            if(_context.WareHouses == null)
+                return Problem("Entity set 'AppDbContext.WareHouses'  is null.");
+
+            var warehouseQuery = _context.WareHouses.AsQueryable();
+
+            if (filter == "Show")
+                warehouseQuery = warehouseQuery.Where(w => w.Status == Status.Show).AsQueryable();
+            else if (filter == "Hide")
+                warehouseQuery = warehouseQuery.Where(w => w.Status == Status.Hide).AsQueryable();
+
+            ViewData["filter"] = filter;
+
+            return View(await warehouseQuery.ToListAsync());
         }
 
         // GET: WareHouses/Details/5
@@ -152,6 +164,24 @@ namespace QuanLyKho.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        public async Task<IActionResult> Display(string id)
+        {
+            var warehouse = await _context.WareHouses.FindAsync(id);
+            if (warehouse is null)
+                return NotFound();
+
+            warehouse.Status = warehouse.Status.ChangeStatus();
+            warehouse.UpdateTime();
+
+            int kq = await _context.SaveChangesAsync();
+            if (kq > 0)
+            {
+                return RedirectToAction("Index");
+
+            }
+            return BadRequest();
         }
 
         //// GET: WareHouses/Delete/5

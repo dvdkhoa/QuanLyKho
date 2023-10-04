@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuanLyKho.Models.EF;
 
@@ -11,9 +12,10 @@ using QuanLyKho.Models.EF;
 namespace QuanLyKho.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230930133259_allow_null_image_news")]
+    partial class allow_null_image_news
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,7 +238,7 @@ namespace QuanLyKho.Migrations
                     b.HasIndex("CustomerId")
                         .IsUnique();
 
-                    b.ToTable("Carts", (string)null);
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.CartDetail", b =>
@@ -275,7 +277,7 @@ namespace QuanLyKho.Migrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("CartDetails", (string)null);
+                    b.ToTable("CartDetails");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Category", b =>
@@ -307,7 +309,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.CategoryDetailedConfig", b =>
@@ -339,7 +341,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasIndex("ConfigId");
 
-                    b.ToTable("CategoryDetailedConfigs", (string)null);
+                    b.ToTable("CategoryDetailedConfigs");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Classification", b =>
@@ -369,7 +371,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Classifications", (string)null);
+                    b.ToTable("Classifications");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Customer", b =>
@@ -417,7 +419,7 @@ namespace QuanLyKho.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Customer", (string)null);
+                    b.ToTable("Customer");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.DetailedConfig", b =>
@@ -437,7 +439,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DetailedConfigs", (string)null);
+                    b.ToTable("DetailedConfigs");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.New", b =>
@@ -470,7 +472,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("News", (string)null);
+                    b.ToTable("News");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Order", b =>
@@ -534,7 +536,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("Order", (string)null);
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.OrderDetail", b =>
@@ -573,7 +575,7 @@ namespace QuanLyKho.Migrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("OrderDetail", (string)null);
+                    b.ToTable("OrderDetail");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Product", b =>
@@ -631,7 +633,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.ProductClassification", b =>
@@ -655,7 +657,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductClassifications", (string)null);
+                    b.ToTable("ProductClassifications");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.ProductDetailedConfig", b =>
@@ -682,7 +684,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductDetailedConfigs", (string)null);
+                    b.ToTable("ProductDetailedConfigs");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.ProductImage", b =>
@@ -720,7 +722,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages", (string)null);
+                    b.ToTable("ProductImages");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.ProductPromotion", b =>
@@ -735,7 +737,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasIndex("PromotionId");
 
-                    b.ToTable("ProductPromotions", (string)null);
+                    b.ToTable("ProductPromotions");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.ProductWareHouse", b =>
@@ -772,7 +774,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasIndex("WareHouseId");
 
-                    b.ToTable("ProductWareHouses", (string)null);
+                    b.ToTable("ProductWareHouses");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Promotion", b =>
@@ -813,7 +815,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Promotions", (string)null);
+                    b.ToTable("Promotions");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Receipt", b =>
@@ -852,7 +854,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasIndex("WareHouseId");
 
-                    b.ToTable("Receipts", (string)null);
+                    b.ToTable("Receipts");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.ReceiptDetail", b =>
@@ -882,7 +884,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasIndex("ReceiptId");
 
-                    b.ToTable("ReceiptDetails", (string)null);
+                    b.ToTable("ReceiptDetails");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Staff", b =>
@@ -936,7 +938,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasIndex("WareHouseId");
 
-                    b.ToTable("Staffs", (string)null);
+                    b.ToTable("Staffs");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.WareHouse", b =>
@@ -965,7 +967,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("WareHouses", (string)null);
+                    b.ToTable("WareHouses");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

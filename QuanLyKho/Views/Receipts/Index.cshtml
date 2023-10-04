@@ -44,7 +44,7 @@
                         <td>@receipt.Type</td>
                         <td class="text-center">
                             <a class="btn-sm btn-primary" asp-action="Details" asp-route-id="@receipt.Id"><i class="fas fa-info-circle"></i></a>
-                            <a class="btn-sm btn-secondary" asp-action="Edit" asp-route-id="@receipt.Id"><i class="fas fa-tools"></i></a>
+                            @*<a class="btn-sm btn-secondary" asp-action="Edit" asp-route-id="@receipt.Id"><i class="fas fa-tools"></i></a>*@
                             <a style="cursor: pointer" class="btn-sm btn-danger btn-delete" data-id="@receipt.Id">
                                 <i class="fas fa-trash"></i>
                             </a>

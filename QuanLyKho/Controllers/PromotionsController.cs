@@ -51,6 +51,8 @@ namespace QuanLyKho.Controllers
                 return NotFound();
 
             promotion.Status = promotion.Status.ChangeStatus();
+            promotion.UpdateTime();
+
             int kq = await _context.SaveChangesAsync();
             if (kq > 0)
             {

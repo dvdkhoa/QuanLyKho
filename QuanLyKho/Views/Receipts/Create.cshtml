@@ -38,7 +38,10 @@
                                 <option selected="" disabled="">Select one</option>
                                 @foreach (ReceiptType type in Enum.GetValues(typeof(ReceiptType)))
                                 {
-                                    <option value="@type">@type.ToString()</option>
+                                    if (type != ReceiptType.Transfer)
+                                    {
+                                        <option value="@type">@type.ToString()</option>
+                                    }
                                 }
                             </select>
                             <span asp-validation-for="Type" class="text-danger"></span>

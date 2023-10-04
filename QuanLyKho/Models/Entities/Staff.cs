@@ -18,7 +18,7 @@ namespace QuanLyKho.Models.Entities
         public DateTime CreatedTime { get; set; }
         public DateTime LastUpdated { get; set; }
 
-        public List<Order> Orders { get; set; }
+        public List<Order>? Orders { get; set; }
 
 
         [JsonIgnore]
@@ -29,6 +29,14 @@ namespace QuanLyKho.Models.Entities
         public Staff()
         {
             this.Status = Status.Show;
+        }
+
+
+        // Khi tạo mới hoặc chỉnh sửa thì gọi
+        public void UpdateTime()
+        {
+            this.CreatedTime = DateTime.Now;
+            this.LastUpdated = DateTime.Now;
         }
     }
 }

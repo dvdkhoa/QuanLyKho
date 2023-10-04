@@ -22,13 +22,17 @@ namespace QuanLyKho.Services.Implement
 
         public ProductInfoModel? getProductInfo(string productId)
         {
-            var product = _context.Products.Include(i => i.Category).Include(p => p.ProductImages).FirstOrDefault(p => p.Id == productId);
+            var product = _context.Products.Include(i => i.Category)
+                                        .Include(p => p.ProductImages)
+                                        .FirstOrDefault(p => p.Id == productId);
 
             if (product is null)
                 return null;
 
             int quantity = this.GetProductQuantity(productId);
-            List<ProductWareHouse> productWareHouses = _context.ProductWareHouses.Where(pw => pw.ProductId == productId).ToList();
+            List<ProductWareHouse> productWareHouses = _context.ProductWareHouses
+                                                                .Include(pw=>pw.WareHouse)
+                                                                .Where(pw => pw.ProductId == productId).ToList();
 
             var productInfo = new ProductInfoModel
             {

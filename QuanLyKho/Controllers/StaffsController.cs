@@ -30,7 +30,7 @@ namespace QuanLyKho.Controllers
         private readonly ILogger<StaffsController> _logger;
         private readonly IEmailSender _emailSender;
 
-        public StaffsController(AppDbContext context, IStaffService staffService, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager,ILogger<StaffsController> logger, IEmailSender emailSender)
+        public StaffsController(AppDbContext context, IStaffService staffService, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, ILogger<StaffsController> logger, IEmailSender emailSender)
         {
             _context = context;
             _staffService = staffService;
@@ -41,10 +41,21 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Staffs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string filter = "All")
         {
-            var appDbContext = _context.Staffs.Where(staff => staff.Status == Status.Show).Include(s => s.User).Include(s => s.WareHouse);
-            return View(await appDbContext.ToListAsync());
+            if (_context.Staffs == null)
+                return Problem("Entity set 'AppDbContext.Staffs'  is null.");
+
+            var staffQuery = _context.Staffs.AsQueryable();
+
+            if (filter == "Show")
+                staffQuery = staffQuery.Where(c => c.Status == Status.Show).AsQueryable();
+            else if (filter == "Hide")
+                staffQuery = staffQuery.Where(c => c.Status == Status.Hide).AsQueryable();
+
+            ViewData["filter"] = filter;
+
+            return View(await staffQuery.ToListAsync());
         }
 
         // GET: Staffs/Details/5
@@ -80,9 +91,9 @@ namespace QuanLyKho.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,DateOfBirth,Gender, Email, PhoneNumber,Address,StartDay,WareHouseId,UserId")] Staff staff)
+        public async Task<IActionResult> Create(Staff staff) //[Bind("Name,DateOfBirth,Gender, Email, PhoneNumber,Address,StartDay,WareHouseId,UserId, ")] 
         {
-            using(var transaction = _context.Database.BeginTransaction())
+            using (var transaction = _context.Database.BeginTransaction())
             {
                 ModelState.Remove("Id");
 
@@ -93,11 +104,11 @@ namespace QuanLyKho.Controllers
                     if (result)
                     {
                         var result_CreateUser = await this.CreateUserAsync(staff);
-                        if(result_CreateUser)
+                        if (result_CreateUser)
                         {
                             transaction.Commit();
                             return RedirectToAction(nameof(Index));
-                        }    
+                        }
                         transaction.Rollback();
                     }
                 }
@@ -130,7 +141,7 @@ namespace QuanLyKho.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,Name,DateOfBirth,Gender,PhoneNumber,Address,StartDay,WareHouseId,UserId")] Staff staff)
+        public async Task<IActionResult> Edit(string id, Staff staff)
         {
             if (id != staff.Id)
             {
@@ -196,14 +207,34 @@ namespace QuanLyKho.Controllers
             {
                 _context.Staffs.Remove(staff);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+
+        public async Task<IActionResult> Display(string id)
+        {
+            var staff = await _context.Staffs.FindAsync(id);
+            if (staff is null)
+                return NotFound();
+
+            staff.Status = staff.Status.ChangeStatus();
+            staff.UpdateTime();
+
+            int kq = await _context.SaveChangesAsync();
+            if (kq > 0)
+            {
+                return RedirectToAction("Index");
+
+            }
+            return BadRequest();
+        }
+
+
         private bool StaffExists(string id)
         {
-          return (_context.Staffs?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Staffs?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
 

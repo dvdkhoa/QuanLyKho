@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CloudinaryDotNet;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using Microsoft.EntityFrameworkCore;
 using QuanLyKho.Extensions;
 using QuanLyKho.Models.EF;
@@ -28,13 +21,23 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string filter = "All")
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
 
-            return _context.Categories != null ?
-                          View("Index1", await _context.Categories.Where(cate => cate.Status == Status.Show).ToListAsync()) :
-                          Problem("Entity set 'AppDbContext.Categories'  is null.");
+            if (_context.Categories == null)
+                return Problem("Entity set 'AppDbContext.Categories'  is null.");
+
+            var categoryQuery = _context.Categories.AsQueryable();
+
+            if (filter == "Show")
+                categoryQuery = categoryQuery.Where(c => c.Status == Status.Show).AsQueryable();
+            else if (filter == "Hide")
+                categoryQuery = categoryQuery.Where(c => c.Status == Status.Hide).AsQueryable();
+
+            ViewData["filter"] = filter;
+
+            return View(await categoryQuery.ToListAsync());
         }
 
         // GET: Categories/Details/5
@@ -234,6 +237,7 @@ namespace QuanLyKho.Controllers
             return Ok();
         }
 
+
         //// GET: Categories/Delete/5
         //public async Task<IActionResult> Delete(int? id)
         //{
@@ -273,6 +277,26 @@ namespace QuanLyKho.Controllers
         //    await _context.SaveChangesAsync();
         //    return RedirectToAction(nameof(Index));
         //}
+
+
+
+        public async Task<IActionResult> Display(int id)
+        {
+            var category = await _context.Categories.FindAsync(id);
+            if (category is null)
+                return NotFound();
+
+            category.Status = category.Status.ChangeStatus();
+            category.UpdateTime();
+
+            int kq = await _context.SaveChangesAsync();
+            if (kq > 0)
+            {
+                return RedirectToAction("Index");
+
+            }
+            return BadRequest();
+        }
 
         private bool CategoryExists(int id)
         {

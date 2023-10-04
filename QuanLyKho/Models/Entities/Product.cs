@@ -33,5 +33,12 @@
             this.Status = Status.Show;
         }
 
+
+        // Khi tạo mới hoặc chỉnh sửa thì gọi
+        public void UpdateTime()
+        {
+            this.CreatedTime = DateTime.Now;
+            this.LastUpdated = DateTime.Now;
+        }
     }
 }

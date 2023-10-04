@@ -14,9 +14,9 @@ namespace QuanLyKho.Models.EntityConfigurations
 
             builder.Property(cate => cate.Status).IsRequired();
 
-            builder.HasOne(t=>t.User).WithOne()
-                    .HasForeignKey<Customer>(t=>t.UserId)
+            builder.HasOne(t => t.User).WithOne()
+                    .HasForeignKey<Customer>(t => t.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
-            }
+        }
     }
 }

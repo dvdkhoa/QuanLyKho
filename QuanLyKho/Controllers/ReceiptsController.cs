@@ -70,9 +70,9 @@ namespace QuanLyKho.Controllers
         // GET: Receipts/Create
         public IActionResult Create()
         {
-            ViewData["StaffId"] = new SelectList(_context.Staffs, "Id", "Id");
-            ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id");
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
+            ViewData["StaffId"] = new SelectList(_context.Staffs.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
+            ViewData["WareHouseId"] = new SelectList(_context.WareHouses.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
+            ViewData["ProductId"] = new SelectList(_context.Products.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
 
             return View();
         }
@@ -90,9 +90,9 @@ namespace QuanLyKho.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StaffId"] = new SelectList(_context.Staffs, "Id", "Id", receipt.StaffId);
-            ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id", receipt.WareHouseId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
+            ViewData["StaffId"] = new SelectList(_context.Staffs.Where(w => w.Status == Status.Show).ToList(), "Id", "Id", receipt.StaffId);
+            ViewData["WareHouseId"] = new SelectList(_context.WareHouses.Where(w => w.Status == Status.Show).ToList(), "Id", "Id", receipt.WareHouseId);
+            ViewData["ProductId"] = new SelectList(_context.Products.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
             return View(receipt);
         }
 
@@ -322,7 +322,7 @@ namespace QuanLyKho.Controllers
                             return View("Create", receipt);
                         }
                         // Thực hiện cập nhật ProductWarehouse
-                        var productWareHouseExist = _context.ProductWareHouses.FirstOrDefault(pw => pw.ProductId == i.ProductId);
+                        var productWareHouseExist = _context.ProductWareHouses.FirstOrDefault(pw => pw.ProductId == i.ProductId && pw.WareHouseId == receipt.WareHouseId);
                         if (productWareHouseExist != null) // Kiểm tra xem trong ProductWarehouse đã tồn tại sản phẩm này chưa, nếu đã tồn tại thì cập nhật lại quantity
                         {
                             productWareHouseExist.Quantity -= i.Quantity;
@@ -355,6 +355,7 @@ namespace QuanLyKho.Controllers
             var receipt = await _context.Receipts
                                         .Include(r => r.Staff)
                                         .Include(r => r.WareHouse)
+                                        .Include(r => r.DestinationWarehouse)
                                         .FirstOrDefaultAsync(r => r.Id == id);
             if (receipt == null)
                 return BadRequest();
@@ -367,18 +368,18 @@ namespace QuanLyKho.Controllers
         public async Task<IActionResult> ExportReceipt(int id)
         {
             var receipt = _context.Receipts.Include(r => r.ReceiptDetails).FirstOrDefault(r => r.Id == id);
-            if(receipt == null)
-                return NotFound(); 
+            if (receipt == null)
+                return NotFound();
 
             var stylesPath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "lib", "bootstrap", "dist", "css", "bootstrap.css");
-            var doc = new HtmlToPdfDocument() 
+            var doc = new HtmlToPdfDocument()
             {
                 GlobalSettings = {
                     ColorMode = ColorMode.Color,
                     Orientation = Orientation.Portrait,
                     PaperSize = DinkToPdf.PaperKind.A4,
                     Margins = new MarginSettings() { Top = 10, Bottom=20, Left=20, Right=20 },
-                },  
+                },
                 Objects = {
                             new ObjectSettings()
                             {
@@ -562,6 +563,112 @@ namespace QuanLyKho.Controllers
                             </html>");
 
             return sb.ToString();
+        }
+
+
+        public IActionResult CreateTransferReceipt()
+        {
+            ViewData["StaffId"] = new SelectList(_context.Staffs, "Id", "Id");
+            ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id");
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
+
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> CreateTransferReceipt(Receipt receipt, List<string>? ProductIds, List<int>? productQuantitys)
+        {
+            if (receipt == null || ProductIds is null)
+                return BadRequest();
+
+            List<ReceiptDetail> _receiptDetails = new List<ReceiptDetail>();
+
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                if (ProductIds != null && productQuantitys != null)
+                {
+                    if (ProductIds.Count == productQuantitys.Count)
+                    {
+                        Dictionary<string, int> productsInStock = new Dictionary<string, int>();
+
+                        for (int i = 0; i < ProductIds.Count; i++)
+                        {
+                            productsInStock.Add(ProductIds[i], productQuantitys[i]);
+                        }
+
+                        var receiptDetails = productsInStock.Select(i => new ReceiptDetail
+                        {
+                            ProductId = i.Key,
+                            Quantity = i.Value,
+                        });
+
+                        _receiptDetails.AddRange(receiptDetails);
+                    }
+                }
+                _context.Add(receipt);
+                _context.SaveChanges();
+
+                List<ProductWareHouse> _productWareHouses = new List<ProductWareHouse>();
+
+                foreach (var i in _receiptDetails)
+                {
+                    i.ReceiptId = receipt.Id;
+
+                    // Check số lượng hợp lệ hay không
+                    var isValid = _productService.CheckQuantityValid(receipt.WareHouseId, i.ProductId, i.Quantity);
+                    if (!isValid)
+                    {
+                        transaction.Rollback();
+                        ModelState.AddModelError("", $"Product {i.ProductId} in warehouse ({receipt.WareHouseId}) has quantity less than quantity you want transfer");
+                        ViewData["StaffId"] = new SelectList(_context.Staffs, "Id", "Id");
+                        ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id");
+                        ViewData["ProductId"] = new MultiSelectList(_context.Products, "Id", "Id", ProductIds);
+                        return View("CreateTransferReceipt", receipt);
+                    }
+                    // Thực hiện cập nhật ls ProductWarehouse cho kho lấy hàng trước
+                    var productWareHouseExist = _context.ProductWareHouses.FirstOrDefault(pw => pw.ProductId == i.ProductId && pw.WareHouseId == receipt.WareHouseId);
+                    if (productWareHouseExist != null) // Kiểm tra xem trong ProductWarehouse đã tồn tại sản phẩm này chưa, nếu đã tồn tại thì cập nhật lại quantity
+                    {
+                        productWareHouseExist.Quantity -= i.Quantity;
+
+                        // sau đó cập nhật sl productWarehouse cho kho đích đến
+                        var destinationProductWarehouseExist = _context.ProductWareHouses.FirstOrDefault(pw => pw.ProductId == i.ProductId && pw.WareHouseId == receipt.DestinationWarehouseId);
+                        if (destinationProductWarehouseExist != null)
+                        {
+                            destinationProductWarehouseExist.Quantity += i.Quantity;
+                        }
+                        else // kho này chưa có hàng này (thêm mới productWarehouse cho kho này)
+                        {
+                            var newProductWarehouse = new ProductWareHouse
+                            {
+                                ProductId = i.ProductId,
+                                WareHouseId = receipt.DestinationWarehouseId,
+                                Quantity = i.Quantity,
+                                Status = Status.Show,
+                            };
+                            newProductWarehouse.UpdateTime();
+                            await _context.ProductWareHouses.AddAsync(newProductWarehouse);
+                        }
+                    }
+                    else // có lỗi gì đó xảy ra
+                    {
+                        transaction.Rollback();
+                        ModelState.AddModelError("", "Error");
+                        ViewData["StaffId"] = new SelectList(_context.Staffs, "Id", "Id");
+                        ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id");
+                        ViewData["ProductId"] = new MultiSelectList(_context.Products, "Id", "Id", ProductIds);
+                        return View("CreateTransferReceipt", receipt);
+                    }
+                }
+
+                await _context.ReceiptDetails.AddRangeAsync(_receiptDetails);
+                await _context.SaveChangesAsync();
+
+                transaction.Commit();
+
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }

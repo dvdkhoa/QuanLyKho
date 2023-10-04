@@ -3,6 +3,7 @@
     public enum ReceiptType
     {
         Export,
-        Import
+        Import,
+        Transfer
     }
 }

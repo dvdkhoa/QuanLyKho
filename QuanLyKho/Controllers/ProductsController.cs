@@ -30,11 +30,19 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string filter = "All")
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
-            var appDbContext = _context.Products.Where(product => product.Status == Status.Show).Include(p => p.Category);
-            return View(await appDbContext.ToListAsync());
+
+            var productsQuery = _context.Products.Include(p => p.Category).AsQueryable();
+
+            if (filter == "Show")
+                productsQuery = productsQuery.Where(product => product.Status == Status.Show).AsQueryable();
+            else if (filter == "Hide")
+                productsQuery = productsQuery.Where(product => product.Status == Status.Hide).AsQueryable();
+
+            ViewBag.filter = filter;
+            return View(await productsQuery.ToListAsync());
         }
 
         // GET: Products/Details/5
@@ -209,6 +217,24 @@ namespace QuanLyKho.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        public async Task<IActionResult> Display(string id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product is null)
+                return NotFound();
+
+            product.Status = product.Status.ChangeStatus();
+            product.UpdateTime();
+
+            int kq = await _context.SaveChangesAsync();
+            if (kq > 0)
+            {
+                return RedirectToAction("Index");
+
+            }
+            return BadRequest();
         }
 
 
@@ -411,6 +437,15 @@ namespace QuanLyKho.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("ProductConfigs", new { id = productId });
+        }
+
+
+       
+        public async Task<IActionResult> GetProductByWarehouseId(string id)
+        {
+            var products = await _context.ProductWareHouses.Include(pw => pw.Product).Where(pw => pw.WareHouseId == id).Select(pw=>pw.Product).ToListAsync();
+
+            return Ok(products);
         }
 
 

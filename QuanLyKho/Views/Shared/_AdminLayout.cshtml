@@ -184,9 +184,9 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a asp-action="Index" asp-controller="Home" class="brand-link">
+            <a asp-action="Index" asp-controller="Home" class="brand-link pr">
                 <img src="~/admin/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">Inventory management</span>
+                <span class="brand-text font-weight-light">Managements</span>
             </a>
 
             <!-- Sidebar -->
@@ -214,7 +214,7 @@
                 </div>
 
                 <!-- Sidebar Menu -->
-                <nav class="mt-2">
+                <nav class="mt-2 pb-5">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                             with font-awesome or any other icon font library -->
@@ -226,7 +226,7 @@
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
-                            <ul class="nav nav-treeview">
+                            <ul class="nav-treeview">
                                 @* <li class="nav-item">
                                 <a href="./index.html" class="nav-link active">
                                 <i class="far fa-circle nav-icon"></i>
@@ -242,7 +242,7 @@
                                 <i class="right fas fa-angle-left"></i>
                                 </p>
                                 </a>
-                                <ul class="nav nav-treeview" style="display: none;">
+                                <ul class="nav-treeview ml-3" style="display: none;">
                                 <li class="nav-item">
                                 <a href="pages/charts/chartjs.html" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
@@ -262,16 +262,16 @@
                                             <i class="right fas fa-angle-left"></i>
                                         </p>
                                     </a>
-                                    <ul class="nav nav-treeview" style="display: none;">
+                                    <ul class="nav-treeview ml-3" style="display: none;">
                                         <li class="nav-item">
                                             <a class="nav-link" asp-action="Create" asp-controller="Warehouses">
-                                                <i class="far fa-circle nav-icon"></i>
+                                                <i class="far fa-plus nav-icon"></i>
                                                 <p>Add warehouse</p>
                                             </a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" asp-action="Index" asp-controller="Warehouses">
-                                                <i class="far fa-circle nav-icon"></i>
+                                                <i class="fa-solid fa-list nav-icon"></i>
                                                 <p>List warehouses</p>
                                             </a>
                                         </li>
@@ -285,14 +285,14 @@
                                             <i class="right fas fa-angle-left"></i>
                                         </p>
                                     </a>
-                                    <ul class="nav nav-treeview" style="display: none;">
+                                    <ul class="nav-treeview ml-3" style="display: none;">
                                         <li class="nav-item">
                                             <a asp-action="Create" asp-controller="Categories" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
+                                                <i class="far fa-plus nav-icon"></i>
                                                 <p>Add category</p>
                                             </a>
                                             <a asp-action="Index" asp-controller="Categories" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
+                                                <i class="fa-solid fa-list nav-icon"></i>
                                                 <p>List categories</p>
                                             </a>
                                         </li>
@@ -306,14 +306,14 @@
                                             <i class="right fas fa-angle-left"></i>
                                         </p>
                                     </a>
-                                    <ul class="nav nav-treeview" style="display: none;">
+                                    <ul class="nav-treeview ml-3" style="display: none;">
                                         <li class="nav-item">
                                             <a asp-action="Create" asp-controller="DetailConfiguration" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
+                                                <i class="far fa-plus nav-icon"></i>
                                                 <p>Add detail configurations</p>
                                             </a>
                                             <a asp-action="Index" asp-controller="DetailConfiguration" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
+                                                <i class="fa-solid fa-list nav-icon"></i>
                                                 <p>List detail configurations</p>
                                             </a>
                                         </li>
@@ -327,14 +327,14 @@
                                             <i class="right fas fa-angle-left"></i>
                                         </p>
                                     </a>
-                                    <ul class="nav nav-treeview" style="display: none;">
+                                    <ul class="nav-treeview ml-3" style="display: none;">
                                         <li class="nav-item">
                                             <a asp-action="Create" asp-controller="Products" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
+                                                <i class="far fa-plus nav-icon"></i>
                                                 <p>Add product</p>
                                             </a>
                                             <a asp-action="Index" asp-controller="Products" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
+                                                <i class="fa-solid fa-list nav-icon"></i>
                                                 <p>List products</p>
                                             </a>
                                         </li>
@@ -349,14 +349,14 @@
                                             <i class="right fas fa-angle-left"></i>
                                         </p>
                                     </a>
-                                    <ul class="nav nav-treeview" style="display: none;">
+                                    <ul class="nav-treeview ml-3" style="display: none;">
                                         <li class="nav-item">
                                             <a asp-action="Create" asp-controller="Promotions" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
+                                                <i class="far fa-plus nav-icon"></i>
                                                 <p>Add promotion</p>
                                             </a>
                                             <a asp-action="Index" asp-controller="Promotions" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
+                                                <i class="fa-solid fa-list nav-icon"></i>
                                                 <p>List promotions</p>
                                             </a>
                                         </li>
@@ -364,13 +364,51 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-action="Index" asp-controller="Receipts">
+                                    <a class="nav-link">
+                                        <i class="nav-icon fa-solid fa-percent"></i>
+                                        <p>
+                                            News
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav-treeview ml-3" style="display: none;">
+                                        <li class="nav-item">
+                                            <a asp-action="Create" asp-controller="News" class="nav-link">
+                                                <i class="far fa-plus nav-icon"></i>
+                                                <p>Add new</p>
+                                            </a>
+                                            <a asp-action="Index" asp-controller="News" class="nav-link">
+                                                <i class="fa-solid fa-list nav-icon"></i>
+                                                <p>List news</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link" >
                                         <i class="nav-icon fas fa-receipt"></i>
                                         <p>
                                             Receipts
-                                            @*<span class="right badge badge-danger">New</span>*@
+                                            <i class="right fas fa-angle-left"></i>
                                         </p>
                                     </a>
+                                    <ul class="nav-treeview ml-3 ml-3" style="display: none;">
+                                        <li class="nav-item">
+                                            <a class="nav-link" asp-action="Index" asp-controller="Receipts">
+                                                <i class="fa-solid fa-list nav-icon"></i>
+                                                <p>List receipts</p>
+                                            </a>
+                                            <a class="nav-link" asp-action="Create" asp-controller="Receipts">
+                                                <i class="far fa-plus nav-icon"></i>
+                                                <p>Create receipt</p>
+                                            </a>
+                                            <a class="nav-link" asp-action="CreateTransferReceipt" asp-controller="Receipts">
+                                                <i class="fa-solid fa-right-left nav-icon"></i>
+                                                <p>Create transfer receipt</p>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
                                 @if (this.User.IsInRole("Admin"))
                                 {
@@ -382,14 +420,14 @@
                                                 <i class="right fas fa-angle-left"></i>
                                             </p>
                                         </a>
-                                        <ul class="nav nav-treeview" style="display: none;">
+                                        <ul class="nav-treeview ml-3" style="display: none;">
                                             <li class="nav-item">
                                                 <a asp-action="Create" asp-controller="Staffs" class="nav-link">
-                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <i class="far fa-plus nav-icon"></i>
                                                     <p>Add staff</p>
                                                 </a>
                                                 <a asp-action="Index" asp-controller="Staffs" class="nav-link">
-                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <i class="fa-solid fa-list nav-icon"></i>
                                                     <p>List staffs</p>
                                                 </a>
                                             </li>
@@ -404,16 +442,16 @@
                                             <i class="right fas fa-angle-left"></i>
                                         </p>
                                     </a>
-                                    <ul class="nav nav-treeview" style="display: none;">
+                                    <ul class="nav-treeview ml-3" style="display: none;">
                                         <li class="nav-item">
                                             <a asp-action="Index" asp-controller="Statistic" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
+                                                <i class="fa-solid fa-chart-simple nav-icon"></i>
                                                 <p>Receipt Statistic</p>
                                             </a>
                                         </li>
                                         <li class="nav-item">
                                             <a asp-controller="Statistic" asp-action="ProductStatistic" class="nav-link">
-                                                <i class="far fa-circle nav-icon"></i>
+                                                <i class="fa-solid fa-chart-column nav-icon"></i>
                                                 <p>Product Statistic</p>
                                             </a>
                                         </li>
@@ -429,10 +467,10 @@
                                                 <i class="right fas fa-angle-left"></i>
                                             </p>
                                         </a>
-                                        <ul class="nav nav-treeview" style="display: none;">
+                                        <ul class="nav-treeview ml-3" style="display: none;">
                                             <li class="nav-item">
                                                 <a asp-area="Admin" asp-page="/User/Index" class="nav-link">
-                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <i class="fa-solid fa-list nav-icon"></i>
                                                     <p>List accounts</p>
                                                 </a>
                                             </li>
@@ -446,14 +484,14 @@
                                                 <i class="right fas fa-angle-left"></i>
                                             </p>
                                         </a>
-                                        <ul class="nav nav-treeview" style="display: none;">
+                                        <ul class="nav-treeview ml-3" style="display: none;">
                                             <li class="nav-item">
                                                 <a asp-area="Admin" asp-Page="/Role/Create" class="nav-link">
                                                     <i class="far fa-circle nav-icon"></i>
                                                     <p>Add role</p>
                                                 </a>
                                                 <a asp-area="Admin" asp-Page="/Role/Index" class="nav-link">
-                                                    <i class="far fa-circle nav-icon"></i>
+                                                    <i class="fa-solid fa-list nav-icon"></i>
                                                     <p>List roles</p>
                                                 </a>
                                             </li>
