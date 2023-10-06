@@ -33,4 +33,10 @@ namespace QuanLyKho.Models.Entities
             this.LastUpdated = DateTime.Now;
         }
     }
+
+    public enum WarehouseType
+    {
+        Warehouse,
+        Store
+    }
 }

@@ -8,7 +8,7 @@
 
 
 
-<section class="content">
+<section class="content pb-3">
     <form asp-action="Create" method="post">
         <div class="row">
             <div class="col-md-8 offset-2">
@@ -23,10 +23,19 @@
                     </div>
                     <div class="card-body" style="display: block;">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="form-group">
+                        @*<div class="form-group">
                             <label asp-for="Id">ID</label>
                             <input asp-for="Id" type="text" class="form-control">
                             <span asp-validation-for="Id" class="text-danger"></span>
+                        </div>*@
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select class="form-control custom-select" name="type">
+                                @foreach (WarehouseType type in Enum.GetValues(typeof(WarehouseType)))
+                                {
+                                    <option value="@type.ToString()">@type.ToString()</option>
+                                }
+                            </select>
                         </div>
                         <div class="form-group">
                             <label asp-for="Name">Name</label>
@@ -43,17 +52,14 @@
                             <textarea asp-for="Address" class="form-control" rows="4"></textarea>
                             <span asp-validation-for="Address" class="text-danger"></span>
                         </div>
+                        <div class="">
+                            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                            <input type="submit" value="Create new Warehouse" class="btn btn-success float-right">
+                        </div>
                     </div>
                     <!-- /.card-body -->
                 </div>
                 <!-- /.card -->
-            </div>
-
-        </div>
-        <div class="row">
-            <div class="col-md-8 offset-2">
-                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-                <input type="submit" value="Create new Warehouse" class="btn btn-success float-right">
             </div>
         </div>
     </form>

@@ -7,7 +7,7 @@ using QuanLyKho.Models.Entities;
 
 namespace QuanLyKho.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Storekeeper")]
     public class CategoriesController : Controller
     {
         private readonly AppDbContext _context;

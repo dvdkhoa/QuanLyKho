@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,6 +13,7 @@ using QuanLyKho.Models.Entities;
 
 namespace QuanLyKho.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class NewsController : Controller
     {
         private readonly AppDbContext _context;

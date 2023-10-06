@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyKho.Models.EF;
@@ -6,6 +7,7 @@ using QuanLyKho.Models.Entities;
 
 namespace QuanLyKho.Controllers
 {
+    [Authorize(Roles = "Admin,Storekeeper")]
     public class DetailConfigurationController : Controller
     {
         private readonly AppDbContext _context;

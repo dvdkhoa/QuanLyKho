@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace QuanLyKho.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Manager")]
     public class StaffsController : Controller
     {
         private readonly AppDbContext _context;

@@ -13,7 +13,7 @@ using QuanLyKho.Services;
 
 namespace QuanLyKho.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Manager,Storekeeper")]
     public class WareHousesController : Controller
     {
         private readonly AppDbContext _context;
@@ -32,7 +32,7 @@ namespace QuanLyKho.Controllers
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
 
-            if(_context.WareHouses == null)
+            if (_context.WareHouses == null)
                 return Problem("Entity set 'AppDbContext.WareHouses'  is null.");
 
             var warehouseQuery = _context.WareHouses.AsQueryable();
@@ -78,19 +78,44 @@ namespace QuanLyKho.Controllers
         }
 
         // POST: WareHouses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,PhoneNumber,Address")] WareHouse wareHouse)
+        public async Task<IActionResult> Create([Bind("Name,PhoneNumber,Address")] WareHouse wareHouse, WarehouseType type)
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
+            ModelState.Remove("Id");
             if (ModelState.IsValid)
             {
+                // Xử lý id
+                string warehouseId = "";
+                if (type == WarehouseType.Warehouse)
+                {
+                    warehouseId = "KH";
+                    var count = await _context.WareHouses.Where(w => w.Id.StartsWith("KH")).CountAsync();
+                    wareHouse.Id = warehouseId + (count + 1);
+                }
+                else if (type == WarehouseType.Store)
+                {
+                    warehouseId = "CH";
+                    var count = await _context.WareHouses.Where(w => w.Id.StartsWith("CH")).CountAsync();
+                    wareHouse.Id = warehouseId + (count + 1);
+                }
+                else
+                {
+                    return View(wareHouse);
+                }
+
                 _context.Add(wareHouse);
                 wareHouse.UpdateTime();
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var kq = await _context.SaveChangesAsync();
+
+                if (kq > 0)
+                    return RedirectToAction(nameof(Index));
+                else
+                {
+                    ModelState.AddModelError("", "Something went wrong");
+                    return View(wareHouse);
+                }
             }
             return View(wareHouse);
         }

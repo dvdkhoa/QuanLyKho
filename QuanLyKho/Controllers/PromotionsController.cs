@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyKho.Extensions;
@@ -7,6 +8,7 @@ using QuanLyKho.Models.Entities;
 
 namespace QuanLyKho.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class PromotionsController : Controller
     {
         private readonly AppDbContext _context;
@@ -129,7 +131,7 @@ namespace QuanLyKho.Controllers
             }
 
             // Bổ sung thêm: 1 sản phẩm đã thuộc khuyến mãi giảm giá có tác dụng trong thời gian này thì không được thêm vào cho khuyến mãi giảm giá khác
-            
+
             // Lấy ra tất cả các id sản phẩm thuộc 1 chương trình khuyến mãi giảm giá bất kỳ ở thời điểm hiện tại - có hiệu lực
             var otherPromotionalProductIds = await _context.ProductPromotions.Include(pp => pp.Promotion)
                                                             .Where(pp => pp.Promotion.PromotionType == PromotionType.Discount
@@ -143,7 +145,7 @@ namespace QuanLyKho.Controllers
                     idExists.Add(id);
                 }
             }
-            if(idExists.Count > 0)
+            if (idExists.Count > 0)
             {
                 ModelState.AddModelError("", $"Products with Id: {string.Join(",", idExists)} already exist in another promotion");
                 return View();
@@ -258,7 +260,7 @@ namespace QuanLyKho.Controllers
                 kq = await _context.SaveChangesAsync();
                 if (kq == 0)
                     return BadRequest();
-                    
+
             }
             // Nếu không còn trong thời hạn hiệu lực thì chỉ xóa các chi tiết sản phẩm trong promotion này thôi chứ không thay đổi giá
 

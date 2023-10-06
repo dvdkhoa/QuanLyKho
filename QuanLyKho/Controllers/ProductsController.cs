@@ -14,7 +14,7 @@ using System.Text.Json;
 
 namespace QuanLyKho.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Manager,Storekeeper")]
     public class ProductsController : Controller
     {
         private readonly AppDbContext _context;
@@ -440,10 +440,10 @@ namespace QuanLyKho.Controllers
         }
 
 
-       
+
         public async Task<IActionResult> GetProductByWarehouseId(string id)
         {
-            var products = await _context.ProductWareHouses.Include(pw => pw.Product).Where(pw => pw.WareHouseId == id).Select(pw=>pw.Product).ToListAsync();
+            var products = await _context.ProductWareHouses.Include(pw => pw.Product).Where(pw => pw.WareHouseId == id).Select(pw => pw.Product).ToListAsync();
 
             return Ok(products);
         }

@@ -10,7 +10,7 @@ using System.Net.WebSockets;
 
 namespace QuanLyKho.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Manager,Storekeeper")]
     public class StatisticController : Controller
     {
         private readonly AppDbContext _context;
@@ -44,7 +44,7 @@ namespace QuanLyKho.Controllers
             }
 
             var products = new List<Product>();
-            if(!string.IsNullOrEmpty(warehouseId) && warehouseId != "all")
+            if (!string.IsNullOrEmpty(warehouseId) && warehouseId != "all")
             {
                 products = _productService.GetProductByWarehouseId(warehouseId);
 

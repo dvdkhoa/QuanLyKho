@@ -26,7 +26,7 @@ using Org.BouncyCastle.Ocsp;
 
 namespace QuanLyKho.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Storekeeper,Manager")]
     public class ReceiptsController : Controller
     {
         private readonly AppDbContext _context;

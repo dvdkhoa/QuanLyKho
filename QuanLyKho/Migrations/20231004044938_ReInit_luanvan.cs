@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace QuanLyKho.Migrations
 {
-    public partial class Init_luanvan : Migration
+    public partial class ReInit_luanvan : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -16,6 +16,7 @@ namespace QuanLyKho.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Icon = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -27,7 +28,7 @@ namespace QuanLyKho.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Classification",
+                name: "Classifications",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -40,17 +41,31 @@ namespace QuanLyKho.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Classification", x => x.Id);
+                    table.PrimaryKey("PK_Classifications", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "New",
+                name: "DetailedConfigs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DetailedConfigs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "News",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -58,17 +73,19 @@ namespace QuanLyKho.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_New", x => x.Id);
+                    table.PrimaryKey("PK_News", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Promotion",
+                name: "Promotions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Percent = table.Column<int>(type: "int", nullable: false),
+                    PromotionType = table.Column<int>(type: "int", nullable: false),
+                    Percent = table.Column<int>(type: "int", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -77,7 +94,7 @@ namespace QuanLyKho.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Promotion", x => x.Id);
+                    table.PrimaryKey("PK_Promotions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -125,11 +142,11 @@ namespace QuanLyKho.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -169,6 +186,35 @@ namespace QuanLyKho.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CategoryDetailedConfigs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    ConfigId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryDetailedConfigs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CategoryDetailedConfigs_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CategoryDetailedConfigs_DetailedConfigs_ConfigId",
+                        column: x => x.ConfigId,
+                        principalTable: "DetailedConfigs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RoleClaims",
                 columns: table => new
                 {
@@ -193,8 +239,7 @@ namespace QuanLyKho.Migrations
                 name: "Customer",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -337,7 +382,7 @@ namespace QuanLyKho.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductClassification",
+                name: "ProductClassifications",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -347,15 +392,15 @@ namespace QuanLyKho.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductClassification", x => x.Id);
+                    table.PrimaryKey("PK_ProductClassifications", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductClassification_Classification_ClassificationId",
+                        name: "FK_ProductClassifications_Classifications_ClassificationId",
                         column: x => x.ClassificationId,
-                        principalTable: "Classification",
+                        principalTable: "Classifications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ProductClassification_Products_ProductId",
+                        name: "FK_ProductClassifications_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -363,7 +408,34 @@ namespace QuanLyKho.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductImage",
+                name: "ProductDetailedConfigs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ConfigId = table.Column<int>(type: "int", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductDetailedConfigs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductDetailedConfigs_DetailedConfigs_ConfigId",
+                        column: x => x.ConfigId,
+                        principalTable: "DetailedConfigs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductDetailedConfigs_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductImages",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -371,15 +443,16 @@ namespace QuanLyKho.Migrations
                     ProductId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Path = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Order = table.Column<int>(type: "int", nullable: true),
                     CreatedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductImage", x => x.Id);
+                    table.PrimaryKey("PK_ProductImages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductImage_Products_ProductId",
+                        name: "FK_ProductImages_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -387,7 +460,7 @@ namespace QuanLyKho.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductPromotion",
+                name: "ProductPromotions",
                 columns: table => new
                 {
                     PromotionId = table.Column<int>(type: "int", nullable: false),
@@ -395,17 +468,17 @@ namespace QuanLyKho.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductPromotion", x => new { x.ProductId, x.PromotionId });
+                    table.PrimaryKey("PK_ProductPromotions", x => new { x.ProductId, x.PromotionId });
                     table.ForeignKey(
-                        name: "FK_ProductPromotion_Products_ProductId",
+                        name: "FK_ProductPromotions_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ProductPromotion_Promotion_PromotionId",
+                        name: "FK_ProductPromotions_Promotions_PromotionId",
                         column: x => x.PromotionId,
-                        principalTable: "Promotion",
+                        principalTable: "Promotions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -441,18 +514,18 @@ namespace QuanLyKho.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cart",
+                name: "Carts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: false)
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Cart", x => x.Id);
+                    table.PrimaryKey("PK_Carts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Cart_Customer_CustomerId",
+                        name: "FK_Carts_Customer_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customer",
                         principalColumn: "Id",
@@ -465,7 +538,7 @@ namespace QuanLyKho.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CustomerName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -513,6 +586,7 @@ namespace QuanLyKho.Migrations
                     Type = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     WareHouseId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DestinationWarehouseId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     StaffId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -525,6 +599,11 @@ namespace QuanLyKho.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_Receipts_WareHouses_DestinationWarehouseId",
+                        column: x => x.DestinationWarehouseId,
+                        principalTable: "WareHouses",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Receipts_WareHouses_WareHouseId",
                         column: x => x.WareHouseId,
                         principalTable: "WareHouses",
@@ -533,7 +612,7 @@ namespace QuanLyKho.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CartDetail",
+                name: "CartDetails",
                 columns: table => new
                 {
                     CartId = table.Column<int>(type: "int", nullable: false),
@@ -548,15 +627,15 @@ namespace QuanLyKho.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CartDetail", x => new { x.CartId, x.ProductId });
+                    table.PrimaryKey("PK_CartDetails", x => new { x.CartId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_CartDetail_Cart_CartId",
+                        name: "FK_CartDetails_Carts_CartId",
                         column: x => x.CartId,
-                        principalTable: "Cart",
+                        principalTable: "Carts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CartDetail_Products_ProductId",
+                        name: "FK_CartDetails_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -622,16 +701,26 @@ namespace QuanLyKho.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cart_CustomerId",
-                table: "Cart",
+                name: "IX_CartDetails_ProductId",
+                table: "CartDetails",
+                column: "ProductId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Carts_CustomerId",
+                table: "Carts",
                 column: "CustomerId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CartDetail_ProductId",
-                table: "CartDetail",
-                column: "ProductId",
-                unique: true);
+                name: "IX_CategoryDetailedConfigs_CategoryId",
+                table: "CategoryDetailedConfigs",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryDetailedConfigs_ConfigId",
+                table: "CategoryDetailedConfigs",
+                column: "ConfigId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customer_UserId",
@@ -667,23 +756,33 @@ namespace QuanLyKho.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductClassification_ClassificationId",
-                table: "ProductClassification",
+                name: "IX_ProductClassifications_ClassificationId",
+                table: "ProductClassifications",
                 column: "ClassificationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductClassification_ProductId",
-                table: "ProductClassification",
+                name: "IX_ProductClassifications_ProductId",
+                table: "ProductClassifications",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductImage_ProductId",
-                table: "ProductImage",
+                name: "IX_ProductDetailedConfigs_ConfigId",
+                table: "ProductDetailedConfigs",
+                column: "ConfigId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDetailedConfigs_ProductId",
+                table: "ProductDetailedConfigs",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductPromotion_PromotionId",
-                table: "ProductPromotion",
+                name: "IX_ProductImages_ProductId",
+                table: "ProductImages",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductPromotions_PromotionId",
+                table: "ProductPromotions",
                 column: "PromotionId");
 
             migrationBuilder.CreateIndex(
@@ -710,6 +809,11 @@ namespace QuanLyKho.Migrations
                 name: "IX_ReceiptDetails_ReceiptId",
                 table: "ReceiptDetails",
                 column: "ReceiptId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Receipts_DestinationWarehouseId",
+                table: "Receipts",
+                column: "DestinationWarehouseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Receipts_StaffId",
@@ -776,22 +880,28 @@ namespace QuanLyKho.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "CartDetail");
+                name: "CartDetails");
 
             migrationBuilder.DropTable(
-                name: "New");
+                name: "CategoryDetailedConfigs");
+
+            migrationBuilder.DropTable(
+                name: "News");
 
             migrationBuilder.DropTable(
                 name: "OrderDetail");
 
             migrationBuilder.DropTable(
-                name: "ProductClassification");
+                name: "ProductClassifications");
 
             migrationBuilder.DropTable(
-                name: "ProductImage");
+                name: "ProductDetailedConfigs");
 
             migrationBuilder.DropTable(
-                name: "ProductPromotion");
+                name: "ProductImages");
+
+            migrationBuilder.DropTable(
+                name: "ProductPromotions");
 
             migrationBuilder.DropTable(
                 name: "ProductWareHouses");
@@ -815,16 +925,19 @@ namespace QuanLyKho.Migrations
                 name: "UserTokens");
 
             migrationBuilder.DropTable(
-                name: "Cart");
+                name: "Carts");
 
             migrationBuilder.DropTable(
                 name: "Order");
 
             migrationBuilder.DropTable(
-                name: "Classification");
+                name: "Classifications");
 
             migrationBuilder.DropTable(
-                name: "Promotion");
+                name: "DetailedConfigs");
+
+            migrationBuilder.DropTable(
+                name: "Promotions");
 
             migrationBuilder.DropTable(
                 name: "Products");
