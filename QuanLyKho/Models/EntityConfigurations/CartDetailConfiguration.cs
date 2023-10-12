@@ -8,7 +8,7 @@ namespace QuanLyKho.Models.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<CartDetail> builder)
         {
-            builder.HasKey(t => new { t.CartId, t.ProductId });
+            builder.HasKey(t => t.Id);
 
             builder.Property(t => t.Quantity).IsRequired();
 
@@ -24,8 +24,8 @@ namespace QuanLyKho.Models.EntityConfigurations
                     .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(t => t.Product)
-                    .WithOne()
-                    .HasForeignKey<CartDetail>(t => t.ProductId)
+                    .WithMany(c => c.CartDetails)
+                    .HasForeignKey(t => t.ProductId)
                     .OnDelete(DeleteBehavior.Restrict);
         }
     }

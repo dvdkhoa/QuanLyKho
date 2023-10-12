@@ -18,7 +18,7 @@ namespace QuanLyKho.Services.Implement
             return _context.Staffs.Any(s => s.Id == id);
         }
 
-        public async Task<bool> CreateStaff(Staff staff)
+        public async Task<Staff> CreateStaff(Staff staff)
         {
             var id = this.GetStaffIdByName(staff); // sinh mã id dựa vào chữ cái đầu của tên
 
@@ -28,7 +28,11 @@ namespace QuanLyKho.Services.Implement
 
             _context.Add(staff);
 
-            return (await _context.SaveChangesAsync() > 0);
+            var kq = await _context.SaveChangesAsync() > 0;
+
+            if (kq)
+                return staff;
+            return null;
         }
 
 

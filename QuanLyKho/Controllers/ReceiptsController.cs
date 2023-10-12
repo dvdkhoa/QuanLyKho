@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Text;
 using QuanLyKho.Extensions;
 using Org.BouncyCastle.Ocsp;
+using System.Security.Claims;
 
 namespace QuanLyKho.Controllers
 {
@@ -70,16 +71,23 @@ namespace QuanLyKho.Controllers
         // GET: Receipts/Create
         public IActionResult Create()
         {
-            ViewData["StaffId"] = new SelectList(_context.Staffs.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
             ViewData["WareHouseId"] = new SelectList(_context.WareHouses.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
             ViewData["ProductId"] = new SelectList(_context.Products.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
+
+            if (this.User.IsInRole("Admin"))
+            {
+                ViewData["StaffId"] = new SelectList(_context.Staffs.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
+            }
+            else
+            {
+                string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                ViewData["StaffId"] = _context.Staffs.Where(s => s.UserId == userId).FirstOrDefault();
+            }
 
             return View();
         }
 
         // POST: Receipts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,DateCreated,Type,WareHouseId,StaffId")] Receipt receipt)
@@ -200,8 +208,11 @@ namespace QuanLyKho.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateReceipt(Receipt receipt, List<string>? ProductIds, List<int>? productQuantitys, List<NewProductModel>? newProducts)
         {
-            if (receipt == null || (ProductIds is null && newProducts is null))
-                return BadRequest();
+            if (receipt == null || (ProductIds is null && newProducts is null) || (ProductIds?.Count == 0 && newProducts?.Count == 0))
+            {
+                ModelState.AddModelError("", "Please complete all information");
+                return View(receipt);
+            }    
 
 
             receipt.DateCreated = DateTime.Now;

@@ -47,13 +47,24 @@
                             <span asp-validation-for="Type" class="text-danger"></span>
                         </div>
 
-                        <div class="form-group">
-                            <label asp-for="StaffId">Staff</label>
-                            <select class="form-control select2bs4 w-100" asp-for="StaffId" asp-items="@ViewBag.StaffId" style="width: 100%;">
-                                <option selected="" disabled>Select staff</option>
-                            </select>
-                            <span asp-validation-for="StaffId" class="text-danger"></span>
-                        </div>
+                        @if (this.User.IsInRole("Admin"))
+                        {
+                            <div class="form-group">
+                                <label asp-for="StaffId">Staff</label>
+                                <select class="form-control select2bs4 w-100" asp-for="StaffId" asp-items="@ViewBag.StaffId" style="width: 100%;">
+                                    <option selected="" disabled>Select staff</option>
+                                </select>
+                                <span asp-validation-for="StaffId" class="text-danger"></span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group">
+                                <label asp-for="StaffId">Staff</label>
+                                <input class="form-control" asp-for="StaffId" value="@ViewBag.StaffId" />
+                            </div>
+                        }
+
 
                         <div class="form-group">
                             <label for="select-warehouse">Warehouse</label>

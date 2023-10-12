@@ -256,9 +256,43 @@ namespace QuanLyKho.Controllers
 
         public async Task<IActionResult> EditImages(string id)
         {
-            var productImages = await _context.ProductImages.Where(i => i.ProductId == id).ToListAsync();
+            var productImages = await _context.ProductImages.Where(i => i.ProductId == id).OrderBy(i => i.Order).ToListAsync();
             ViewBag.productId = id;
             return View("EditImages", productImages);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditImages(int imageId, int newOrder)
+        {
+            var image = await _context.ProductImages.FindAsync(imageId);
+            if (image is null)
+                return NotFound();
+
+            var oldImage = await _context.ProductImages.Where(i => i.ProductId == image.ProductId && i.Order == newOrder).FirstOrDefaultAsync();
+            if (oldImage is null)
+            {
+                var count = await _context.ProductImages.Where(i => i.ProductId == image.ProductId).CountAsync();
+                if (newOrder < 1 || newOrder > count)
+                    return BadRequest();
+            }
+
+
+            if (oldImage != null)
+            {
+                int temp = image.Order.Value;
+
+                oldImage!.Order = temp; oldImage.UpdateTime();
+                _context.ProductImages.Update(oldImage);
+            }
+
+            image.Order = newOrder; image.UpdateTime();
+
+            _context.ProductImages.Update(image);
+
+            var kq = await _context.SaveChangesAsync();
+
+            return RedirectToAction("EditImages", new { id = image.ProductId });
+
         }
 
         public IActionResult AddImages(string id)
@@ -446,6 +480,24 @@ namespace QuanLyKho.Controllers
             var products = await _context.ProductWareHouses.Include(pw => pw.Product).Where(pw => pw.WareHouseId == id).Select(pw => pw.Product).ToListAsync();
 
             return Ok(products);
+        }
+
+
+
+        public async Task<IActionResult> DeleteImage(int id)
+        {
+            var productImage = await _context.ProductImages.FindAsync(id);
+
+            if (productImage == null) return NotFound();
+
+            _context.Remove(productImage);
+            var kq = await _context.SaveChangesAsync();
+            if (kq > 0)
+            {
+                await CloudinaryHelper.DeteleImage(productImage.Path, productImage.ProductId);
+                return Ok("Delete successfully");
+            }
+            return BadRequest();
         }
 
 

@@ -33,7 +33,10 @@ namespace QuanLyKho.Models.Entities
 
         public string getTotalPrice()
         {
-            var total = this.ReceiptDetails.Sum(x => x.getAmount()).ToString();
+            var total = this.ReceiptDetails?.Sum(x => x.getAmount()).ToString();
+
+            if (string.IsNullOrEmpty(total))
+                return null;
 
             CultureInfo cul = CultureInfo.GetCultureInfo("vi-VN");   // try with "en-US"
             string totalString = double.Parse(total).ToString("#,###", cul.NumberFormat);

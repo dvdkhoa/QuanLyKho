@@ -12,8 +12,8 @@ using QuanLyKho.Models.EF;
 namespace QuanLyKho.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231004044938_ReInit_luanvan")]
-    partial class ReInit_luanvan
+    [Migration("20231012072243_fix_cart_detail_foreignkey")]
+    partial class fix_cart_detail_foreignkey
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -222,6 +222,39 @@ namespace QuanLyKho.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("QuanLyKho.Models.Entities.Bill", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("DateTimePayment")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double?>("MoneyReceived")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("MoneyRefund")
+                        .HasColumnType("float");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("StatusPay")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Bill");
+                });
+
             modelBuilder.Entity("QuanLyKho.Models.Entities.Cart", b =>
                 {
                     b.Property<int>("Id")
@@ -244,11 +277,14 @@ namespace QuanLyKho.Migrations
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.CartDetail", b =>
                 {
-                    b.Property<int>("CartId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductId")
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
@@ -259,6 +295,10 @@ namespace QuanLyKho.Migrations
                     b.Property<double>("ProducPrice")
                         .HasColumnType("float");
 
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("ProductImage")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -267,16 +307,20 @@ namespace QuanLyKho.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("PromotionPrice")
+                        .HasColumnType("float");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("CartId", "ProductId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("ProductId")
-                        .IsUnique();
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("CartDetails");
                 });
@@ -455,6 +499,10 @@ namespace QuanLyKho.Migrations
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
@@ -488,7 +536,6 @@ namespace QuanLyKho.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CustomerId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CustomerName")
@@ -513,11 +560,9 @@ namespace QuanLyKho.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("StaffId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("StoreId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("TmpTotal")
@@ -539,11 +584,11 @@ namespace QuanLyKho.Migrations
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.OrderDetail", b =>
                 {
-                    b.Property<int>("OrderId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductId")
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedTime")
                         .HasColumnType("datetime2");
@@ -555,8 +600,15 @@ namespace QuanLyKho.Migrations
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
                     b.Property<double>("Price")
                         .HasColumnType("float");
+
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
@@ -565,7 +617,7 @@ namespace QuanLyKho.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderId", "ProductId");
+                    b.HasKey("Id");
 
                     b.HasIndex("OrderId")
                         .IsUnique();
@@ -939,6 +991,40 @@ namespace QuanLyKho.Migrations
                     b.ToTable("Staffs");
                 });
 
+            modelBuilder.Entity("QuanLyKho.Models.Entities.VnPay", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("BankName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateTimePayment")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("TransactionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TransactionStatus")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("VnPay");
+                });
+
             modelBuilder.Entity("QuanLyKho.Models.Entities.WareHouse", b =>
                 {
                     b.Property<string>("Id")
@@ -1019,6 +1105,17 @@ namespace QuanLyKho.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("QuanLyKho.Models.Entities.Bill", b =>
+                {
+                    b.HasOne("QuanLyKho.Models.Entities.Order", "Order")
+                        .WithMany("Bills")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("QuanLyKho.Models.Entities.Cart", b =>
                 {
                     b.HasOne("QuanLyKho.Models.Entities.Customer", "Customer")
@@ -1039,8 +1136,8 @@ namespace QuanLyKho.Migrations
                         .IsRequired();
 
                     b.HasOne("QuanLyKho.Models.Entities.Product", "Product")
-                        .WithOne()
-                        .HasForeignKey("QuanLyKho.Models.Entities.CartDetail", "ProductId")
+                        .WithMany("CartDetails")
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1283,6 +1380,17 @@ namespace QuanLyKho.Migrations
                     b.Navigation("WareHouse");
                 });
 
+            modelBuilder.Entity("QuanLyKho.Models.Entities.VnPay", b =>
+                {
+                    b.HasOne("QuanLyKho.Models.Entities.Order", "Order")
+                        .WithMany("VnPays")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("QuanLyKho.Models.Entities.Cart", b =>
                 {
                     b.Navigation("CartDetails");
@@ -1312,8 +1420,17 @@ namespace QuanLyKho.Migrations
                     b.Navigation("ProductDetailedConfigs");
                 });
 
+            modelBuilder.Entity("QuanLyKho.Models.Entities.Order", b =>
+                {
+                    b.Navigation("Bills");
+
+                    b.Navigation("VnPays");
+                });
+
             modelBuilder.Entity("QuanLyKho.Models.Entities.Product", b =>
                 {
+                    b.Navigation("CartDetails");
+
                     b.Navigation("ProductClassifications");
 
                     b.Navigation("ProductDetailedConfigs");

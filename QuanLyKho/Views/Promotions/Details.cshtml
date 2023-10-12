@@ -84,7 +84,9 @@
                     {
                         <tr>
                             <td>@item.ProductId</td>
-                            <td>@item.Product.Name</td>
+                            <td>
+                                <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.Id">@item.Product.Name</a>
+                            </td>
                             <td>@item.Product.Price</td>
                             <td>@item.Product.PromotionPrice</td>
                             <td>

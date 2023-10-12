@@ -17,7 +17,7 @@
 <!-- /.card -->
 <div class="card">
     <div class="card-header">
-        <a class="card-title" href="#" onclick="history.back()">< Back to product details</a>
+        <a class="card-title" href="#" onclick="history.back()"> Back to product details</a>
     </div>
     <!-- /.card-header -->
     <div class="card-body">
@@ -53,11 +53,11 @@
         <table id="example1" class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>Product id</th>
+                    <th>Receipt</th>
+                    <th>Product</th>
                     <th>Product name</th>
                     <th>Quantity</th>
-                    <th>Warehouse id</th>
-                    <th>Warehouse name</th>
+                    <th>Warehouse</th>
                     <th>Date</th>
                     <th>ReceiptType</th>
                 </tr>
@@ -66,11 +66,13 @@
                 @foreach (var history in Model)
                 {
                     <tr>
+                        <td>
+                            <a asp-controller="Receipts" asp-action="Details" asp-route-id="@history.ReceiptDetail.Receipt.Id">@history.ReceiptDetail.Receipt.Id</a>
+                        </td>
                         <td>@history.Product.Id</td>
                         <td>@history.Product.Name</td>
                         <td>@history.ReceiptDetail.Quantity</td>
-                        <td>@history.WareHouse.Id</td>
-                        <td>@history.WareHouse.Name</td>
+                        <td>@history.WareHouse.Name (@history.WareHouse.Id)</td>
                         <td>@history.ReceiptDetail.Receipt.DateCreated.ToShortDateString()</td>
                         <td>@history.ReceiptDetail.Receipt.Type</td>
                     </tr>

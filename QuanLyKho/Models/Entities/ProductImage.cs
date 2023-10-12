@@ -11,5 +11,13 @@
         public DateTime LastUpdated { get; set; }
         public Status Status { get; set; }
         public Product Product { get; set; }
+
+
+        // Khi tạo mới hoặc chỉnh sửa thì gọi
+        public void UpdateTime()
+        {
+            this.CreatedTime = DateTime.Now;
+            this.LastUpdated = DateTime.Now;
+        }
     }
 }

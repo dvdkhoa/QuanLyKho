@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuanLyKho.Models.EF;
 
@@ -11,9 +12,10 @@ using QuanLyKho.Models.EF;
 namespace QuanLyKho.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231012040859_Init_luanvan_b4")]
+    partial class Init_luanvan_b4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -318,7 +320,8 @@ namespace QuanLyKho.Migrations
 
                     b.HasIndex("CartId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId")
+                        .IsUnique();
 
                     b.ToTable("CartDetails");
                 });
@@ -1134,8 +1137,8 @@ namespace QuanLyKho.Migrations
                         .IsRequired();
 
                     b.HasOne("QuanLyKho.Models.Entities.Product", "Product")
-                        .WithMany("CartDetails")
-                        .HasForeignKey("ProductId")
+                        .WithOne()
+                        .HasForeignKey("QuanLyKho.Models.Entities.CartDetail", "ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1427,8 +1430,6 @@ namespace QuanLyKho.Migrations
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Product", b =>
                 {
-                    b.Navigation("CartDetails");
-
                     b.Navigation("ProductClassifications");
 
                     b.Navigation("ProductDetailedConfigs");

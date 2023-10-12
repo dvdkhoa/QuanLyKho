@@ -16,6 +16,7 @@ using QuanLyKho.Models.Entities;
 using QuanLyKho.Services;
 using QuanLyKho.Services.Implement;
 using Microsoft.AspNetCore.Authorization;
+using System.Net.WebSockets;
 
 namespace QuanLyKho.Controllers
 {
@@ -99,14 +100,19 @@ namespace QuanLyKho.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    bool result = await _staffService.CreateStaff(staff);
+                    Staff newStaff = await _staffService.CreateStaff(staff);
 
-                    if (result)
+                    if (newStaff != null)
                     {
-                        var result_CreateUser = await this.CreateUserAsync(staff);
-                        if (result_CreateUser)
+                        var userId = await this.CreateUserAsync(staff);
+                        if (!string.IsNullOrEmpty(userId))
                         {
+                            newStaff.UserId = userId;
+                            _context.Update(newStaff);
+                            await _context.SaveChangesAsync();
+
                             transaction.Commit();
+
                             return RedirectToAction(nameof(Index));
                         }
                         transaction.Rollback();
@@ -137,8 +143,6 @@ namespace QuanLyKho.Controllers
         }
 
         // POST: Staffs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, Staff staff)
@@ -238,7 +242,7 @@ namespace QuanLyKho.Controllers
         }
 
 
-        public async Task<bool> CreateUserAsync(Staff staff)
+        public async Task<string> CreateUserAsync(Staff staff)
         {
             var user = new AppUser { UserName = staff.Email, Email = staff.Email };
             var result = await _userManager.CreateAsync(user, "111111");
@@ -264,13 +268,13 @@ namespace QuanLyKho.Controllers
                 await _emailSender.SendEmailAsync(staff.Email, "Confirm your email",
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackURL)}'>clicking here</a>.");
 
-                return true;
+                return userId;
             }
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
-            return false;
+            return null;
         }
     }
 }

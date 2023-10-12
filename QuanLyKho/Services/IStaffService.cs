@@ -7,7 +7,7 @@ namespace QuanLyKho.Services
         bool CheckStaffExistsById(string id);
         string GetStaffIdByName(Staff staff);
 
-        Task<bool> CreateStaff(Staff staff);
+        Task<Staff> CreateStaff(Staff staff);
     }
 }
 

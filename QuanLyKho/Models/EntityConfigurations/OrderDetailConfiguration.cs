@@ -8,16 +8,13 @@ namespace QuanLyKho.Models.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<OrderDetail> builder)
         {
-            builder.HasKey(t => new { t.OrderId, t.ProductId });
+            builder.HasKey(t => t.Id);
 
             builder.Property(t => t.ProductName).IsRequired();
 
             builder.Property(t => t.Quantity).IsRequired();
 
             builder.Property(t => t.Price).IsRequired();
-
-            builder.HasKey(t => new { t.OrderId, t.ProductId });
-
             builder.HasOne(t => t.Product)
                     .WithOne()
                     .HasForeignKey<OrderDetail>(t => t.ProductId);

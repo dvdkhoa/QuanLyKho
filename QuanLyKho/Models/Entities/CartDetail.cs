@@ -2,6 +2,7 @@
 {
     public class CartDetail
     {
+        public int Id { get; set; }
         public int CartId { get; set; }
         public Cart Cart { get; set; }
         public string ProductId { get; set; }
@@ -9,6 +10,7 @@
         public int Quantity { get; set; }
         public string ProductName { get; set; }
         public double ProducPrice { get; set; }
+        public double PromotionPrice { get; set; }
         public string ProductImage { get; set; }
         public DateTime CreatedTime { get; set; }
         public DateTime LastUpdated { get; set;}

@@ -455,6 +455,12 @@
                                                 <p>Product Statistic</p>
                                             </a>
                                         </li>
+                                        <li class="nav-item">
+                                            <a asp-controller="Statistic" asp-action="ProductInstock" class="nav-link">
+                                                <i class="fa-solid fa-chart-column nav-icon"></i>
+                                                <p>Product in stock Statistic</p>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </li>
                                 @if (this.User.IsInRole("Admin"))

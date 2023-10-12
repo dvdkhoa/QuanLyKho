@@ -68,7 +68,7 @@ namespace QuanLyKho.Controllers
         // POST: News/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Content")] New @new, IFormFile? inputImage)
+        public async Task<IActionResult> Create([Bind("Title,Content,Description")] New @new, IFormFile? inputImage)
         {
             if (ModelState.IsValid)
             {
@@ -106,7 +106,7 @@ namespace QuanLyKho.Controllers
         // POST: News/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Content, Image,Status")] New @new, IFormFile? inputImage)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Content,Image,Status")] New @new, IFormFile? inputImage)
         {
             if (id != @new.Id)
             {

@@ -22,5 +22,9 @@
         public Customer Customer { get; set; }
         public WareHouse Store { get; set; }
 
+        public List<Bill>? Bills { get; set; }
+        public List<VnPay>? VnPays { get; set; }
+
+
     }
 }

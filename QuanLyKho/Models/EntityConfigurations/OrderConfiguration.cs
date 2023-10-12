@@ -10,6 +10,15 @@ namespace QuanLyKho.Models.EntityConfigurations
         {
             builder.HasKey(t => t.Id);
 
+            builder.Property(o => o.CustomerId).IsRequired(false);
+            builder.Property(o => o.StaffId).IsRequired(false);
+            builder.Property(o => o.StoreId).IsRequired(false);
+            //builder.Property(o => o.ShipStatus).IsRequired(false);
+            //builder.Property(o => o.PaymentStatus).IsRequired(false);
+
+
+
+
             builder.HasOne(t => t.Staff)
                     .WithMany(p => p.Orders)
                     .HasForeignKey(t => t.StaffId)
