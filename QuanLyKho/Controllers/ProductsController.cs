@@ -83,33 +83,42 @@ namespace QuanLyKho.Controllers
 
             if (ModelState.IsValid)
             {
-                var newProduct = createProductModel.Product;
-                await _context.Products.AddAsync(newProduct);
-                var result = await _context.SaveChangesAsync();
-
-                if (result > 0)
+                using(var transaction = _context.Database.BeginTransaction())
                 {
-                    if (createProductModel.Images!.Count > 0)
+                    var newProduct = createProductModel.Product;
+                    await _context.Products.AddAsync(newProduct);
+                    var result = await _context.SaveChangesAsync();
+
+                    if (result > 0)
                     {
-                        foreach (var image in createProductModel.Images)
+                        if (createProductModel.Images!.Count > 0)
                         {
-                            var imagePath = await CloudinaryHelper.UploadFileToCloudinary(image, newProduct.Id);
-                            ProductImage productImage = new ProductImage
+                            foreach (var image in createProductModel.Images)
                             {
-                                Path = imagePath,
-                                ProductId = newProduct.Id,
-                                Status = Status.Show,
-                                CreatedTime = DateTime.Now,
-                                LastUpdated = DateTime.Now,
-                                Product = newProduct
-                            };
-                            _context.ProductImages.Add(productImage);
+                                var imagePath = await CloudinaryHelper.UploadFileToCloudinary(image, newProduct.Id);
+                                ProductImage productImage = new ProductImage
+                                {
+                                    Path = imagePath,
+                                    ProductId = newProduct.Id,
+                                    Status = Status.Show,
+                                    CreatedTime = DateTime.Now,
+                                    LastUpdated = DateTime.Now,
+                                    Product = newProduct
+                                };
+                                _context.ProductImages.Add(productImage);
+                            }
+                            await _context.SaveChangesAsync();
+                            transaction.Commit();
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                            //ModelState.AddModelError("", "Images are required");
                         }
                     }
-                    await _context.SaveChangesAsync();
-
+                   
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", createProductModel.Product.CategoryId);
             return View(createProductModel);

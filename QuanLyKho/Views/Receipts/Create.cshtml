@@ -61,8 +61,9 @@
                         {
                             <div class="form-group">
                                 <label asp-for="StaffId">Staff</label>
-                                <input class="form-control" asp-for="StaffId" value="@ViewBag.StaffId" />
+                                <input class="form-control" value="@ViewBag.StaffId" disabled />
                             </div>
+                            <input asp-for="StaffId" value="@ViewBag.StaffId" type="hidden" />
                         }
 
 

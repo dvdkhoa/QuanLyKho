@@ -1,5 +1,5 @@
-﻿using System.Globalization;
-using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
+using System.Globalization;
 
 namespace QuanLyKho.Models.Entities
 {

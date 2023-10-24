@@ -345,6 +345,24 @@
                                     <a class="nav-link">
                                         <i class="nav-icon fa-solid fa-percent"></i>
                                         <p>
+                                            Orders
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav-treeview ml-3" style="display: none;">
+                                        <li class="nav-item">
+                                            <a asp-action="Index" asp-controller="Orders" class="nav-link">
+                                                <i class="fa-solid fa-list nav-icon"></i>
+                                                <p>List orders</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link">
+                                        <i class="nav-icon fa-solid fa-percent"></i>
+                                        <p>
                                             Promotions
                                             <i class="right fas fa-angle-left"></i>
                                         </p>
@@ -365,7 +383,7 @@
 
                                 <li class="nav-item">
                                     <a class="nav-link">
-                                        <i class="nav-icon fa-solid fa-percent"></i>
+                                        <i class="fa-solid fa-newspaper nav-icon"></i>
                                         <p>
                                             News
                                             <i class="right fas fa-angle-left"></i>
@@ -457,8 +475,14 @@
                                         </li>
                                         <li class="nav-item">
                                             <a asp-controller="Statistic" asp-action="ProductInstock" class="nav-link">
-                                                <i class="fa-solid fa-chart-column nav-icon"></i>
+                                                <i class="fa-solid fa-magnifying-glass-chart nav-icon"></i>
                                                 <p>Product in stock Statistic</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a asp-controller="Statistic" asp-action="OrderStatistic" class="nav-link">
+                                                <i class="fa-solid fa-file-invoice-dollar nav-icon"></i>
+                                                <p>Order Statistic</p>
                                             </a>
                                         </li>
                                     </ul>

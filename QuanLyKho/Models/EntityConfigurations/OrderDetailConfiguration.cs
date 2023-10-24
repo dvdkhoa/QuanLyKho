@@ -15,13 +15,21 @@ namespace QuanLyKho.Models.EntityConfigurations
             builder.Property(t => t.Quantity).IsRequired();
 
             builder.Property(t => t.Price).IsRequired();
+
             builder.HasOne(t => t.Product)
-                    .WithOne()
-                    .HasForeignKey<OrderDetail>(t => t.ProductId);
+                    .WithMany(t => t.OrderDetails)
+                    .HasForeignKey(t => t.ProductId)
+                    .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(t => t.Order)
-                    .WithOne()
-                    .HasForeignKey<OrderDetail>(t => t.OrderId);
+                    .WithMany(t => t.OrderDetails)
+                    .HasForeignKey(t => t.OrderId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(t => t.ProductWareHouse)
+                    .WithMany(t => t.OrderDetails)
+                    .HasForeignKey(t => t.ProductWarehouseId)
+                    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

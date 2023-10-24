@@ -28,10 +28,11 @@ namespace QuanLyKho.Controllers
 
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<StaffsController> _logger;
         private readonly IEmailSender _emailSender;
 
-        public StaffsController(AppDbContext context, IStaffService staffService, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, ILogger<StaffsController> logger, IEmailSender emailSender)
+        public StaffsController(AppDbContext context, IStaffService staffService, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, ILogger<StaffsController> logger, IEmailSender emailSender, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _staffService = staffService;
@@ -39,6 +40,7 @@ namespace QuanLyKho.Controllers
             _userManager = userManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
         // GET: Staffs
@@ -84,39 +86,55 @@ namespace QuanLyKho.Controllers
         {
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id");
+
+            var roles = _roleManager.Roles.ToList();
+            roles.RemoveAll(role => role.NormalizedName == "ADMIN" || role.NormalizedName == "MANAGER");
+            ViewData["Roles"] = new SelectList(roles, "Name", "Name");
+
             return View();
         }
 
         // POST: Staffs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Staff staff) //[Bind("Name,DateOfBirth,Gender, Email, PhoneNumber,Address,StartDay,WareHouseId,UserId, ")] 
+        public async Task<IActionResult> Create(Staff staff, string role) //[Bind("Name,DateOfBirth,Gender, Email, PhoneNumber,Address,StartDay,WareHouseId,UserId, ")] 
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
-                ModelState.Remove("Id");
-
-                if (ModelState.IsValid)
+                try
                 {
-                    Staff newStaff = await _staffService.CreateStaff(staff);
+                    ModelState.Remove("Id");
 
-                    if (newStaff != null)
+                    if (ModelState.IsValid)
                     {
-                        var userId = await this.CreateUserAsync(staff);
-                        if (!string.IsNullOrEmpty(userId))
+                        Staff newStaff = await _staffService.CreateStaff(staff);
+
+                        if (newStaff != null)
                         {
-                            newStaff.UserId = userId;
-                            _context.Update(newStaff);
-                            await _context.SaveChangesAsync();
+                            var userId = await this.CreateUserAsync(staff);
+                            if (!string.IsNullOrEmpty(userId))
+                            {
+                                newStaff.UserId = userId;
+                                _context.Update(newStaff);
 
-                            transaction.Commit();
+                                // gán role cho user
+                                var user = await _userManager.FindByIdAsync(userId);
+                                await _userManager.AddToRoleAsync(user, role);
 
-                            return RedirectToAction(nameof(Index));
+                                await _context.SaveChangesAsync();
+
+                                transaction.Commit();
+
+                                return RedirectToAction(nameof(Index));
+                            }
+                            transaction.Rollback();
                         }
-                        transaction.Rollback();
                     }
+                } 
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    transaction.Rollback();
                 }
                 ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", staff.UserId);
                 ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id", staff.WareHouseId);

@@ -1,6 +1,7 @@
 ﻿@model QuanLyKho.Models.Entities.Staff
 @using QuanLyKho.Models.Entities;
 
+
 @{
     ViewData["Title"] = "Create";
 }
@@ -23,6 +24,13 @@
                     <div class="card-body" style="display: block;">
                         <div asp-validation-summary="All" class="text-danger"></div>
                         
+                        <div class="form-group">
+                            <label for="role">Role</label>
+                            <select id="role" name="role" asp-items="ViewBag.Roles" class="form-control">
+
+                            </select>
+                        </div>
+
                         <div class="form-group">
                             <label asp-for="Name">Name</label>
                             <input asp-for="Name" type="text" class="form-control">

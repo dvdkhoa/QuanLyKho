@@ -16,7 +16,7 @@ namespace QuanLyKho.Models.EntityConfigurations
 
             builder.HasOne(t => t.User).WithOne()
                     .HasForeignKey<Customer>(t => t.UserId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.ClientSetNull);
         }
     }
 }

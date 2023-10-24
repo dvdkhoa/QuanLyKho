@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="QuanLyKho.Models.Entities.AppUser" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\AppUser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.Bill">
+    <Position X="21" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAECAAAAAQAIAAAAAAAAACAAAAAAAAAAAAAgAAAAgAA=</HashCode>
+      <FileName>Models\Entities\Bill.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Order" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.Cart" Collapsed="true">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAECAAAAABAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\Cart.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.CartDetail" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACAEEEAAAAAAAAAAAAAAEAAAAAACAABAAAgAAICAE=</HashCode>
+      <FileName>Models\Entities\CartDetail.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.Category">
+    <Position X="14.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAEAAAgAQAAAAAAAAUAAAAAABAAAAAAAAEAAAE=</HashCode>
+      <FileName>Models\Entities\Category.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.CategoryDetailedConfig" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAEAAAAA4AAABAAAAEAAAAAAAAAAAAAAAAACAE=</HashCode>
+      <FileName>Models\Entities\CategoryDetailedConfig.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.Classification" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAEAAAgAAAAAABAAAUAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Models\Entities\Classification.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.Customer" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEDAAAEACAAAAAAAAAAAA0ACAAAAAACAAAAIAAAAAE=</HashCode>
+      <FileName>Models\Entities\Customer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.DetailedConfig" Collapsed="true">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAIEAAAAAAAAAAAAAAQAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\DetailedConfig.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.New" Collapsed="true">
+    <Position X="7.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAEAgAgAUAAAAAAAAEAAAAAABAAAAAAAAAAAAE=</HashCode>
+      <FileName>Models\Entities\New.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.Order">
+    <Position X="18.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEDAEAAACAAAAAAAAAQFAEAQCAAQBACIAAAAQEAAAE=</HashCode>
+      <FileName>Models\Entities\Order.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.OrderDetail" Collapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAECAAAAAQAAAAAAAAAAAAEAAAAAABAAAAAAgAAIAAE=</HashCode>
+      <FileName>Models\Entities\OrderDetail.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.Product">
+    <Position X="11.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAKAAIEARAgC4AAIABQAIUAICAAABAABAAAAAgCCAE=</HashCode>
+      <FileName>Models\Entities\Product.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Category" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.ProductClassification" Collapsed="true">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACBAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\ProductClassification.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.ProductDetailedConfig" Collapsed="true">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACAAAAAgAAAAAAABAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Models\Entities\ProductDetailedConfig.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.ProductImage" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAECAAAEAAAgAQIAAAAAAAEAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Models\Entities\ProductImage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.ProductPromotion" Collapsed="true">
+    <Position X="2.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACAAACABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\ProductPromotion.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.ProductWareHouse" Collapsed="true">
+    <Position X="4" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAACAAAEAAAAAQAAAAAAAAEABAAAAAAAAAAAoAAAAAE=</HashCode>
+      <FileName>Models\Entities\ProductWareHouse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.Promotion" Collapsed="true">
+    <Position X="5.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAEAAAgAQAAAAAAAAUgAAAAAAAAQAAACEACAAE=</HashCode>
+      <FileName>Models\Entities\Promotion.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.Receipt" Collapsed="true">
+    <Position X="7.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAEAAAAAAAQAAAAAIAABCAAAAACAUAEIAABAAA=</HashCode>
+      <FileName>Models\Entities\Receipt.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.ReceiptDetail" Collapsed="true">
+    <Position X="0.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UAACAAAEAAAAAAAIAAAAAAAAAAAAAAAAACAAgAAQAAA=</HashCode>
+      <FileName>Models\Entities\ReceiptDetail.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.Staff" Collapsed="true">
+    <Position X="2.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEDAAAEACAAAQCAAAAAQA2ABAAQAAACAAAAIAAAAAE=</HashCode>
+      <FileName>Models\Entities\Staff.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.VnPay" Collapsed="true">
+    <Position X="4" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAECAAAAAQAAAAAAACAAAAAAAAAAQAAAABAAAAAAgAA=</HashCode>
+      <FileName>Models\Entities\VnPay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.WareHouse" Collapsed="true">
+    <Position X="5.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAECAAAEAAAAAQAAAAAAQAUAICAAAAACAAAAAAABAAE=</HashCode>
+      <FileName>Models\Entities\WareHouse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="QuanLyKho.Models.Entities.Gender" Collapsed="true">
+    <Position X="0.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Models\Entities\Gender.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="QuanLyKho.Models.Entities.PromotionType" Collapsed="true">
+    <Position X="2.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAEAAAAAAA=</HashCode>
+      <FileName>Models\Entities\Promotion.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="QuanLyKho.Models.Entities.ReceiptType" Collapsed="true">
+    <Position X="4" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAABQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\ReceiptType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="QuanLyKho.Models.Entities.Status" Collapsed="true">
+    <Position X="5.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\Status.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="QuanLyKho.Models.Entities.WarehouseType" Collapsed="true">
+    <Position X="7.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAQAAAAA=</HashCode>
+      <FileName>Models\Entities\WareHouse.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

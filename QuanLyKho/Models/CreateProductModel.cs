@@ -7,7 +7,7 @@ namespace QuanLyKho.Models
     {
         public Product? Product { get; set; }
         public Category? Category { get; set; }
-        public List<IFormFile>? Images {  get; set; }
+        public List<IFormFile> Images {  get; set; }
 
     }
 }

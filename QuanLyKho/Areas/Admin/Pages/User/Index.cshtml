@@ -5,13 +5,24 @@
     ViewData["page"] = "Tài khoản";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+}
+
+
 @await Html.PartialAsync("_StatusMessage",Model.StatusMessage) 
 
-<div class="row">
-    <div class="col-8 offset-2">
-        <h3>Danh sách các User</h3>
-      
-        <table class="table">
+
+<!-- /.card -->
+<div class="card">
+    <div class="card-header">
+        
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table class="table table-bordered table-striped" id="table">
             <thead>
                 <tr>
                     <th>User</th>
@@ -24,7 +35,7 @@
                 {
                     <tr>
                         <td>@user.UserName</td>
-                        <td>
+                        <td class="text-center">
                             @if (string.IsNullOrEmpty(user.RoleNames))
                             {
                                 <a class="text-dark btn-link" asp-page="AddRole" asp-route-id="@user.Id">+ Thêm vai trò</a>
@@ -34,7 +45,7 @@
                                 <a class="" asp-page="AddRole" asp-route-id="@user.Id">@user.RoleNames</a>
                             }
                         </td>
-                        <td>
+                        <td class="text-center">
                             <a class="btn btn-sm btn-primary" asp-page="SetPassword" asp-route-id="@user.Id">Đặt mật khẩu</a>
                         </td>
                     </tr>
@@ -42,4 +53,42 @@
             </tbody>
         </table>
     </div>
+    <!-- /.card-body -->
 </div>
+<!-- /.card -->
+
+
+@section Scripts {
+
+    <!-- DataTables  & Plugins -->
+    <script src="~/admin/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/jszip/jszip.min.js"></script>
+    <script src="~/admin/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="~/admin/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+
+    <script src="~/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
+
+
+
+    <script>
+        $(function () {
+            const table = $("#table").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            })
+
+            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+        });
+    </script>
+
+}

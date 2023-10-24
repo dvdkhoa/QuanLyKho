@@ -23,10 +23,11 @@
         public List<ProductWareHouse>? ProductWareHouses { get; set; }
         public List<ReceiptDetail>? ReceiptDetails { get; set; }
         public List<CartDetail>? CartDetails { get; set; }
+        public List<OrderDetail>? OrderDetails { get; set; }
         public List<ProductClassification>? ProductClassifications { get; set; }
         public List<ProductImage>? ProductImages { get; set; }
         public List<ProductPromotion>? ProductPromotions { get; set; }
-        public List<ProductDetailedConfig> ProductDetailedConfigs { get; set; }
+        public List<ProductDetailedConfig>? ProductDetailedConfigs { get; set; }
 
 
         public Product()

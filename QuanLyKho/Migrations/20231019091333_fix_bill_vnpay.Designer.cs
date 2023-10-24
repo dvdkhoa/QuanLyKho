@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuanLyKho.Models.EF;
 
@@ -11,9 +12,10 @@ using QuanLyKho.Models.EF;
 namespace QuanLyKho.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231019091333_fix_bill_vnpay")]
+    partial class fix_bill_vnpay
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,7 +253,7 @@ namespace QuanLyKho.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("Bills");
+                    b.ToTable("Bill");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Cart", b =>
@@ -555,9 +557,6 @@ namespace QuanLyKho.Migrations
                     b.Property<int>("PaymentStatus")
                         .HasColumnType("int");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("ShipStatus")
                         .HasColumnType("int");
 
@@ -581,7 +580,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasIndex("StoreId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.OrderDetail", b =>
@@ -616,9 +615,6 @@ namespace QuanLyKho.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductWarehouseId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -628,9 +624,7 @@ namespace QuanLyKho.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("ProductWarehouseId");
-
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetail");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Product", b =>
@@ -1028,7 +1022,7 @@ namespace QuanLyKho.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("VnPays");
+                    b.ToTable("VnPay");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.WareHouse", b =>
@@ -1114,9 +1108,9 @@ namespace QuanLyKho.Migrations
             modelBuilder.Entity("QuanLyKho.Models.Entities.Bill", b =>
                 {
                     b.HasOne("QuanLyKho.Models.Entities.Order", "Order")
-                        .WithOne()
+                        .WithOne("Bills")
                         .HasForeignKey("QuanLyKho.Models.Entities.Bill", "OrderId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Order");
@@ -1186,17 +1180,20 @@ namespace QuanLyKho.Migrations
                     b.HasOne("QuanLyKho.Models.Entities.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("QuanLyKho.Models.Entities.Staff", "Staff")
                         .WithMany("Orders")
                         .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("QuanLyKho.Models.Entities.WareHouse", "Store")
                         .WithMany("Orders")
                         .HasForeignKey("StoreId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Customer");
 
@@ -1219,16 +1216,9 @@ namespace QuanLyKho.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("QuanLyKho.Models.Entities.ProductWareHouse", "ProductWareHouse")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("ProductWarehouseId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Order");
 
                     b.Navigation("Product");
-
-                    b.Navigation("ProductWareHouse");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Product", b =>
@@ -1392,9 +1382,9 @@ namespace QuanLyKho.Migrations
             modelBuilder.Entity("QuanLyKho.Models.Entities.VnPay", b =>
                 {
                     b.HasOne("QuanLyKho.Models.Entities.Order", "Order")
-                        .WithOne()
+                        .WithOne("VnPays")
                         .HasForeignKey("QuanLyKho.Models.Entities.VnPay", "OrderId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Order");
@@ -1431,7 +1421,11 @@ namespace QuanLyKho.Migrations
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Order", b =>
                 {
+                    b.Navigation("Bills");
+
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("VnPays");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Product", b =>
@@ -1451,11 +1445,6 @@ namespace QuanLyKho.Migrations
                     b.Navigation("ProductWareHouses");
 
                     b.Navigation("ReceiptDetails");
-                });
-
-            modelBuilder.Entity("QuanLyKho.Models.Entities.ProductWareHouse", b =>
-                {
-                    b.Navigation("OrderDetails");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Promotion", b =>

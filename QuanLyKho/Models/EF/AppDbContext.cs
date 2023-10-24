@@ -47,6 +47,9 @@ namespace QuanLyKho.Models.EF
             builder.ApplyConfiguration(new CategoryDetailedConfigConfiguration());
             builder.ApplyConfiguration(new DetailedConfigConfiguration());
             builder.ApplyConfiguration(new ProductDetailedConfigConfiguration());
+            builder.ApplyConfiguration(new BillConfiguration());
+            builder.ApplyConfiguration(new VnPayConfiguration());
+
 
 
 
@@ -73,6 +76,7 @@ namespace QuanLyKho.Models.EF
         public DbSet<Receipt> Receipts { get; set; }
         public DbSet<ReceiptDetail> ReceiptDetails { get; set; }
         public DbSet<Staff> Staffs { get; set; }
+        public DbSet<Customer> Customer { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<ProductClassification> ProductClassifications { get; set; }
         public DbSet<Classification> Classifications { get; set; }
@@ -82,10 +86,12 @@ namespace QuanLyKho.Models.EF
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<ProductPromotion> ProductPromotions { get; set; }
         public DbSet<New> News { get; set; }
-
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartDetail> CartDetails { get; set; }
-
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<Bill> Bills { get; set; }
+        public DbSet<VnPay> VnPays { get; set; }
 
     }
 }

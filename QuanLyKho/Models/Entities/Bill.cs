@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public int OrderId { get; set; }
-        public Order? Order { get; set; }
+        public Order Order { get; set; }
         public double Price { get; set; }
         public double? MoneyReceived { get; set; }
         public double? MoneyRefund { get; set; }

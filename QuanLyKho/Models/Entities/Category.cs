@@ -9,9 +9,8 @@
         public DateTime CreatedTime { get; set; }
         public DateTime LastUpdated { get; set; }
         public Status Status { get; set; }
-        public List<Product>? Products { get; set; }
         public List<CategoryDetailedConfig>? CategoryDetailedConfigs { get; set; }
-
+        public List<Product>? Products { get; set; }
 
         public Category() 
         {

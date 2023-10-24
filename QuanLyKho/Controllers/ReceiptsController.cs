@@ -81,7 +81,7 @@ namespace QuanLyKho.Controllers
             else
             {
                 string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-                ViewData["StaffId"] = _context.Staffs.Where(s => s.UserId == userId).FirstOrDefault();
+                ViewData["StaffId"] = _context.Staffs.Where(s => s.UserId == userId).FirstOrDefault().Id;
             }
 
             return View();
@@ -212,7 +212,7 @@ namespace QuanLyKho.Controllers
             {
                 ModelState.AddModelError("", "Please complete all information");
                 return View(receipt);
-            }    
+            }
 
 
             receipt.DateCreated = DateTime.Now;
@@ -431,10 +431,14 @@ namespace QuanLyKho.Controllers
             {
                 receipts = receipts.Where(rc => rc.Type == ReceiptType.Export);
             }
-            else
+            else if (type == "transfer")
             {
-                return BadRequest();
+                receipts = receipts.Where(rc => rc.Type == ReceiptType.Transfer);
             }
+            else
+                    {
+                        return BadRequest();
+                    }
 
             // Check dua tren baseAs
             if (string.IsNullOrEmpty(baseAs) || baseAs == "all") // neu de trong thi coi nhu la all
@@ -500,7 +504,12 @@ namespace QuanLyKho.Controllers
                 return BadRequest();
             }
 
-            return Json(receipts);
+            foreach (var receipt in receipts)
+            {
+                receipt.ReceiptDetails = await _context.ReceiptDetails.Where(rd => rd.ReceiptId == receipt.Id).ToListAsync();
+            }
+            var kq = receipts.ToList();
+            return Json(kq);
         }
 
         public string generateHtml(Receipt receipt)

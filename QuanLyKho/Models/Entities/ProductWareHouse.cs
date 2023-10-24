@@ -11,6 +11,7 @@
         public Status Status { get; set; }
         public DateTime CreatedTime { get; set; }
         public DateTime LastUpdated { get; set; }
+        public List<OrderDetail> OrderDetails { get; set; }
 
         public ProductWareHouse()
         {

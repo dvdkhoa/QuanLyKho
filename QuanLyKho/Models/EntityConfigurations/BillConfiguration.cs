@@ -4,16 +4,16 @@ using QuanLyKho.Models.Entities;
 
 namespace QuanLyKho.Models.EntityConfigurations
 {
-    public class VnPayConfiguration : IEntityTypeConfiguration<VnPay>
+    public class BillConfiguration : IEntityTypeConfiguration<Bill>
     {
-        public void Configure(EntityTypeBuilder<VnPay> builder)
+        public void Configure(EntityTypeBuilder<Bill> builder)
         {
             builder.HasKey(b => b.Id);
 
             builder.HasOne(b => b.Order)
-                    .WithOne()
-                    .HasForeignKey<VnPay>(t => t.OrderId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                   .WithOne()
+                   .HasForeignKey<Bill>(t => t.OrderId)
+                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

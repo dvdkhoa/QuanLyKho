@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyKho.DTO;
@@ -16,16 +17,21 @@ namespace QuanLyKho.Controllers
         private readonly AppDbContext _context;
         private readonly IStatisticService _statisticService;
         private readonly IProductService _productService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public StatisticController(IStatisticService statisticService, AppDbContext context, IProductService productService)
+        public StatisticController(IStatisticService statisticService, AppDbContext context, IProductService productService, UserManager<AppUser> userManager)
         {
             _statisticService = statisticService;
             _context = context;
             _productService = productService;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
         {
+            ViewData["Warehouses"] = _context.WareHouses.ToList();
+            ViewData["Staff"] = _context.Staffs.ToList();
+
             return View();
         }
 
@@ -580,5 +586,119 @@ namespace QuanLyKho.Controllers
         }
 
 
+        public async Task<IActionResult> OrderStatistic()
+        {
+            var user = (await _userManager.GetUsersInRoleAsync("Sales staff")).Select(u=>u.Id);
+            var saleStaffs = await _context.Staffs.Where(s => user.Contains(s.UserId)).ToListAsync();
+
+            var stores = _context.WareHouses.Where(wh => wh.Id.StartsWith("CH")).ToList();
+
+            ViewData["Warehouses"] = stores;
+            ViewData["Staff"] = saleStaffs;
+
+            return View();
+        }
+
+
+        [HttpPost("/api/statistic/orderstatistic")]
+        public async Task<IActionResult> OrderStatisticPost(char time, string type, DateTime from, DateTime to, string baseAs, string baseId)
+        {
+            if (_context.Orders == null) return BadRequest();
+
+            var orders = _context.Orders.AsEnumerable();
+
+            // Check dua tren loai phieu
+            if (type == "all")
+            {
+                // khong lam gi ca
+            }
+            else if (type == "cod")
+            {
+                orders = orders.Where(o => o.PaymentMethod == PaymentMethod.COD);
+            }
+            else if (type == "direct")
+            {
+                orders = orders.Where(o => o.PaymentMethod == PaymentMethod.Direct);
+            }
+            else if (type == "vnpay")
+            {
+                orders = orders.Where(o => o.PaymentMethod == PaymentMethod.VnPay);
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+            // Check dua tren baseAs
+            if (string.IsNullOrEmpty(baseAs) || baseAs == "all") // neu de trong thi coi nhu la all
+            {
+                // lay het tat ca, khong loc, bo trong =)))
+            }
+            else if (baseAs == "staff") // loc dua tren nhan vien
+            {
+                orders = orders.Where(o => o.StaffId == baseId);
+            }
+            else if (baseAs == "warehouse") // loc dua tren nha kho
+            {
+                orders = orders.Where(o => o.StoreId == baseId);
+            }
+            else
+                return BadRequest();
+
+
+            // Check dua tren thoi gian
+            if (time == 't')
+            {
+                orders = orders.Where(o => o.CreatedTime.Date >= from.Date && o.CreatedTime.Date <= to.Date);
+            }
+            else if (time == 'd')
+            {
+                orders = orders.Where(o => o.CreatedTime.Date == DateTime.Now.Date);
+            }
+            else if (time == 'w')
+            {
+                var startDate = DateTime.Today.AddDays(-7);
+                var endDate = DateTime.Today;
+                orders = orders.Where(o =>
+                {
+                    return o.CreatedTime.Date >= startDate && o.CreatedTime.Date <= endDate;
+                });
+            }
+            else if (time == 'm')
+            {
+                orders = orders.Where(o =>
+                {
+                    var year = o.CreatedTime.Year;
+                    var month = o.CreatedTime.Month;
+
+                    return year == DateTime.Now.Year && month == DateTime.Now.Month;
+                });
+            }
+            else if (time == 'q')
+            {
+                var quarter = (DateTime.Today.Month - 1) / 3 + 1; // Tính quý hiện tại;
+                var year = DateTime.Today.Year; // Năm hiện tại;
+
+                // Tính ngày bắt đầu và kết thúc của quý hiện tại
+                var startQuarter = new DateTime(year, 3 * quarter - 2, 1);
+                var endQuarter = startQuarter.AddMonths(3).AddDays(-1);
+
+                orders = orders.Where(o =>
+                {
+                    return o.CreatedTime.Date >= startQuarter && o.CreatedTime.Date <= endQuarter;
+                });
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+            foreach (var order in orders)
+            {
+                order.OrderDetails = await _context.OrderDetails.Where(od => od.OrderId == order.Id).ToListAsync();
+            }
+            var kq = orders.ToList();
+            return Json(kq);
+        }
     }
 }
