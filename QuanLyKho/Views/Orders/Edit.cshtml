@@ -1,4 +1,4 @@
-﻿@model QuanLyKho.Models.Entities.Staff
+﻿@model QuanLyKho.Models.Entities.Order
 @using QuanLyKho.Models.Entities;
 
 @{
@@ -13,7 +13,7 @@
             <div class="col-md-8 offset-2">
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Update Staff</h3>
+                        <h3 class="card-title">Update order information</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                                 <i class="fas fa-minus"></i>
@@ -23,30 +23,23 @@
                     <div class="card-body" style="display: block;">
                         <div asp-validation-summary="All" class="text-danger"></div>
 
-                        <input asp-for="Id" type="hidden" >
-                        <input asp-for="Email" type="hidden" />
+                        <input asp-for="Id" type="hidden">
+                        <input asp-for="CustomerId" type="hidden" />
+                        <input asp-for="StaffId" type="hidden" />
+                        <input asp-for="StoreId" type="hidden" />
+
 
                         <div class="form-group">
-                            <label asp-for="Name">Name</label>
-                            <input asp-for="Name" type="text" class="form-control">
-                            <span asp-validation-for="Name" class="text-danger"></span>
+                            <label asp-for="CustomerName">Customer name</label>
+                            <input asp-for="CustomerName" type="text" class="form-control">
+                            <span asp-validation-for="CustomerName" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="DateOfBirth">Date Of Birth</label>
-                            <input asp-for="DateOfBirth" type="date" class="form-control">
-                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                            <label asp-for="Email">Date Of Birth</label>
+                            <input asp-for="Email" type="date" class="form-control">
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="Gender">Gender</label>
-                            <select asp-for="Gender" class="form-control custom-select">
-                                <option selected="" disabled="">Select one</option>
-                                @foreach (Gender gender in Enum.GetValues(typeof(Gender)))
-                                {
-                                    <option value="@gender">@gender.ToString()</option>
-                                }
-                            </select>
-                            <span asp-validation-for="Gender" class="text-danger"></span>
-                        </div>
+                        
                         <div class="form-group">
                             <label asp-for="PhoneNumber">PhoneNumber</label>
                             <input asp-for="PhoneNumber" class="form-control" />
@@ -58,16 +51,20 @@
                             <span asp-validation-for="Address" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="StartDay">Start day</label>
-                            <input asp-for="StartDay" type="date" class="form-control">
-                            <span asp-validation-for="StartDay" class="text-danger"></span>
+                            <label asp-for="Note">Start day</label>
+                            <input asp-for="Note" type="date" class="form-control">
+                            <span asp-validation-for="Note" class="text-danger"></span>
                         </div>
+
                         <div class="form-group">
-                            <label asp-for="WareHouseId">Warehouse</label>
-                            <select class="form-control custom-select" asp-for="WareHouseId" asp-items="@ViewBag.WareHouseId">
-                                <option selected="">Select Warehouse</option>
+                            <label asp-for="ShipStatus">Ship status</label>
+                            <select asp-for="ShipStatus" class="form-control custom-select">
+                                @foreach (ShipStatus shipStatus in Enum.GetValues(typeof(ShipStatus)))
+                                {
+                                    <option value="@shipStatus">@shipStatus.ToString()</option>
+                                }
                             </select>
-                            <span asp-validation-for="WareHouseId" class="text-danger"></span>
+                            <span asp-validation-for="ShipStatus" class="text-danger"></span>
                         </div>
                     </div>
                     <!-- /.card-body -->

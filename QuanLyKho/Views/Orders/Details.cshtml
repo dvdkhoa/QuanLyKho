@@ -110,7 +110,7 @@
 
         <hr />
 
-        @if (Model != null && Model.OrderDetails?.Count() > 0)
+        @if (Model != null && Model.OrderDetails.Count() > 0)
         {
             <form asp-action="Details" method="post">
                 <input type="hidden" name="orderId" value="@Model.Id" />

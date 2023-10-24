@@ -131,5 +131,24 @@ namespace QuanLyKho.Controllers
 
             return View(order);
         }
+    
+        public IActionResult Edit(int id)
+        {
+            var order = _context.Orders.Find(id);
+            if(order is null)
+                return NotFound();
+
+            return View(order);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Order order)
+        {
+            if (ModelState.IsValid)
+            {
+
+            }
+            return View(order);
+        }
     }
 }

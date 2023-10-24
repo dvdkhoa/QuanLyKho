@@ -11,9 +11,16 @@
         public DateTime CreatedTime { get; set; }
         public DateTime LastUpdated { get; set; }
         public Status Status { get; set; }
-        public List<Order> Orders { get; set; }
+        public List<Order>? Orders { get; set; }
         public string UserId { get; set; }
-        public AppUser User { get; set; }  
+        public AppUser? User { get; set; }
 
+
+        // Khi tạo mới hoặc chỉnh sửa thì gọi
+        public void UpdateTime()
+        {
+            this.CreatedTime = DateTime.Now;
+            this.LastUpdated = DateTime.Now;
+        }
     }
 }
