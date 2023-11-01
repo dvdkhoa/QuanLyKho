@@ -145,7 +145,7 @@
         });
     </script>
 
-    @if(Model != null && Model.Count > 0)
+    @if (Model != null && Model.Count > 0)
     {
         <script>
             @{
@@ -157,7 +157,7 @@
                 }).ToList();
             }
 
-                                        const json = @Html.Raw(@JsonSerializer.Serialize(data))
+                const json = @Html.Raw(@JsonSerializer.Serialize(data))
                 console.log('data: ', json)
 
             //

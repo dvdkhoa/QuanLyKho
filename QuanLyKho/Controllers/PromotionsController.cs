@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using QuanLyKho.Extensions;
 using QuanLyKho.Models.EF;
 using QuanLyKho.Models.Entities;
+using QuanLyKho.Services;
 
 namespace QuanLyKho.Controllers
 {
@@ -13,14 +14,18 @@ namespace QuanLyKho.Controllers
     {
         private readonly AppDbContext _context;
 
-        public PromotionsController(AppDbContext context)
+        public PromotionsController(AppDbContext context, PromotionService promotionService)
         {
             _context = context;
         }
 
         public IActionResult Index(string filter = "All")
         {
+            if (_context.Promotions == null)
+                return Problem("Entity set 'AppDbContext.Promotions'  is null.");
+
             var promotions = _context.Promotions;
+
             List<Promotion> promotionsModel = new List<Promotion>();
             if (filter == "Show")
                 promotionsModel = promotions.Where(p => p.Status == Status.Show).ToList();
@@ -53,7 +58,7 @@ namespace QuanLyKho.Controllers
                 return NotFound();
 
             promotion.Status = promotion.Status.ChangeStatus();
-            promotion.UpdateTime();
+            promotion.SetUpdatedTime();
 
             int kq = await _context.SaveChangesAsync();
             if (kq > 0)
@@ -72,18 +77,40 @@ namespace QuanLyKho.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Promotion promotion)
         {
-            if (ModelState.IsValid)
+            try
             {
-                promotion.UpdateTime();
-                await _context.AddAsync(promotion);
-
-                var kq = await _context.SaveChangesAsync();
-                if (kq > 0)
+                if (ModelState.IsValid)
                 {
-                    return RedirectToAction("Details", promotion);
+                    if (promotion.StartDate == promotion.EndDate)
+                    {
+                        ModelState.AddModelError("", "'Start date' and 'End date' must be different");
+                        return View(promotion);
+                    }
+
+                    var kqCompare = promotion.StartDate.CompareTo(promotion.EndDate);
+
+                    if (kqCompare > 0)
+                    {
+                        ModelState.AddModelError("", "'Start date' must be before 'End date' ");
+                        return View(promotion);
+                    }
+
+                    promotion.SetCreatedTime();
+                    await _context.AddAsync(promotion);
+
+                    var kq = await _context.SaveChangesAsync();
+                    if (kq > 0)
+                    {
+                        return RedirectToAction("Details", promotion);
+                    }
                 }
+                return View();
             }
-            return View();
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return RedirectToAction("Index");
+            }
         }
 
         public async Task<IActionResult> AddPromotionalProducts(int id)
@@ -131,24 +158,28 @@ namespace QuanLyKho.Controllers
             }
 
             // Bổ sung thêm: 1 sản phẩm đã thuộc khuyến mãi giảm giá có tác dụng trong thời gian này thì không được thêm vào cho khuyến mãi giảm giá khác
+            if (promotion.PromotionType == PromotionType.Discount)
+            {
+                // Lấy ra tất cả các id sản phẩm thuộc 1 chương trình khuyến mãi giảm giá bất kỳ ở thời điểm hiện tại - có hiệu lực
+                var otherPromotionalProductIds = await _context.ProductPromotions.Include(pp => pp.Promotion)
+                                                                .Where(pp => pp.Promotion.PromotionType == PromotionType.Discount
+                                                                    //&& pp.Promotion.EndDate.Date >= DateTime.Now.Date).Select(pp => pp.ProductId).ToListAsync();
+                                                                    && DateTime.Now < pp.Promotion.EndDate).Select(pp => pp.ProductId).ToListAsync();
 
-            // Lấy ra tất cả các id sản phẩm thuộc 1 chương trình khuyến mãi giảm giá bất kỳ ở thời điểm hiện tại - có hiệu lực
-            var otherPromotionalProductIds = await _context.ProductPromotions.Include(pp => pp.Promotion)
-                                                            .Where(pp => pp.Promotion.PromotionType == PromotionType.Discount
-                                                                && pp.Promotion.EndDate.Date >= DateTime.Now.Date).Select(pp => pp.ProductId).ToListAsync();
-            // Check
-            List<string> idExists = new List<string>();
-            foreach (var id in productIds)
-            {
-                if (otherPromotionalProductIds.Contains(id))
+                // Check
+                List<string> idExists = new List<string>();
+                foreach (var id in productIds)
                 {
-                    idExists.Add(id);
+                    if (otherPromotionalProductIds.Contains(id))
+                    {
+                        idExists.Add(id);
+                    }
                 }
-            }
-            if (idExists.Count > 0)
-            {
-                ModelState.AddModelError("", $"Products with Id: {string.Join(",", idExists)} already exist in another promotion");
-                return View();
+                if (idExists.Count > 0)
+                {
+                    ModelState.AddModelError("", $"Products with Id: {string.Join(",", idExists)} already exist in another promotion");
+                    return View();
+                }
             }
 
             var productPromotions = productIds.Select(id =>
@@ -165,27 +196,33 @@ namespace QuanLyKho.Controllers
             // So sánh kết quả số dòng insert có bằng số lượng id sản phẩm được gửi đến không, sau cần bắt lỗi chỗ này để rollback
             if (kq > 0 && kq == productIds.Length)
             {
-                // Kiểm tra xem đây là loại khuyến mãi giảm giá hay là khuyến mãi tặng sản phẩm
-                if (promotion.PromotionType == PromotionType.Discount)
+                if (promotion.Status == Status.Show) // Nếu promotion active thì mới check set giá khuyến mãi
                 {
-                    // Lấy ra các sản phẩm cần cập nhật giá trị PromotionalPrice
-                    var products = await _context.Products.Where(p => productIds.Contains(p.Id)).ToListAsync();
-                    products.ForEach(p =>
+                    // Kiểm tra xem đây là loại khuyến mãi giảm giá hay là khuyến mãi tặng sản phẩm
+                    if (promotion.PromotionType == PromotionType.Discount)
                     {
-                        p.PromotionPrice = p.Price - (p.Price * promotion.Percent / 100); // Tính giá khuyễn mãi :D
-                        p.LastUpdated = DateTime.Now;
-                    });
-                    _context.Products.UpdateRange(products);
-                    kq = await _context.SaveChangesAsync();
-                    if (kq == 0)
-                    {
-                        ModelState.AddModelError("", "Updating the promotional price for products failed! ");
-                        return View();
+                        if (promotion.StartDate.CompareTo(DateTime.Now) <= 0)
+                        {
+                            // Lấy ra các sản phẩm cần cập nhật giá trị PromotionalPrice
+                            var products = await _context.Products.Where(p => productIds.Contains(p.Id)).ToListAsync();
+                            products.ForEach(p =>
+                            {
+                                p.PromotionPrice = p.Price - (p.Price * promotion.Percent / 100); // Tính giá khuyễn mãi :D
+                                p.LastUpdated = DateTime.Now;
+                            });
+                            _context.Products.UpdateRange(products);
+                            kq = await _context.SaveChangesAsync();
+                            if (kq == 0)
+                            {
+                                ModelState.AddModelError("", "Updating the promotional price for products failed! ");
+                                return View();
+                            }
+                        }
                     }
-                }
-                else // Phần này là dành cho PromotionType.Gift, sau nếu triển khai loại khuyến mãi này thì viết tiếp code ở đây
-                {
+                    else // Phần này là dành cho PromotionType.Gift, sau nếu triển khai loại khuyến mãi này thì viết tiếp code ở đây
+                    {
 
+                    }
                 }
             }
             return RedirectToAction("Details", promotion);
@@ -237,43 +274,52 @@ namespace QuanLyKho.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            int kq = 0;
-            var promotion = await _context.Promotions.FindAsync(id);
-            if (promotion == null)
-                return NotFound();
-
-            // Lấy tất cả các sản phẩm thuộc chương trình khuyến mãi này
-            var productPromotions = await _context.ProductPromotions.Where(pp => pp.PromotionId == id).ToListAsync();
-            // Lấy ra danh sách productId
-            var productIds = productPromotions.Select(pp => pp.ProductId).ToList();
-
-            // Kiểm tra xem promotion này có đang hiệu lực hay không ?
-            // Nếu còn trong thời hạn hiệu lực hoặc chưa tới thời hạn hiệu lực(phần chưa tới thời hạn - chưa có trong hệ thống-> cần triển khai sau này) thì cập nhật giá lại(xóa giá khuyến mãi).
-            if (promotion.StartDate.Date <= DateTime.Now.Date || promotion.EndDate.Date >= DateTime.Now.Date)
+            try
             {
-                var products = await _context.Products.Where(p => productIds.Contains(p.Id)).ToListAsync();
-                products.ForEach(p =>
+                int kq = 0;
+                var promotion = await _context.Promotions.FindAsync(id);
+                if (promotion == null)
+                    return NotFound();
+
+                // Lấy tất cả các sản phẩm thuộc chương trình khuyến mãi này
+                var productPromotions = await _context.ProductPromotions.Where(pp => pp.PromotionId == id).ToListAsync();
+                // Lấy ra danh sách productId
+                var productIds = productPromotions.Select(pp => pp.ProductId).ToList();
+
+                // Kiểm tra xem promotion này có đang hiệu lực hay không ?
+                // Nếu còn trong thời hạn hiệu lực hoặc chưa tới thời hạn hiệu lực(phần chưa tới thời hạn - chưa có trong hệ thống-> cần triển khai sau này) thì cập nhật giá lại(xóa giá khuyến mãi).
+                if (promotion.StartDate.Date <= DateTime.Now.Date || promotion.EndDate.Date >= DateTime.Now.Date)
                 {
-                    p.PromotionPrice = null;
-                });
-                _context.Products.UpdateRange(products);
+                    var products = await _context.Products.Where(p => productIds.Contains(p.Id)).ToListAsync();
+                    if (productIds?.Count > 0)
+                    {
+                        products.ForEach(p =>
+                        {
+                            p.PromotionPrice = null;
+                        });
+                        _context.Products.UpdateRange(products);
+                        kq = await _context.SaveChangesAsync();
+                        if (kq == 0)
+                            return BadRequest();
+                    }
+                }
+                // Nếu không còn trong thời hạn hiệu lực thì chỉ xóa các chi tiết sản phẩm trong promotion này thôi chứ không thay đổi giá
+
+                kq = 0; // reset biến kq để dùng cho việc kiểm tra phía bên dưới
+
+                _context.ProductPromotions.RemoveRange(productPromotions);  // Xóa productPromotions
+
+                _context.Remove(promotion); // Xóa promotion
                 kq = await _context.SaveChangesAsync();
-                if (kq == 0)
-                    return BadRequest();
 
+                if (kq > 0)
+                    return Ok();
+                return BadRequest();
             }
-            // Nếu không còn trong thời hạn hiệu lực thì chỉ xóa các chi tiết sản phẩm trong promotion này thôi chứ không thay đổi giá
-
-            kq = 0; // reset biến kq để dùng cho việc kiểm tra phía bên dưới
-
-            _context.ProductPromotions.RemoveRange(productPromotions);  // Xóa productPromotions
-
-            _context.Remove(promotion); // Xóa promotion
-            kq = await _context.SaveChangesAsync();
-
-            if (kq > 0)
-                return Ok();
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public IActionResult Edit(int id)
@@ -284,6 +330,7 @@ namespace QuanLyKho.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(Promotion promotion)
         {
+            promotion.SetUpdatedTime();
             _context.Update(promotion);
             await _context.SaveChangesAsync();
             return RedirectToAction("Details", promotion);

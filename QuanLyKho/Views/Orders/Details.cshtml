@@ -4,6 +4,8 @@
 
 @{
     ViewData["Title"] = "Order details";
+    ViewData["PrimaryTitle"] = "Orders";
+
 
     var warehouses = ViewBag.warehouses as List<ProductWareHouse>;
 }
@@ -172,6 +174,10 @@
                 @if (Model.ShipStatus == ShipStatus.NotApproved)
                 {
                     <button class="btn btn-primary float-right">Approve</button>
+                }
+                else if(Model.ShipStatus == ShipStatus.BeingShipped)
+                {
+                    <button class="btn btn-success float-right" name="isComplete" value="true">Complete delivery</button>
                 }
             </form>
 

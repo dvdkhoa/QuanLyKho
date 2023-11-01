@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyKho.Extensions;
 using QuanLyKho.Models.EF;
@@ -6,6 +7,7 @@ using QuanLyKho.Models.Entities;
 
 namespace QuanLyKho.Controllers
 {
+    [Authorize(Roles = "Admin,Manager,Sales staff")]
     public class CustomersController : Controller
     {
         private readonly AppDbContext _context;
@@ -36,8 +38,10 @@ namespace QuanLyKho.Controllers
         public IActionResult Details(string id)
         {
             var customer = _context.Customer.Find(id);
-            if(customer == null)
+            if (customer == null)
                 return NotFound();
+
+            customer.User = _context.Users.Find(customer.UserId);
 
             return View(customer);
         }
@@ -73,7 +77,7 @@ namespace QuanLyKho.Controllers
                 return NotFound();
 
             customer.Status = customer.Status.ChangeStatus();
-            customer.UpdateTime();
+            customer.SetUpdatedTime();
 
             int kq = await _context.SaveChangesAsync();
             if (kq > 0)
@@ -82,6 +86,29 @@ namespace QuanLyKho.Controllers
 
             }
             return BadRequest();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                var customer = await _context.Customer.FindAsync(id);
+                if (customer is null)
+                    return NotFound();
+
+                _context.Customer.Remove(customer);
+
+                var kq = await _context.SaveChangesAsync();
+                if (kq > 0)
+                    return Ok();
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

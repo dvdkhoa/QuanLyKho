@@ -24,7 +24,7 @@ namespace QuanLyKho.Services.Implement
 
             staff.Id = id;
 
-            staff.UpdateTime();
+            staff.SetCreatedTime();
 
             _context.Add(staff);
 

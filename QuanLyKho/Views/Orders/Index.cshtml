@@ -4,6 +4,8 @@
 
 @{
     ViewData["Title"] = "Index";
+    ViewData["PrimaryTitle"] = "Orders";
+
 }
 
 @section Styles {
@@ -19,10 +21,33 @@
 <!-- /.card -->
 <div class="card">
     <div class="card-header">
-        <a class="card-title" asp-action="Create" asp-controller="News">Add new</a>
+        
     </div>
     <!-- /.card-header -->
     <div class="card-body">
+
+        <form asp-action="Index" method="get">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label>Display based on type:</label>
+                        <select class="form-control" id="display-select" asp-for="@ViewData["filter"]" name="filter">
+                            <option value="All">All</option>
+                            <option value="NotApproved">Not approved</option>
+                            <option value="BeingShipped">Being shipped</option>
+                            <option value="Success">Success</option>
+                            <option value="Canceled">Canceled</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-sm btn-app mt-3" id="filter-btn">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </div>
+        </form>
+
 
         @if(Model != null && Model.Count() > 0)
         {

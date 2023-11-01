@@ -106,7 +106,7 @@ namespace QuanLyKho.Controllers
                 }
 
                 _context.Add(wareHouse);
-                wareHouse.UpdateTime();
+                wareHouse.SetCreatedTime();
                 var kq = await _context.SaveChangesAsync();
 
                 if (kq > 0)
@@ -154,7 +154,7 @@ namespace QuanLyKho.Controllers
             {
                 try
                 {
-                    wareHouse.UpdateTime();
+                    wareHouse.SetUpdatedTime();
                     _context.Update(wareHouse);
                     await _context.SaveChangesAsync();
                 }
@@ -177,18 +177,30 @@ namespace QuanLyKho.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAsync(string id)
         {
-            ViewData["PrimaryTitle"] = PrimaryTitle;
-            if (string.IsNullOrEmpty(id) || _context.WareHouses is null)
-                return BadRequest();
-            var warehouse = _context.WareHouses.Find(id);
-            if (warehouse == null)
-                return NotFound();
+            try
+            {
+                if (string.IsNullOrEmpty(id) || _context.WareHouses is null)
+                    return BadRequest();
+                var warehouse = _context.WareHouses.Find(id);
+                if (warehouse == null)
+                    return NotFound();
 
-            warehouse.Status = Status.Hide;
-            warehouse.UpdateTime();
-            await _context.SaveChangesAsync();
+                //warehouse.Status = Status.Hide;
+                //warehouse.SetUpdatedTime();
 
-            return Ok();
+                _context.WareHouses.Remove(warehouse);
+
+                var kq = await _context.SaveChangesAsync();
+
+                if (kq == 0)
+                    return BadRequest();
+
+                return Ok();
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         public async Task<IActionResult> Display(string id)
@@ -198,7 +210,7 @@ namespace QuanLyKho.Controllers
                 return NotFound();
 
             warehouse.Status = warehouse.Status.ChangeStatus();
-            warehouse.UpdateTime();
+            warehouse.SetUpdatedTime();
 
             int kq = await _context.SaveChangesAsync();
             if (kq > 0)

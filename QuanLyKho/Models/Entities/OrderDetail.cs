@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using jsonNewton = Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace QuanLyKho.Models.Entities
 {
@@ -6,6 +7,7 @@ namespace QuanLyKho.Models.Entities
     {
         public int Id { get; set; }
         public int OrderId { get; set; }
+        [jsonNewton.JsonIgnore]
         [JsonIgnore]
         public Order Order { get; set; }
         public string ProductId { get; set; }
@@ -15,6 +17,8 @@ namespace QuanLyKho.Models.Entities
         public int Quantity { get; set; }
         public double Price { get; set; }
         public int? ProductWarehouseId { get; set; }
+        [jsonNewton.JsonIgnore]
+        [JsonIgnore]
         public ProductWareHouse? ProductWareHouse { get; set; }
         public DateTime CreatedTime { get; set; }
         public DateTime LastUpdated { get; set; }

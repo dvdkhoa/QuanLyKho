@@ -13,10 +13,16 @@
         public DateTime LastUpdated { get; set; }
 
 
-        // Khi tạo mới hoặc chỉnh sửa thì gọi
-        public void UpdateTime()
+        // Khi tạo mới thì gọi
+        public void SetCreatedTime()
         {
             this.CreatedTime = DateTime.Now;
+            this.LastUpdated = DateTime.Now;
+        }
+
+        // Khi cập nhật thì gọi
+        public void SetUpdatedTime()
+        {
             this.LastUpdated = DateTime.Now;
         }
     }

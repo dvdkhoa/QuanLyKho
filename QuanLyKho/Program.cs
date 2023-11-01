@@ -13,11 +13,14 @@ using DinkToPdf.Contracts;
 using DinkToPdf;
 using AutoMapper;
 using QuanLyKho.Extensions;
+using Hangfire;
+using Hangfire.SqlServer;
+using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddDbContext<AppDbContext>( options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("QLKHO");
     options.UseSqlServer(connectionString);
@@ -47,7 +50,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 
-builder.Services.Configure<IdentityOptions>( options =>
+builder.Services.Configure<IdentityOptions>(options =>
 {
     // Thiết lập về Password
     options.Password.RequireDigit = false; // Khôg bắt phải có số
@@ -81,6 +84,18 @@ builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IReceiptService, ReceiptService>();
 builder.Services.AddScoped<IStatisticService, StatisticService>();
+builder.Services.AddScoped<PromotionService>();
+
+
+// Add Hangfire services.
+builder.Services.AddHangfire(configuration => configuration
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(builder.Configuration.GetConnectionString("QLKHO")));
+
+// Add the processing server as IHostedService
+builder.Services.AddHangfireServer();
 
 
 // Add services to the container.
@@ -101,11 +116,34 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseHangfireDashboard();
+
+
+var backgroundJobs = app.Services.GetService<IBackgroundJobClient>();
+
+using (var serviceScope = app.Services.CreateScope())
+{
+    var services = serviceScope.ServiceProvider;
+
+    var promotionService = services.GetRequiredService<PromotionService>();
+
+    RecurringJob.AddOrUpdate("UpdatePromotionPriceStartDate", () => promotionService.UpdatePromotionPriceStartDate(), Cron.Daily);
+
+    RecurringJob.AddOrUpdate("UpdatePromotionPriceEndDate", () => promotionService.UpdatePromotionPriceEndDate(), Cron.Daily);
+}
+
+
+
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHangfireDashboard();
+});
 
 app.MapControllerRoute(
     name: "default",

@@ -11,7 +11,7 @@
     <!-- SweetAlert2 -->
     <link rel="stylesheet" href="~/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 
-   
+
 }
 
 
@@ -47,7 +47,7 @@
                     <label for="inlineRadio3" class="custom-control-label">COD</label>
                 </div>
                 <div class="col form-group custom-control custom-radio">
-                    <input type="radio" name="type" id="inlineRadio4" value="vnpay" class="custom-control-input custom-control-input-primary">
+                    <input type="radio" name="type" id="inlineRadio4" value="vnpay" class="custom-control-input custom-control-input-warning">
                     <label for="inlineRadio4" class="custom-control-label">VnPay</label>
                 </div>
             </div>
@@ -70,6 +70,8 @@
                     <option value="all">All</option>
                     <option value="staff">Staff</option>
                     <option value="warehouse">Store</option>
+                    <option value="customer">Customer</option>
+                    <option value="product">Product</option>
                 </select>
             </div>
             <div class="col-lg-6">
@@ -86,15 +88,39 @@
                 }
                 @if (ViewBag.Staff != null)
                 {
-                    <div class="form-group">
-                        <select id="input-staff-id" class="form-control w-100 " style="display: none" >
-                            <option selected disabled>Select staff</option>
-                            @foreach (Staff staff in ViewBag.Staff)
-                            {
-                                <option value="@staff.Id">@staff.Name</option>
-                            }
-                        </select>
-                    </div>
+
+                    <select id="input-staff-id" class="form-control w-100 " style="display: none">
+                        <option selected disabled>Select staff</option>
+                        @foreach (Staff staff in ViewBag.Staff)
+                        {
+                            <option value="@staff.Id">@staff.Name</option>
+                        }
+                    </select>
+
+                }
+                @if (ViewBag.Customers != null)
+                {
+
+                    <select id="input-customer-id" class="form-control w-100 " style="display: none">
+                        <option selected disabled>Select customer</option>
+                        @foreach (Customer customer in ViewBag.Customers)
+                        {
+                            <option value="@customer.Id">@customer.Name</option>
+                        }
+                    </select>
+
+                }
+                @if (ViewBag.Products != null)
+                {
+
+                    <select id="input-product-id" class="form-control w-100 " style="display: none">
+                        <option selected disabled>Select product</option>
+                        @foreach (Product product in ViewBag.Products)
+                        {
+                            <option value="@product.Id">@product.Name</option>
+                        }
+                    </select>
+
                 }
             </div>
         </div>
@@ -164,16 +190,34 @@
             if (value === 'all') {
                 $('#input-warehouse-id').hide(500)
                 $('#input-staff-id').hide(500)
+                $('#input-customer-id').hide(500)
+                $('#input-product-id').hide(500)
 
             }
             else if (value == 'staff') {
                 $('#input-staff-id').show(500)
                 $('#input-warehouse-id').hide(500)
+                $('#input-customer-id').hide(500)
+                $('#input-product-id').hide(500)
 
             }
             else if (value == 'warehouse') {
-                $('#input-staff-id').hide(500)
                 $('#input-warehouse-id').show(500)
+                $('#input-staff-id').hide(500)
+                $('#input-customer-id').hide(500)
+                $('#input-product-id').hide(500)
+            }
+            else if (value == 'customer') {
+                $('#input-customer-id').show(500)
+                $('#input-warehouse-id').hide(500)
+                $('#input-staff-id').hide(500)
+                $('#input-product-id').hide(500)
+            }
+            else if (value == 'product') {
+                $('#input-product-id').show(500)
+                $('#input-staff-id').hide(500)
+                $('#input-warehouse-id').hide(500)
+                $('#input-customer-id').hide(500)
             }
         })
 
@@ -227,13 +271,19 @@
                     //baseId: $('#input-id').val()
                 }
 
-                if(base === 'staff'){
+                if (base === 'staff') {
                     data.baseId = $('#input-staff-id').val()
                 }
-                else if(base === 'warehouse'){
+                else if (base === 'warehouse') {
                     data.baseId = $('#input-warehouse-id').val()
                 }
-               
+                else if (base === 'customer') {
+                    data.baseId = $('#input-customer-id').val()
+                }
+                else if (base === 'product') {
+                    data.baseId = $('#input-product-id').val()
+                }
+
 
                 if (kieu === 't') {
                     data = { ...data, from: $("input[name=from]").val(), to: $("input[name=to]").val() }
@@ -253,16 +303,16 @@
 
                     Date.prototype.formatMMDDYYYY = function () {
                         return this.getDate() + "/" +
-                                (this.getMonth() + 1) +
-                                "/" + this.getFullYear();
+                            (this.getMonth() + 1) +
+                            "/" + this.getFullYear();
                     }
 
                     const datarows = res.map(i => {
 
 
                         return [
-                            i.id,
-                            i.customerName,
+                            `<a href="/Orders/Details/${i.id}">${i.id}</a>`,
+                            `<a href="/Customers/Details/${i.customerId}">${i.customerName}</a>`,
                             i.staffId,
                             i.storeId,
                             i.total,

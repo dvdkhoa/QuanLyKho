@@ -81,13 +81,13 @@ namespace QuanLyKho.Controllers
                 // Status mặc định là Show
                 category.Status = Status.Show;
 
-                if(iconFile != null)
+                if (iconFile != null)
                 {
                     var imagePath = await CloudinaryHelper.UploadFileToCloudinary(iconFile, "Categories");
                     category.Icon = imagePath;
                 }
 
-                category.UpdateTime();
+                category.SetCreatedTime();
 
                 _context.Add(category);
                 await _context.SaveChangesAsync();
@@ -139,10 +139,10 @@ namespace QuanLyKho.Controllers
                 {
                     if (iconFile != null)
                     {
-                        if(category.Icon != null) // Đã có icon trước đó rồi => xóa icon cũ => khúc này làm sau :v
+                        if (category.Icon != null) // Đã có icon trước đó rồi => xóa icon cũ => khúc này làm sau :v
                         {
-                            bool isDelete =  await CloudinaryHelper.DeteleImage(category.Icon, "Categories");
-                            
+                            bool isDelete = await CloudinaryHelper.DeteleImage(category.Icon, "Categories");
+
                         }
                         var imagePath = await CloudinaryHelper.UploadFileToCloudinary(iconFile, "Categories");
                         category.Icon = imagePath;
@@ -170,7 +170,7 @@ namespace QuanLyKho.Controllers
                             removeConfigIds.Add(configId);
                             // Xóa productDetailedConfig luôn
                             var productConfig = await _context.ProductDetailedConfigs.Include(pdc => pdc.Product).Where(pdc => pdc.ConfigId == configId && pdc.Product.CategoryId == category.Id).FirstOrDefaultAsync();
-                            if(productConfig != null)
+                            if (productConfig != null)
                                 _context.Remove(productConfig);
                         }
                     }
@@ -184,7 +184,7 @@ namespace QuanLyKho.Controllers
                             ConfigId = item,
                         };
                         await _context.CategoryDetailedConfigs.AddAsync(cdc);
-                        cdc.UpdateTime();
+                        cdc.SetUpdatedTime();
                     }
 
                     foreach (var item in removeConfigIds)
@@ -221,18 +221,27 @@ namespace QuanLyKho.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id is null || _context.Categories == null)
-                return NotFound();
+            try
+            {
+                if (id is null || _context.Categories == null)
+                    return NotFound();
 
-            var category = _context.Categories.Find(id);
-            if (category == null)
-                return NotFound();
+                var category = _context.Categories.Find(id);
+                if (category == null)
+                    return NotFound();
 
-            category.Status = Status.Hide;
+                _context.Categories.Remove(category);
 
-            await _context.SaveChangesAsync();
+                var kq = await _context.SaveChangesAsync();
 
-            return Ok();
+                if (kq > 0)
+                    return Ok();
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
@@ -285,7 +294,7 @@ namespace QuanLyKho.Controllers
                 return NotFound();
 
             category.Status = category.Status.ChangeStatus();
-            category.UpdateTime();
+            category.SetUpdatedTime();
 
             int kq = await _context.SaveChangesAsync();
             if (kq > 0)

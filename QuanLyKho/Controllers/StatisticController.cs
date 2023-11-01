@@ -593,8 +593,14 @@ namespace QuanLyKho.Controllers
 
             var stores = _context.WareHouses.Where(wh => wh.Id.StartsWith("CH")).ToList();
 
+            var customes = await _context.Customer.ToListAsync();
+
+            var products = await _context.Products.ToListAsync();
+
             ViewData["Warehouses"] = stores;
             ViewData["Staff"] = saleStaffs;
+            ViewData["Customers"] = customes;
+            ViewData["Products"] = products;
 
             return View();
         }
@@ -641,6 +647,15 @@ namespace QuanLyKho.Controllers
             else if (baseAs == "warehouse") // loc dua tren nha kho
             {
                 orders = orders.Where(o => o.StoreId == baseId);
+            }
+            else if(baseAs == "customer")
+            {
+                orders = orders.Where(o => o.CustomerId == baseId);
+            }   
+            else if (baseAs == "product")
+            {
+                var details = await _context.OrderDetails.Where(od => od.ProductId == baseId).Select(od=>od.OrderId).ToListAsync();
+                orders = orders.Where(o => details.Contains(o.Id));
             }
             else
                 return BadRequest();

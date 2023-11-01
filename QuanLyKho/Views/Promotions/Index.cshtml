@@ -41,70 +41,58 @@
                 </div>
             </div>
         </form>
-        <table id="table" class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>@Html.DisplayNameFor(model => model.Name)</th>
-                    <th>@Html.DisplayNameFor(model => model.Percent)</th>
-                    <th>@Html.DisplayNameFor(model => model.StartDate)</th>
-                    <th>@Html.DisplayNameFor(model => model.EndDate)</th>
-                    <th>@Html.DisplayNameFor(model => model.CreatedTime)</th>
-                    <th>@Html.DisplayNameFor(model => model.LastUpdated)</th>
-                    <th>@Html.DisplayNameFor(model => model.Status)</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var p in Model)
-                {
+        @if (Model != null && Model.Count() > 0)
+        {
+            <table id="table" class="table table-bordered table-striped">
+                <thead>
                     <tr>
-                        <td>@p.Name</td>
-                        <th>@p.Percent</th>
-                        <th>@p.StartDate.ToCustomDateTimeStr()</th>
-                        <th>@p.EndDate.ToCustomDateTimeStr()</th>
-                        <th>@p.CreatedTime.ToCustomDateTimeStr()</th>
-                        <th>@p.LastUpdated.ToCustomDateTimeStr()</th>
-                        <td>@p.Status</td>
-                        <td class="text-center">
-                            <a class="btn-sm btn-primary" asp-action="Details" asp-route-id="@p.Id"><i class="fas fa-info-circle"></i></a>
-                            <a class="btn-sm btn-secondary" asp-action="Edit" asp-route-id="@p.Id"><i class="fas fa-tools"></i></a>
-                            <a class="btn-sm btn-outline-success border @(p.Status == Status.Show ? "border-success" : "")" asp-action="Display" asp-route-id="@p.Id"><i class="fa-solid fa-eye"></i></a>
-                            <a style="cursor: pointer" class="btn-sm btn-danger btn-delete" data-id="@p.Id">
-                                <i class="fas fa-trash"></i>
-                            </a>
-
-                            @*<a class="btn-sm btn-danger" data-toggle="modal" data-target="#modal-sm"><i class="fas fa-trash"></i></a>*@
-                        </td>
+                        <th>Id</th>
+                        <th>@Html.DisplayNameFor(model => model.Name)</th>
+                        <th>@Html.DisplayNameFor(model => model.Percent)</th>
+                        <th>@Html.DisplayNameFor(model => model.StartDate)</th>
+                        <th>@Html.DisplayNameFor(model => model.EndDate)</th>
+                        <th>@Html.DisplayNameFor(model => model.CreatedTime)</th>
+                        <th>@Html.DisplayNameFor(model => model.LastUpdated)</th>
+                        <th>@Html.DisplayNameFor(model => model.Status)</th>
+                        <th>Action</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>@p.Id</td>
+                            <td>@p.Name</td>
+                            <th>@p.Percent</th>
+                            <th>@p.StartDate.ToCustomDateTimeStr()</th>
+                            <th>@p.EndDate.ToCustomDateTimeStr()</th>
+                            <th>@p.CreatedTime.ToCustomDateTimeStr()</th>
+                            <th>@p.LastUpdated.ToCustomDateTimeStr()</th>
+                            <td>@p.Status</td>
+                            <td class="text-center">
+                                <a class="btn-sm btn-primary" asp-action="Details" asp-route-id="@p.Id"><i class="fas fa-info-circle"></i></a>
+                                <a class="btn-sm btn-secondary" asp-action="Edit" asp-route-id="@p.Id"><i class="fas fa-tools"></i></a>
+                                <a class="btn-sm btn-outline-success border @(p.Status == Status.Show ? "border-success" : "")" asp-action="Display" asp-route-id="@p.Id"><i class="fa-solid fa-eye"></i></a>
+                                <a style="cursor: pointer" class="btn-sm btn-danger btn-delete" data-id="@p.Id">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+
+                                @*<a class="btn-sm btn-danger" data-toggle="modal" data-target="#modal-sm"><i class="fas fa-trash"></i></a>*@
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <hr />
+            <p class="text-center">There are no promotions yet</p>
+        }
     </div>
     <!-- /.card-body -->
 </div>
 <!-- /.card -->
-
-<div class="modal fade" id="modal-sm" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Alert</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>Change status category ?</p>
-            </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger">OK</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
 
 @section Scripts {
 
@@ -125,31 +113,16 @@
 
     <script src="~/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
 
-
-
     <script>
+        var table = {}
         $(function () {
-            let table = $("#table").DataTable({
+            table = $("#table").DataTable({
                 "responsive": true, "lengthChange": false, "autoWidth": false,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
             });
-            let displaySelect = $('#display-select')
-            $('#filter-btn').on('click', function () {
-                console.log(displaySelect.val())
-            })
-        });
-    </script>
 
-    <script>
+            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        });
 
         var Toast = Swal.mixin({
             toast: true,
@@ -182,17 +155,20 @@
                     }).done(() => {
 
                         var tr = $(this).parents('tr');
-                        tr.remove()
+
+                        table.row(tr).remove().draw();
 
                         Swal.fire(
                             'Deleted!',
                             'Your file has been deleted.',
                             'success'
                         )
-                    }).fail(() => {
+                    }).fail((error) => {
+                        console.log('error: ', error)
                         Toast.fire({
                             icon: 'error',
-                            title: 'Something went wrong.'
+                            //title: 'Something went wrong.'
+                            title: error.responseText !== '' ? error.responseText : 'Something went wrong.'
                         })
                     })
 

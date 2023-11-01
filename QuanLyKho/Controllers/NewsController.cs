@@ -70,21 +70,29 @@ namespace QuanLyKho.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Content,Description")] New @new, IFormFile? inputImage)
         {
-            if (ModelState.IsValid)
+            try
             {
-                if(inputImage != null)
+                if (ModelState.IsValid)
                 {
-                    @new.Image = await CloudinaryHelper.UploadFileToCloudinary(inputImage, "News");
+                    if (inputImage != null)
+                    {
+                        @new.Image = await CloudinaryHelper.UploadFileToCloudinary(inputImage, "News");
+                    }
+
+                    _context.Add(@new);
+                    @new.Status = Status.Show;
+                    @new.SetCreatedTime();
+
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-
-                _context.Add(@new);
-                @new.Status = Status.Show;
-                @new.UpdateTime();
-
-                await _context.SaveChangesAsync();
+                return View(@new);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
                 return RedirectToAction(nameof(Index));
             }
-            return View(@new);
         }
 
         // GET: News/Edit/5
@@ -108,86 +116,83 @@ namespace QuanLyKho.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Content,Image,Status")] New @new, IFormFile? inputImage)
         {
-            if (id != @new.Id)
+            try
             {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                if (id != @new.Id)
                 {
-                    if (inputImage != null)
+                    return NotFound();
+                }
+
+                if (ModelState.IsValid)
+                {
+                    try
                     {
-                        if (@new.Image != null) // Đã có icon trước đó rồi => xóa icon cũ => khúc này làm sau :v
+                        if (inputImage != null)
                         {
-                            bool isDelete = await CloudinaryHelper.DeteleImage(@new.Image, "News");
+                            if (@new.Image != null) // Đã có icon trước đó rồi => xóa icon cũ => khúc này làm sau :v
+                            {
+                                bool isDelete = await CloudinaryHelper.DeteleImage(@new.Image, "News");
 
+                            }
+                            var imagePath = await CloudinaryHelper.UploadFileToCloudinary(inputImage, "News");
+                            @new.Image = imagePath;
                         }
-                        var imagePath = await CloudinaryHelper.UploadFileToCloudinary(inputImage, "News");
-                        @new.Image = imagePath;
-                    }
 
-                    _context.Update(@new);
-                    @new.UpdateTime();
+                        _context.Update(@new);
+                        @new.SetUpdatedTime();
 
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!NewExists(@new.Id))
-                    {
-                        return NotFound();
+                        await _context.SaveChangesAsync();
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!NewExists(@new.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
+                    return RedirectToAction(nameof(Details), @new);
                 }
+                return View(@new);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
                 return RedirectToAction(nameof(Details), @new);
             }
-            return View(@new);
-        }
-
-        // GET: ư/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.News == null)
-            {
-                return NotFound();
-            }
-
-            var @new = await _context.News
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (@new == null)
-            {
-                return NotFound();
-            }
-
-            return View(@new);
         }
 
         // POST: News/Delete/5
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.News == null)
+            try
             {
-                return Problem("Entity set 'AppDbContext.News'  is null.");
-            }
-            var @new = await _context.News.FindAsync(id);
-            if (@new != null)
-            {
-                if (@new.Image != null)
+                if (_context.News == null)
                 {
-                    var isDeleted = await CloudinaryHelper.DeteleImage(@new.Image, "News");
+                    return Problem("Entity set 'AppDbContext.News'  is null.");
                 }
-                _context.News.Remove(@new);
-            }
+                var @new = await _context.News.FindAsync(id);
+                if (@new != null)
+                {
+                    if (@new.Image != null)
+                    {
+                        var isDeleted = await CloudinaryHelper.DeteleImage(@new.Image, "News");
+                    }
+                    _context.News.Remove(@new);
+                }
 
-            int kq = await _context.SaveChangesAsync();
-            
-            return kq > 0 ? Ok() : BadRequest();
+                int kq = await _context.SaveChangesAsync();
+
+                return kq > 0 ? Ok() : BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
@@ -198,7 +203,7 @@ namespace QuanLyKho.Controllers
                 return NotFound();
 
             @new.Status = @new.Status.ChangeStatus();
-            @new.UpdateTime();
+            @new.SetUpdatedTime();
 
             int kq = await _context.SaveChangesAsync();
             if (kq > 0)

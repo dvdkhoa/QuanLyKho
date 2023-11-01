@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = "Index";
+    ViewData["PrimaryTitle"] = "Customers";
+
 }
 
 
@@ -11,13 +13,14 @@
     <link rel="stylesheet" href="~/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="~/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="~/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+
 }
 
 
 <!-- /.card -->
 <div class="card">
     <div class="card-header">
-        <a class="card-title" asp-action="Create" asp-controller="staffs">Add staff</a>
     </div>
     <!-- /.card-header -->
     <div class="card-body">
@@ -54,19 +57,20 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var staff in Model)
+                @foreach (var customer in Model)
                 {
                     <tr>
-                        <td>@staff.Id</td>
-                        <td>@staff.Name</td>
-                        <td>@staff.Email</td>
-                        <td>@staff.Address</td>
-                        <td>@staff.Status</td>
+                        <td>@customer.Id</td>
+                        <td>@customer.Name</td>
+                        <td>@customer.Email</td>
+                        <td>@customer.Address</td>
+                        <td>@customer.Status</td>
                         <td class="text-center">
-                            <a class="btn-sm btn-primary" asp-action="Details" asp-route-id="@staff.Id"><i class="fas fa-info-circle"></i></a>
-                            <a class="btn-sm btn-secondary" asp-action="Edit" asp-route-id="@staff.Id"><i class="fas fa-tools"></i></a>
-                            <a class="btn-sm btn-outline-success border @(staff.Status == Status.Show ? "border-success" : "")" asp-action="Display" asp-route-id="@staff.Id"><i class="fa-solid fa-eye"></i></a>
-                            <a class="btn-sm btn-danger" asp-action="Delete" asp-route-id="@staff.Id"><i class="fas fa-trash"></i></a>
+                            <a class="btn-sm btn-primary" asp-action="Details" asp-route-id="@customer.Id"><i class="fas fa-info-circle"></i></a>
+                            <a class="btn-sm btn-secondary" asp-action="Edit" asp-route-id="@customer.Id"><i class="fas fa-tools"></i></a>
+                            <a class="btn-sm btn-outline-success border @(customer.Status == Status.Show ? "border-success" : "")" asp-action="Display" asp-route-id="@customer.Id"><i class="fa-solid fa-eye"></i></a>
+                            <a class="btn-sm btn-danger btn-delete" role="button" data-id="@customer.Id"><i class="fas fa-trash"></i></a>
+
                         </td>
                     </tr>
                 }
@@ -93,22 +97,71 @@
     <script src="~/admin/plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="~/admin/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
+    <script src="~/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
+
     <script>
+        var table = {}
         $(function () {
-            $("#example1").DataTable({
+            table = $("#example1").DataTable({
                 "responsive": true, "lengthChange": false, "autoWidth": false,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
             });
+
+            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
+
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        console.log($('.btn-delete'))
+        $('.btn-delete').click(function () {
+
+
+            var clickedBtnID = $(this).attr('data-id');
+
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        url: `customers/delete/${clickedBtnID}`,
+                        method: 'post'
+                    }).done(() => {
+
+                        var tr = $(this).parents('tr');
+
+                        table.row(tr).remove().draw();
+
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        )
+                    }).fail((error) => {
+                        console.log('error: ', error)
+                        Toast.fire({
+                            icon: 'error',
+                            //title: 'Something went wrong.'
+                            title: error.responseText !== '' ? error.responseText : 'Something went wrong.'
+                        })
+                    })
+
+
+                }
+            })
+        })
     </script>
 }
 

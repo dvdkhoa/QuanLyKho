@@ -667,7 +667,7 @@ namespace QuanLyKho.Controllers
                                 Quantity = i.Quantity,
                                 Status = Status.Show,
                             };
-                            newProductWarehouse.UpdateTime();
+                            newProductWarehouse.SetCreatedTime();
                             await _context.ProductWareHouses.AddAsync(newProductWarehouse);
                         }
                     }

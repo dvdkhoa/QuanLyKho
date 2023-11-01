@@ -23,10 +23,21 @@
         public Customer? Customer { get; set; }
         public WareHouse? Store { get; set; }
 
-        public List<OrderDetail> OrderDetails { get; set; }
+        public List<OrderDetail>? OrderDetails { get; set; }
 
-        //public Bill? Bills { get; set; }
-        //public VnPay? VnPays { get; set; }
+
+        // Khi tạo mới thì gọi
+        public void SetCreatedTime()
+        {
+            this.CreatedTime = DateTime.Now;
+            this.LastUpdated = DateTime.Now;
+        }
+
+        // Khi cập nhật thì gọi
+        public void SetUpdatedTime()
+        {
+            this.LastUpdated = DateTime.Now;
+        }
     }
 
     public enum PaymentStatus

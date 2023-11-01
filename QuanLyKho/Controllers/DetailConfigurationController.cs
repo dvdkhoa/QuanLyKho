@@ -82,5 +82,31 @@ namespace QuanLyKho.Controllers
 
             return RedirectToAction("Details", detailedConfig);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                if (_context.DetailedConfigs == null)
+                    return Problem("Entity DetailedConfigs is null");
+
+                var config = _context.DetailedConfigs.Find(id);
+                if (config == null)
+                    return NotFound();
+
+                _context.DetailedConfigs.Remove(config);
+
+                var kq = await _context.SaveChangesAsync();
+
+                if (kq > 0)
+                    return Ok();
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

@@ -73,61 +73,68 @@ namespace QuanLyKho.Controllers
         }
 
         // POST: Products/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind()] CreateProductModel createProductModel)
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
 
-            if (ModelState.IsValid)
+            try
             {
-                using(var transaction = _context.Database.BeginTransaction())
+                if (ModelState.IsValid)
                 {
-                    var newProduct = createProductModel.Product;
-                    await _context.Products.AddAsync(newProduct);
-                    var result = await _context.SaveChangesAsync();
-
-                    if (result > 0)
+                    using (var transaction = _context.Database.BeginTransaction())
                     {
-                        if (createProductModel.Images!.Count > 0)
+                        var newProduct = createProductModel.Product;
+                        await _context.Products.AddAsync(newProduct);
+                        var result = await _context.SaveChangesAsync();
+
+                        if (result > 0)
                         {
-                            foreach (var image in createProductModel.Images)
+                            if (createProductModel.Images!.Count > 0)
                             {
-                                var imagePath = await CloudinaryHelper.UploadFileToCloudinary(image, newProduct.Id);
-                                ProductImage productImage = new ProductImage
+                                foreach (var image in createProductModel.Images)
                                 {
-                                    Path = imagePath,
-                                    ProductId = newProduct.Id,
-                                    Status = Status.Show,
-                                    CreatedTime = DateTime.Now,
-                                    LastUpdated = DateTime.Now,
-                                    Product = newProduct
-                                };
-                                _context.ProductImages.Add(productImage);
+                                    var imagePath = await CloudinaryHelper.UploadFileToCloudinary(image, newProduct.Id);
+                                    ProductImage productImage = new ProductImage
+                                    {
+                                        Path = imagePath,
+                                        ProductId = newProduct.Id,
+                                        Status = Status.Show,
+                                        CreatedTime = DateTime.Now,
+                                        LastUpdated = DateTime.Now,
+                                        Product = newProduct
+                                    };
+                                    _context.ProductImages.Add(productImage);
+                                }
+                                await _context.SaveChangesAsync();
+                                transaction.Commit();
                             }
-                            await _context.SaveChangesAsync();
-                            transaction.Commit();
+                            else
+                            {
+                                transaction.Rollback();
+                                //ModelState.AddModelError("", "Images are required");
+                            }
                         }
-                        else
-                        {
-                            transaction.Rollback();
-                            //ModelState.AddModelError("", "Images are required");
-                        }
+
+                        return RedirectToAction(nameof(Index));
                     }
-                   
-                    return RedirectToAction(nameof(Index));
                 }
+                ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", createProductModel.Product.CategoryId);
+                return View(createProductModel);
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", createProductModel.Product.CategoryId);
-            return View(createProductModel);
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
+
             if (id == null || _context.Products == null)
             {
                 return NotFound();
@@ -145,8 +152,6 @@ namespace QuanLyKho.Controllers
         }
 
         // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, EditProductModel editProductModel)
@@ -214,18 +219,27 @@ namespace QuanLyKho.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteAsync(string? id)
         {
-            if (string.IsNullOrEmpty(id) || _context.Products is null)
-                return BadRequest();
+            try
+            {
+                if (string.IsNullOrEmpty(id) || _context.Products is null)
+                    return BadRequest();
 
-            var product = _context.Products.Find(id);
-            if (product is null)
-                return NotFound();
+                var product = _context.Products.Find(id);
+                if (product is null)
+                    return NotFound();
 
-            product.Status = Status.Hide;
+                _context.Products.Remove(product);
 
-            await _context.SaveChangesAsync();
+                var kq = await _context.SaveChangesAsync();
+                if (kq == 0)
+                    return BadRequest();
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         public async Task<IActionResult> Display(string id)
@@ -235,7 +249,7 @@ namespace QuanLyKho.Controllers
                 return NotFound();
 
             product.Status = product.Status.ChangeStatus();
-            product.UpdateTime();
+            product.SetUpdatedTime();
 
             int kq = await _context.SaveChangesAsync();
             if (kq > 0)
@@ -290,11 +304,11 @@ namespace QuanLyKho.Controllers
             {
                 int temp = image.Order.Value;
 
-                oldImage!.Order = temp; oldImage.UpdateTime();
+                oldImage!.Order = temp; oldImage.SetUpdatedTime();
                 _context.ProductImages.Update(oldImage);
             }
 
-            image.Order = newOrder; image.UpdateTime();
+            image.Order = newOrder; image.SetUpdatedTime();
 
             _context.ProductImages.Update(image);
 

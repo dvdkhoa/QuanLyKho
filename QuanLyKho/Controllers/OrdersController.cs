@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MailKit.Search;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
 using QuanLyKho.Models.EF;
@@ -8,6 +10,7 @@ using System.Text.Json;
 
 namespace QuanLyKho.Controllers
 {
+    [Authorize(Roles = "Admin,Manager,Sales staff")]
     public class OrdersController : Controller
     {
         private readonly AppDbContext _context;
@@ -17,18 +20,38 @@ namespace QuanLyKho.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+
+        //    if (_context.Orders == null)
+        //        return Problem("Entity set 'AppDbContext.Orders'  is null.");
+
+        //    return View(await _context.Orders.ToListAsync());
+        //}
+
+        public async Task<IActionResult> Index(string filter = "All")
         {
+            var ordersQuery = _context.Orders.AsQueryable();
 
-            if (_context.Orders == null)
-                return Problem("Entity set 'AppDbContext.Orders'  is null.");
+            if (filter == "Success")
+                ordersQuery = ordersQuery.Where(product => product.ShipStatus == ShipStatus.Success).AsQueryable();
+            else if (filter == "BeingShipped")
+                ordersQuery = ordersQuery.Where(product => product.ShipStatus == ShipStatus.BeingShipped).AsQueryable();
+            else if (filter == "NotApproved")
+                ordersQuery = ordersQuery.Where(product => product.ShipStatus == ShipStatus.NotApproved).AsQueryable();
+            else if (filter == "Canceled")
+                ordersQuery = ordersQuery.Where(product => product.ShipStatus == ShipStatus.Canceled).AsQueryable();
 
-            return View(await _context.Orders.ToListAsync());
+            ViewBag.filter = filter;
+            return View(await ordersQuery.ToListAsync());
         }
+
 
         public async Task<IActionResult> Details(int id)
         {
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _context.Orders.Include(o => o.Store)
+                                              .Include(o => o.Staff)
+                                              .FirstOrDefaultAsync(o => o.Id == id);
             if (order is null)
                 return NotFound();
 
@@ -40,13 +63,24 @@ namespace QuanLyKho.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Details(int orderId, string orderDetailIdsJson, List<int> productWarehouseIds)
+        public async Task<IActionResult> Details(int orderId, string orderDetailIdsJson, List<int> productWarehouseIds, bool? isComplete)
         {
             var order = await _context.Orders.FindAsync(orderId);
             if (order is null)
                 return NotFound();
 
-            if(order.ShipStatus != ShipStatus.NotApproved)
+            if (isComplete != null)
+            {
+                if (isComplete.Value)
+                {
+                    order.ShipStatus = ShipStatus.Success;
+                    order.SetUpdatedTime();
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", orderId);
+                }
+            }
+
+            if (order.ShipStatus != ShipStatus.NotApproved)
             {
                 return RedirectToAction("Details", order);
             }
@@ -114,6 +148,8 @@ namespace QuanLyKho.Controllers
                         order.StaffId = staffId;
                     }
 
+                    order.SetUpdatedTime();
+
                     await _context.SaveChangesAsync();
 
                     await transaction.CommitAsync();
@@ -131,24 +167,68 @@ namespace QuanLyKho.Controllers
 
             return View(order);
         }
-    
+
         public IActionResult Edit(int id)
         {
             var order = _context.Orders.Find(id);
-            if(order is null)
+            if (order is null)
                 return NotFound();
 
             return View(order);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Order order)
+        public async Task<IActionResult> Edit(Order orderSubmit, ShipStatus oldShipStatus)
         {
+            ModelState.Remove("StaffId");
+            ModelState.Remove("CustomerId");
+
             if (ModelState.IsValid)
             {
 
+                if (orderSubmit.ShipStatus == ShipStatus.Success)
+                {
+                    orderSubmit.PaymentStatus = PaymentStatus.Paid;
+                }
+                else if (orderSubmit.ShipStatus == ShipStatus.Canceled)
+                {
+                    if (oldShipStatus == ShipStatus.NotApproved || oldShipStatus == ShipStatus.Canceled)
+                    {
+                        // Không cần backup dữ liệu
+
+                    }
+                    else
+                    {
+                        // Backup dữ liệu ở đây
+                        var orderDetails = await _context.OrderDetails.Where(od => od.OrderId == orderSubmit.Id).ToListAsync();
+
+                        foreach (var detail in orderDetails)
+                        {
+                            var productWarehouse = await _context.ProductWareHouses.FindAsync(detail.ProductWarehouseId);
+                            productWarehouse!.Quantity += detail.Quantity;
+                        }
+                    }
+                }
+
+
+                orderSubmit.SetUpdatedTime();
+
+
+                _context.Update(orderSubmit);
+
+                var kq = await _context.SaveChangesAsync();
+                if (kq > 0)
+                {
+                    orderSubmit.OrderDetails = await _context.OrderDetails.Where(od => od.OrderId == orderSubmit.Id).ToListAsync();
+
+                    ViewData["warehouses"] = _context.ProductWareHouses.Include(pw => pw.WareHouse).ToList();
+
+                    return RedirectToAction("Details", orderSubmit);
+                }
+
+                return View(orderSubmit);
             }
-            return View(order);
+            return View(orderSubmit);
         }
     }
 }

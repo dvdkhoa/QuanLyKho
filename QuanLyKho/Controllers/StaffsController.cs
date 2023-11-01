@@ -196,42 +196,58 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Staffs/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null || _context.Staffs == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Delete(string id)
+        //{
+        //    if (id == null || _context.Staffs == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var staff = await _context.Staffs
-                .Include(s => s.User)
-                .Include(s => s.WareHouse)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (staff == null)
-            {
-                return NotFound();
-            }
+        //    var staff = await _context.Staffs
+        //        .Include(s => s.User)
+        //        .Include(s => s.WareHouse)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (staff == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(staff);
-        }
+        //    return View(staff);
+        //}
 
         // POST: Staffs/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            if (_context.Staffs == null)
+            try
             {
-                return Problem("Entity set 'AppDbContext.Staffs'  is null.");
-            }
-            var staff = await _context.Staffs.FindAsync(id);
-            if (staff != null)
-            {
-                _context.Staffs.Remove(staff);
-            }
+                if (_context.Staffs == null)
+                {
+                    return Problem("Entity set 'AppDbContext.Staffs'  is null.");
+                }
+                var staff = await _context.Staffs.FindAsync(id);
+                if (staff != null)
+                {
+                    if(staff.UserId != null)
+                    {
+                        var user = await _userManager.FindByIdAsync(staff.UserId);
+                        var isDelete = await _userManager.DeleteAsync(user);
+                        if (!isDelete.Succeeded)
+                            return BadRequest();
+                    }
+                    _context.Staffs.Remove(staff);
+                }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                var kq = await _context.SaveChangesAsync();
+
+                if (kq > 0)
+                    return Ok();
+                return BadRequest();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
@@ -242,7 +258,7 @@ namespace QuanLyKho.Controllers
                 return NotFound();
 
             staff.Status = staff.Status.ChangeStatus();
-            staff.UpdateTime();
+            staff.SetUpdatedTime();
 
             int kq = await _context.SaveChangesAsync();
             if (kq > 0)

@@ -125,68 +125,69 @@
 
     <script src="~/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
 
-
-
     <script>
+        var table = {}
         $(function () {
-            const table = $("#example1").DataTable({
+            table = $("#example1").DataTable({
                 "responsive": true, "lengthChange": false, "autoWidth": false,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            })
-
-            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-
-            var Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000
             });
 
-            $('.btn-delete').click(function () {
-                var clickedBtnID = $(this).attr('data-id');
-
-                console.log(clickedBtnID)
-
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-
-                        $.ajax({
-                            url: `/News/Delete/${clickedBtnID}`,
-                            method: 'post'
-                        }).done(() => {
-
-                            const tr = $(this).parents('tr');
-
-                            table.row(tr).remove().draw()
-
-                            Swal.fire(
-                                'Deleted!',
-                                'Your file has been deleted.',
-                                'success'
-                            )
-                        }).fail(() => {
-                            Toast.fire({
-                                icon: 'error',
-                                title: 'Something went wrong.'
-                            })
-                        })
-
-
-                    }
-                })
-            })
-
+            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
-        $('#modal-sm').modal(options)
+
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        console.log($('.btn-delete'))
+        $('.btn-delete').click(function () {
+
+
+            var clickedBtnID = $(this).attr('data-id');
+
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        url: `news/delete/${clickedBtnID}`,
+                        method: 'post'
+                    }).done(() => {
+
+                        var tr = $(this).parents('tr');
+
+                        table.row(tr).remove().draw();
+
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        )
+                    }).fail((error) => {
+                        console.log('error: ', error)
+                        Toast.fire({
+                            icon: 'error',
+                            //title: 'Something went wrong.'
+                            title: error.responseText !== '' ? error.responseText : 'Something went wrong.'
+                        })
+                    })
+
+
+                }
+            })
+        })
     </script>
 
 }
