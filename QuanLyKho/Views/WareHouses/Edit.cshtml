@@ -23,6 +23,8 @@
                     </div>
                     <div class="card-body" style="display: block;">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="CreatedTime" />
+
                         <input asp-for="Id" type="hidden" class="form-control">
                         <div class="form-group">
                             <label asp-for="Name">Name</label>

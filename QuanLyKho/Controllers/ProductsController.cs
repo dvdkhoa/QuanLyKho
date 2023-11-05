@@ -22,6 +22,9 @@ namespace QuanLyKho.Controllers
         public string PrimaryTitle = "Product";
         private readonly IMapper _mapper;
 
+        /// <summary>
+        /// Phương thức khởi tạo
+        /// </summary>
         public ProductsController(AppDbContext context, IProductService productService, IMapper mapper)
         {
             _context = context;
@@ -30,6 +33,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Products
+        /// <summary>
+        /// Action trả về View hiển thị danh sách tất cả các sản phẩm
+        /// </summary>
         public async Task<IActionResult> Index(string filter = "All")
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
@@ -46,6 +52,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Products/Details/5
+        /// <summary>
+        /// Action trả về view thông tin chi tiết sản phẩm
+        /// </summary>
         public async Task<IActionResult> Details(string id)
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
@@ -65,6 +74,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Products/Create
+        /// <summary>
+        /// Action trả về View thêm mới sản phẩm(GET)
+        /// </summary>
         public IActionResult Create()
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
@@ -73,6 +85,9 @@ namespace QuanLyKho.Controllers
         }
 
         // POST: Products/Create
+        /// <summary>
+        /// Action thêm mới sản phẩm(POST)
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind()] CreateProductModel createProductModel)
@@ -131,6 +146,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Products/Edit/5
+        /// <summary>
+        /// Action trả về View cập nhật thông tin sản phẩm
+        /// </summary>
         public async Task<IActionResult> Edit(string id)
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
@@ -152,6 +170,9 @@ namespace QuanLyKho.Controllers
         }
 
         // POST: Products/Edit/5
+        /// <summary>
+        /// Action cập nhật thông tin sản phẩm
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, EditProductModel editProductModel)
@@ -202,6 +223,9 @@ namespace QuanLyKho.Controllers
             return View(editProductModel);
         }
 
+        /// <summary>
+        /// Action trả về View danh sách tất các hình ảnh của sản phẩm
+        /// </summary>
         public async Task<IActionResult> ImageList(string productId)
         {
             if (productId == null)
@@ -216,6 +240,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action xóa sản phẩm
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> DeleteAsync(string? id)
         {
@@ -242,6 +269,9 @@ namespace QuanLyKho.Controllers
             }
         }
 
+        /// <summary>
+        /// Action Ẩn/Hiện sản phẩm
+        /// </summary>
         public async Task<IActionResult> Display(string id)
         {
             var product = await _context.Products.FindAsync(id);
@@ -261,6 +291,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action trả về View hiển thị danh sách lịch sử Nhập/Xuất/Chuyển sản phẩm
+        /// </summary>
         public IActionResult ImportHistory(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -277,6 +310,9 @@ namespace QuanLyKho.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Action trả về View danh sách hình ảnh của sản phẩm(GET)
+        /// </summary>
         public async Task<IActionResult> EditImages(string id)
         {
             var productImages = await _context.ProductImages.Where(i => i.ProductId == id).OrderBy(i => i.Order).ToListAsync();
@@ -284,6 +320,9 @@ namespace QuanLyKho.Controllers
             return View("EditImages", productImages);
         }
 
+        /// <summary>
+        /// Action cập nhật thứ tự cho hình ảnh sản phẩm(POST) - Sử dụng thay cho Action ChangeOrder
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> EditImages(int imageId, int newOrder)
         {
@@ -318,12 +357,18 @@ namespace QuanLyKho.Controllers
 
         }
 
+        /// <summary>
+        /// Action trả về View thêm danh sách hình ảnh cho sản phẩm(GET)
+        /// </summary>
         public IActionResult AddImages(string id)
         {
 
             return View("AddImages", id);
         }
 
+        /// <summary>
+        /// Action thêm danh sách hình ảnh cho sản phẩm(POST)
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> AddImages([FromForm] string id, [FromForm] List<IFormFile> files)
         {
@@ -361,6 +406,9 @@ namespace QuanLyKho.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Action thay đổi thứ tự hình ảnh sản phẩm(đã được thay thay thế bằng Action EditImages)
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> ChangeOrder(string productId, int productImageId, int order)
         {
@@ -394,6 +442,9 @@ namespace QuanLyKho.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Action trả về View danh sách các cấu hình chi tiết của sản phẩm
+        /// </summary>
         public async Task<IActionResult> ProductConfigs(string id)
         {
             var product = await _context.Products.FindAsync(id);
@@ -428,6 +479,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action trả về View cập nhật thông tin cấu hình chi tiết của sản phẩm(GET)
+        /// </summary>
         public async Task<IActionResult> EditConfigs(string id)
         {
             var product = await _context.Products.FindAsync(id);
@@ -460,6 +514,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action cập nhật thông tin cấu hình chi tiết cho sản phẩm(POST)
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> EditConfigs(string productId, string configIds, string[] configValues)
         {
@@ -498,6 +555,9 @@ namespace QuanLyKho.Controllers
 
 
 
+        /// <summary>
+        /// Phương thức lấy tất cả các sản phẩm thuộc kho bất kỳ dựa trên mã kho
+        /// </summary>
         public async Task<IActionResult> GetProductByWarehouseId(string id)
         {
             var products = await _context.ProductWareHouses.Include(pw => pw.Product).Where(pw => pw.WareHouseId == id).Select(pw => pw.Product).ToListAsync();
@@ -507,6 +567,9 @@ namespace QuanLyKho.Controllers
 
 
 
+        /// <summary>
+        /// Action xóa hình ảnh sản phẩm
+        /// </summary>
         public async Task<IActionResult> DeleteImage(int id)
         {
             var productImage = await _context.ProductImages.FindAsync(id);
@@ -524,6 +587,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Phương thức kiểm tra sản phẩm đã tồn tại trong hệ thống hay chưa
+        /// </summary>
         private bool ProductExists(string id)
         {
             return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();

@@ -19,6 +19,9 @@ namespace QuanLyKho.Controllers
         private readonly IProductService _productService;
         private readonly UserManager<AppUser> _userManager;
 
+        /// <summary>
+        /// Phương thức khởi tạo
+        /// </summary>
         public StatisticController(IStatisticService statisticService, AppDbContext context, IProductService productService, UserManager<AppUser> userManager)
         {
             _statisticService = statisticService;
@@ -27,6 +30,9 @@ namespace QuanLyKho.Controllers
             _userManager = userManager;
         }
 
+        /// <summary>
+        /// Action trả về View thống kê Nhập/Xuất/Chuyển kho
+        /// </summary>
         public IActionResult Index()
         {
             ViewData["Warehouses"] = _context.WareHouses.ToList();
@@ -35,12 +41,18 @@ namespace QuanLyKho.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Action trả về View thống kê sản phẩm(GET)
+        /// </summary>
         public IActionResult ProductStatistic()
         {
             ViewData["warehouses"] = _context.WareHouses.ToList();
             return View();
         }
 
+        /// <summary>
+        /// Action thống kê sản phẩm(POST)
+        /// </summary>
         [HttpPost("/api/receipts/productStatistic")]
         public IActionResult ProductStatisticPost(string time, DateTime dateFrom, DateTime dateTo, string type, string warehouseId)
         {
@@ -578,6 +590,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action trả về View danh sách sản phẩm tồn kho
+        /// </summary>
         public async Task<IActionResult> ProductInStock()
         {
             var productInStock = await _statisticService.GetProductInStocks();
@@ -586,9 +601,12 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action trả về View thống kê hóa đơn(GET)
+        /// </summary>
         public async Task<IActionResult> OrderStatistic()
         {
-            var user = (await _userManager.GetUsersInRoleAsync("Sales staff")).Select(u=>u.Id);
+            var user = (await _userManager.GetUsersInRoleAsync("Sales staff")).Select(u => u.Id);
             var saleStaffs = await _context.Staffs.Where(s => user.Contains(s.UserId)).ToListAsync();
 
             var stores = _context.WareHouses.Where(wh => wh.Id.StartsWith("CH")).ToList();
@@ -606,6 +624,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action thống kê hóa đơn(POST)
+        /// </summary>
         [HttpPost("/api/statistic/orderstatistic")]
         public async Task<IActionResult> OrderStatisticPost(char time, string type, DateTime from, DateTime to, string baseAs, string baseId)
         {
@@ -648,13 +669,13 @@ namespace QuanLyKho.Controllers
             {
                 orders = orders.Where(o => o.StoreId == baseId);
             }
-            else if(baseAs == "customer")
+            else if (baseAs == "customer")
             {
                 orders = orders.Where(o => o.CustomerId == baseId);
-            }   
+            }
             else if (baseAs == "product")
             {
-                var details = await _context.OrderDetails.Where(od => od.ProductId == baseId).Select(od=>od.OrderId).ToListAsync();
+                var details = await _context.OrderDetails.Where(od => od.ProductId == baseId).Select(od => od.OrderId).ToListAsync();
                 orders = orders.Where(o => details.Contains(o.Id));
             }
             else

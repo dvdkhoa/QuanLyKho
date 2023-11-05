@@ -12,22 +12,34 @@ namespace QuanLyKho.Controllers
     {
         private readonly AppDbContext _context;
 
+        /// <summary>
+        /// Phương thức khởi tạo
+        /// </summary>
         public DetailConfigurationController(AppDbContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Action trả về View danh sách tất cả các cấu hình đã tạo trên hệ thống
+        /// </summary>
         public IActionResult Index()
         {
             return View(_context.DetailedConfigs);
         }
 
+        /// <summary>
+        /// Action trả về View tạo mới cấu hình chi tiết(GET)
+        /// </summary>
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name");
             return View("Create");
         }
 
+        /// <summary>
+        /// Action tạo mới cấu hình chi tiết(POST)
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Create(DetailedConfig detailedConfig, string[] categories)
         {
@@ -55,6 +67,9 @@ namespace QuanLyKho.Controllers
             return RedirectToAction("Details", new { id = detailedConfig.Id });
         }
 
+        /// <summary>
+        /// Action trả về View thông tin cấu hình chi tiết
+        /// </summary>
         public IActionResult Details(int id)
         {
             var detailModel = _context.DetailedConfigs.Find(id);
@@ -63,14 +78,20 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action trả về View cập nhật thông tin cấu hình(GET)
+        /// </summary>
         public async Task<IActionResult> Edit(int id)
         {
             var detailConfig = await _context.DetailedConfigs.FindAsync(id);
-  
+
             return View("Edit", detailConfig);
         }
 
 
+        /// <summary>
+        /// Action cập nhật thông tin cấu hình(POST)
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Edit(DetailedConfig detailedConfig)
         {
@@ -83,6 +104,9 @@ namespace QuanLyKho.Controllers
             return RedirectToAction("Details", detailedConfig);
         }
 
+        /// <summary>
+        /// Action xóa cấu hình
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {

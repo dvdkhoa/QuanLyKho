@@ -12,11 +12,17 @@ namespace QuanLyKho.Controllers
     {
         private readonly AppDbContext _context;
 
+        /// <summary>
+        /// Phương thức khởi tạo
+        /// </summary>
         public CustomersController(AppDbContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Action trả về View danh sách tất cả khách hàng có trong hệ thống
+        /// </summary>
         public async Task<IActionResult> Index(string filter = "All")
         {
             if (_context.Customer == null)
@@ -35,6 +41,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action trả về View thông tin chi tiết của khách hàng
+        /// </summary>
         public IActionResult Details(string id)
         {
             var customer = _context.Customer.Find(id);
@@ -47,6 +56,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action trả về View cập nhật thông tin của khách hàng(GET)
+        /// </summary>
         public IActionResult Edit(string id)
         {
             var customer = _context.Customer.Find(id);
@@ -56,6 +68,9 @@ namespace QuanLyKho.Controllers
             return View(customer);
         }
 
+        /// <summary>
+        /// Action cập nhật thông tin khách hàng(POST)
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Edit(Customer customer)
         {
@@ -70,6 +85,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action Ẩn/Hiện khách hàng
+        /// </summary>
         public async Task<IActionResult> Display(string id)
         {
             var customer = await _context.Customer.FindAsync(id);
@@ -88,6 +106,9 @@ namespace QuanLyKho.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Action xóa khách hàng
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {

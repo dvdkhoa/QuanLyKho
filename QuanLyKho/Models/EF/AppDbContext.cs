@@ -33,8 +33,8 @@ namespace QuanLyKho.Models.EF
             builder.ApplyConfiguration(new ReceiptDetailConfiguration());
             builder.ApplyConfiguration(new StaffConfiguration());
             builder.ApplyConfiguration(new WareHouseConfiguration());
-            builder.ApplyConfiguration(new ClassificationConfiguration());
-            builder.ApplyConfiguration(new ProductClassificationConfiguration());
+            //builder.ApplyConfiguration(new ClassificationConfiguration());
+            //builder.ApplyConfiguration(new ProductClassificationConfiguration());
             builder.ApplyConfiguration(new ProductImageConfiguration());
             builder.ApplyConfiguration(new OrderConfiguration());
             builder.ApplyConfiguration(new OrderDetailConfiguration());

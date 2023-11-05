@@ -21,6 +21,9 @@ namespace QuanLyKho.Controllers
 
         public string PrimaryTitle = "Warehouse";
 
+        /// <summary>
+        /// Phương thức khởi tạo
+        /// </summary>
         public WareHousesController(AppDbContext context, IProductService productService)
         {
             _context = context;
@@ -28,6 +31,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: WareHouses
+        /// <summary>
+        /// Action trả về View danh sách tất cả các kho trong hệ thống
+        /// </summary>
         public async Task<IActionResult> Index(string filter = "All")
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
@@ -48,6 +54,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: WareHouses/Details/5
+        /// <summary>
+        /// Action trả về View thông tin chi tiết kho
+        /// </summary>
         public async Task<IActionResult> Details(string id)
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
@@ -71,6 +80,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: WareHouses/Create
+        /// <summary>
+        /// Action trả về View tạo mới kho
+        /// </summary>
         public IActionResult Create()
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
@@ -78,6 +90,9 @@ namespace QuanLyKho.Controllers
         }
 
         // POST: WareHouses/Create
+        /// <summary>
+        /// Action tạo mới kho
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,PhoneNumber,Address")] WareHouse wareHouse, WarehouseType type)
@@ -121,6 +136,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: WareHouses/Edit/5
+        /// <summary>
+        /// Action trả về View cập nhật thông tin kho(GET)
+        /// </summary>
         public async Task<IActionResult> Edit(string id)
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
@@ -140,6 +158,9 @@ namespace QuanLyKho.Controllers
         // POST: WareHouses/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Action cập nhật thông tin kho(POST)
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,Name,PhoneNumber,Address")] WareHouse wareHouse)
@@ -174,6 +195,9 @@ namespace QuanLyKho.Controllers
             return View(wareHouse);
         }
 
+        /// <summary>
+        /// Action xóa kho
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> DeleteAsync(string id)
         {
@@ -196,13 +220,17 @@ namespace QuanLyKho.Controllers
                     return BadRequest();
 
                 return Ok();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-            
+
         }
 
+        /// <summary>
+        /// Action Ẩn/Hiện kho
+        /// </summary>
         public async Task<IActionResult> Display(string id)
         {
             var warehouse = await _context.WareHouses.FindAsync(id);
@@ -258,12 +286,18 @@ namespace QuanLyKho.Controllers
         //    return RedirectToAction(nameof(Index));
         //}
 
+        /// <summary>
+        /// Phương thức kiểm tra kho đã tồn tại trong hệ thống hay chưa
+        /// </summary>
         private bool WareHouseExists(string id)
         {
             return (_context.WareHouses?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
 
+        /// <summary>
+        /// API Action trả về danh sách sản phẩm theo kho dựa trên mã kho
+        /// </summary>
         [HttpGet("/api/warehouses")]
         public IActionResult GetProductByWarehouseId(string id)
         {

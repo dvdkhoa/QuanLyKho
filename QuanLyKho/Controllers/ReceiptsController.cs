@@ -35,6 +35,9 @@ namespace QuanLyKho.Controllers
         private readonly IProductService _productService;
         private readonly IConverter _converter;
 
+        /// <summary>
+        /// Phương thức khởi tạo
+        /// </summary>
         public ReceiptsController(AppDbContext context, IReceiptService receiptService, IProductService productService, IConverter converter)
         {
             _context = context;
@@ -44,6 +47,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Receipts
+        /// <summary>
+        /// Action trả về View danh sách tất cả các kho trong hệ thống
+        /// </summary>
         public async Task<IActionResult> Index()
         {
             var appDbContext = _context.Receipts.Where(receipt => receipt.Status == Status.Show).Include(r => r.Staff).Include(r => r.WareHouse);
@@ -51,6 +57,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Receipts/Details/5
+        /// <summary>
+        /// Action trả về View thông tin chi tiết của phiếu
+        /// </summary>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Receipts == null)
@@ -69,6 +78,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Receipts/Create
+        /// <summary>
+        /// Action trả về View tạo phiếu Nhập/Xuất kho
+        /// </summary>
         public IActionResult Create()
         {
             ViewData["WareHouseId"] = new SelectList(_context.WareHouses.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
@@ -88,21 +100,24 @@ namespace QuanLyKho.Controllers
         }
 
         // POST: Receipts/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DateCreated,Type,WareHouseId,StaffId")] Receipt receipt)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(receipt);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["StaffId"] = new SelectList(_context.Staffs.Where(w => w.Status == Status.Show).ToList(), "Id", "Id", receipt.StaffId);
-            ViewData["WareHouseId"] = new SelectList(_context.WareHouses.Where(w => w.Status == Status.Show).ToList(), "Id", "Id", receipt.WareHouseId);
-            ViewData["ProductId"] = new SelectList(_context.Products.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
-            return View(receipt);
-        }
+        /// <summary>
+        /// Action trả về View cập nhật thông tin phiếu(GET)
+        /// </summary>
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,DateCreated,Type,WareHouseId,StaffId")] Receipt receipt)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(receipt);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["StaffId"] = new SelectList(_context.Staffs.Where(w => w.Status == Status.Show).ToList(), "Id", "Id", receipt.StaffId);
+        //    ViewData["WareHouseId"] = new SelectList(_context.WareHouses.Where(w => w.Status == Status.Show).ToList(), "Id", "Id", receipt.WareHouseId);
+        //    ViewData["ProductId"] = new SelectList(_context.Products.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
+        //    return View(receipt);
+        //}
 
         // GET: Receipts/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -125,6 +140,9 @@ namespace QuanLyKho.Controllers
         // POST: Receipts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Action cập nhật thông tin phiếu(POST)
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,DateCreated,Type,WareHouseId,StaffId")] Receipt receipt)
@@ -160,6 +178,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Receipts/Delete/5
+        /// <summary>
+        /// Action trả về View xác nhận xóa phiếu
+        /// </summary>
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Receipts == null)
@@ -180,6 +201,9 @@ namespace QuanLyKho.Controllers
         }
 
         // POST: Receipts/Delete/5
+        /// <summary>
+        /// Action xóa phiếu
+        /// </summary>
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -198,12 +222,18 @@ namespace QuanLyKho.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        /// <summary>
+        /// Phương thức kiểm tra kho đã tồn tại trong hệ thống hay chưa
+        /// </summary>
         private bool ReceiptExists(int id)
         {
             return (_context.Receipts?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
 
+        /// <summary>
+        /// Action tạo phiếu Nhập/Xuất kho
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateReceipt(Receipt receipt, List<string>? ProductIds, List<int>? productQuantitys, List<NewProductModel>? newProducts)
@@ -358,6 +388,9 @@ namespace QuanLyKho.Controllers
             }
         }
 
+        /// <summary>
+        /// Phương thức Render template phiếu Nhập/Xuất/Chuyển kho
+        /// </summary>
         [AllowAnonymous]
         public async Task<IActionResult> RenderReceipt(int id)
         {
@@ -376,6 +409,9 @@ namespace QuanLyKho.Controllers
             return View(receipt);
         }
 
+        /// <summary>
+        /// Action xuất phiếu
+        /// </summary>
         public async Task<IActionResult> ExportReceipt(int id)
         {
             var receipt = _context.Receipts.Include(r => r.ReceiptDetails).FirstOrDefault(r => r.Id == id);
@@ -413,6 +449,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// API Action thống kê phiếu Nhập/Xuất/Chuyển kho => trả về dữ liệu kiểu Json
+        /// </summary>
         [HttpPost("/api/receipts/statistic")]
         public async Task<IActionResult> StatisticReceipts(char time, string type, DateTime from, DateTime to, string baseAs, string baseId)
         {
@@ -436,9 +475,9 @@ namespace QuanLyKho.Controllers
                 receipts = receipts.Where(rc => rc.Type == ReceiptType.Transfer);
             }
             else
-                    {
-                        return BadRequest();
-                    }
+            {
+                return BadRequest();
+            }
 
             // Check dua tren baseAs
             if (string.IsNullOrEmpty(baseAs) || baseAs == "all") // neu de trong thi coi nhu la all
@@ -512,7 +551,10 @@ namespace QuanLyKho.Controllers
             return Json(kq);
         }
 
-        public string generateHtml(Receipt receipt)
+        /// <summary>
+        /// Phương thức tạo template html của phiếu Nhập/Xuất/Chuyển kho
+        /// </summary>
+        private string generateHtml(Receipt receipt)
         {
             var receiptName = receipt.Type == ReceiptType.Import ? "Phiếu nhập kho" : "Phiếu xuất kho";
             StringBuilder sb = new StringBuilder();
@@ -586,6 +628,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action trả về View tạo phiếu Chuyển kho(GET)
+        /// </summary>
         public IActionResult CreateTransferReceipt()
         {
             ViewData["StaffId"] = new SelectList(_context.Staffs, "Id", "Id");
@@ -596,6 +641,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action tạo phiếu chuyển kho(POST)
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> CreateTransferReceipt(Receipt receipt, List<string>? ProductIds, List<int>? productQuantitys)
         {

@@ -14,11 +14,17 @@ namespace QuanLyKho.Controllers
     {
         private readonly AppDbContext _context;
 
+        /// <summary>
+        /// Phương thức khởi tạo
+        /// </summary>
         public PromotionsController(AppDbContext context, PromotionService promotionService)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// Action trả về View danh sách tất cả CTKM có trong hệ thống
+        /// </summary>
         public IActionResult Index(string filter = "All")
         {
             if (_context.Promotions == null)
@@ -39,6 +45,9 @@ namespace QuanLyKho.Controllers
             return View(promotionsModel);
         }
 
+        /// <summary>
+        /// Action trả về View thông tin chi tiết của CTKM
+        /// </summary>
         public IActionResult Details(int id)
         {
             var promotion = _context.Promotions.Find(id);
@@ -51,6 +60,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action Ẩn/Hiện CTKM
+        /// </summary>
         public async Task<IActionResult> Display(int id)
         {
             var promotion = await _context.Promotions.FindAsync(id);
@@ -69,11 +81,17 @@ namespace QuanLyKho.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Action trả về View tạo mới CTKM(GET)
+        /// </summary>
         public IActionResult Create()
         {
             return View();
         }
 
+        /// <summary>
+        /// Action tạo mới CTKM(POST)
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Create(Promotion promotion)
         {
@@ -113,6 +131,9 @@ namespace QuanLyKho.Controllers
             }
         }
 
+        /// <summary>
+        /// Action trả về View thêm sản phẩm vào CTKM
+        /// </summary>
         public async Task<IActionResult> AddPromotionalProducts(int id)
         {
             // Lấy danh sách sản phẩm chưa tồn tại trong khuyến mãi này, đồng thời phải đảm bảm sản phẩm này
@@ -143,6 +164,9 @@ namespace QuanLyKho.Controllers
             return View(id);
         }
 
+        /// <summary>
+        /// Action thêm danh sách sản phẩm vào CTKM
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> AddPromotionalProducts(int promotionId, string[] productIds)
         {
@@ -229,6 +253,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action xóa sản phẩm khỏi CTKM
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> RemovePromotionalProduct(int promotionId, string productId)
         {
@@ -272,6 +299,9 @@ namespace QuanLyKho.Controllers
             }
         }
 
+        /// <summary>
+        /// Action xóa CTKM
+        /// </summary>
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -322,11 +352,17 @@ namespace QuanLyKho.Controllers
             }
         }
 
+        /// <summary>
+        /// Action trả về View cập nhật thông tin CTKM
+        /// </summary>
         public IActionResult Edit(int id)
         {
             return View(_context.Promotions.Find(id));
         }
 
+        /// <summary>
+        /// Action cập nhật CTKM
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Edit(Promotion promotion)
         {

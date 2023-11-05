@@ -32,6 +32,9 @@ namespace QuanLyKho.Controllers
         private readonly ILogger<StaffsController> _logger;
         private readonly IEmailSender _emailSender;
 
+        /// <summary>
+        /// Phương thức khởi tạo
+        /// </summary>
         public StaffsController(AppDbContext context, IStaffService staffService, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, ILogger<StaffsController> logger, IEmailSender emailSender, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
@@ -44,6 +47,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Staffs
+        /// <summary>
+        /// Action trả về View danh sách tất cả nhân viên có trong hệ thống
+        /// </summary>
         public async Task<IActionResult> Index(string filter = "All")
         {
             if (_context.Staffs == null)
@@ -62,6 +68,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Staffs/Details/5
+        /// <summary>
+        /// Action trả về View thông tin chi tiết của nhân viên
+        /// </summary>
         public async Task<IActionResult> Details(string id)
         {
             if (id == null || _context.Staffs == null)
@@ -82,6 +91,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Staffs/Create
+        /// <summary>
+        /// Action trả về View tạo mới nhân viên(GET)
+        /// </summary>
         public IActionResult Create()
         {
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
@@ -95,6 +107,9 @@ namespace QuanLyKho.Controllers
         }
 
         // POST: Staffs/Create
+        /// <summary>
+        /// Action tạo mới nhân viên(POST)
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Staff staff, string role) //[Bind("Name,DateOfBirth,Gender, Email, PhoneNumber,Address,StartDay,WareHouseId,UserId, ")] 
@@ -130,7 +145,7 @@ namespace QuanLyKho.Controllers
                             transaction.Rollback();
                         }
                     }
-                } 
+                }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
@@ -143,6 +158,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Staffs/Edit/5
+        /// <summary>
+        /// Action trả về View cập nhật thông tin cho nhân viên(GET)
+        /// </summary>
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null || _context.Staffs == null)
@@ -161,6 +179,9 @@ namespace QuanLyKho.Controllers
         }
 
         // POST: Staffs/Edit/5
+        /// <summary>
+        /// Action cập nhật nhân viên(POST)
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, Staff staff)
@@ -216,6 +237,9 @@ namespace QuanLyKho.Controllers
         //}
 
         // POST: Staffs/Delete/5
+        /// <summary>
+        /// Action xóa nhân viên
+        /// </summary>
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
@@ -228,7 +252,7 @@ namespace QuanLyKho.Controllers
                 var staff = await _context.Staffs.FindAsync(id);
                 if (staff != null)
                 {
-                    if(staff.UserId != null)
+                    if (staff.UserId != null)
                     {
                         var user = await _userManager.FindByIdAsync(staff.UserId);
                         var isDelete = await _userManager.DeleteAsync(user);
@@ -244,13 +268,16 @@ namespace QuanLyKho.Controllers
                     return Ok();
                 return BadRequest();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
 
 
+        /// <summary>
+        /// Action Ẩn/Hiện nhân viên
+        /// </summary>
         public async Task<IActionResult> Display(string id)
         {
             var staff = await _context.Staffs.FindAsync(id);
@@ -270,12 +297,18 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Phương thức kiểm tra nhân viên có tồn tại trong hệ thống hay chưa
+        /// </summary>
         private bool StaffExists(string id)
         {
             return (_context.Staffs?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
 
+        /// <summary>
+        /// Phương thức tạo tài khoản cho nhân viên =&gt; trả về Id tài khoản
+        /// </summary>
         public async Task<string> CreateUserAsync(Staff staff)
         {
             var user = new AppUser { UserName = staff.Email, Email = staff.Email };

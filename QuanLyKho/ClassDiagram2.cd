@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="QuanLyKho.Models.Entities.AppUser" Collapsed="true">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.AppUser">
+    <Position X="29.75" Y="8.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Entities\AppUser.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="QuanLyKho.Models.Entities.Bill">
-    <Position X="21" Y="1.75" Width="1.5" />
+    <Position X="25.5" Y="7.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EAECAAAAAQAIAAAAAAAAACAAAAAAAAAAAAAgAAAAgAA=</HashCode>
       <FileName>Models\Entities\Bill.cs</FileName>
@@ -17,196 +17,427 @@
       <Property Name="Order" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.Cart" Collapsed="true">
-    <Position X="2.5" Y="0.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.Cart">
+    <Position X="24" Y="12.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAECAAAAABAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Entities\Cart.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Customer" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.CartDetail" Collapsed="true">
-    <Position X="5.75" Y="0.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.CartDetail">
+    <Position X="20.25" Y="13.25" Width="1.5" />
+    <AssociationLine Name="Product" Type="QuanLyKho.Models.Entities.Product" ManuallyRouted="true">
+      <Path>
+        <Point X="20.25" Y="15.563" />
+        <Point X="18.708" Y="15.563" Type="JumpStart" />
+        <Point X="18.542" Y="15.563" Type="JumpEnd" />
+        <Point X="16.25" Y="15.563" />
+        <Point X="16.25" Y="11.759" />
+        <Point X="15.75" Y="11.759" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>EAACAEEEAAAAAAAAAAAAAAEAAAAAACAABAAAgAAICAE=</HashCode>
       <FileName>Models\Entities\CartDetail.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Cart" />
+      <Property Name="Product" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="QuanLyKho.Models.Entities.Category">
-    <Position X="14.75" Y="2" Width="1.5" />
+    <Position X="17.25" Y="7.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAEAAAgAQAAAAAAAAUAAAAAABAAAAAAAAEAAAE=</HashCode>
+      <HashCode>AAACAAAEAQAgAAAAAAAAAAUAAAAAABAAAAAQAAEAAAU=</HashCode>
       <FileName>Models\Entities\Category.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.CategoryDetailedConfig" Collapsed="true">
-    <Position X="0.5" Y="1.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.CategoryDetailedConfig">
+    <Position X="16.75" Y="2" Width="2" />
+    <AssociationLine Name="DetailedConfig" Type="QuanLyKho.Models.Entities.DetailedConfig" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17.75" Y="2" />
+        <Point X="17.75" Y="1.625" />
+        <Point X="10.688" Y="1.625" />
+        <Point X="10.688" Y="2.5" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAACAAAEAAAAA4AAABAAAAEAAAAAAAAAAAAAAAAACAE=</HashCode>
+      <HashCode>AAACAAAEAQAAAoAAABAAAAEAAAAAAAAAAAAQAAAACAE=</HashCode>
       <FileName>Models\Entities\CategoryDetailedConfig.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Category" />
+      <Property Name="DetailedConfig" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.Classification" Collapsed="true">
-    <Position X="2.25" Y="1.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.Classification">
+    <Position X="0.75" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAEAAAgAAAAAABAAAUAAAAAAAAAAAAAAAAAAAE=</HashCode>
       <FileName>Models\Entities\Classification.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.Customer" Collapsed="true">
-    <Position X="4" Y="1.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.Customer">
+    <Position X="28" Y="10.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEDAAAEACAAAAAAAAAAAA0ACAAAAAACAAAAIAAAAAE=</HashCode>
+      <HashCode>AAEDAAAEASAAAAAAAAAAAA0ACAAAAAACAAAQIAAAAAE=</HashCode>
       <FileName>Models\Entities\Customer.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="User" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.DetailedConfig" Collapsed="true">
-    <Position X="5.75" Y="1.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.DetailedConfig">
+    <Position X="9.75" Y="2.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAACAAIEAAAAAAAAAAAAAAQAAAAAABAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Entities\DetailedConfig.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.New" Collapsed="true">
-    <Position X="7.5" Y="1.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.New">
+    <Position X="7.5" Y="3" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAEAgAgAUAAAAAAAAEAAAAAABAAAAAAAAAAAAE=</HashCode>
+      <HashCode>AAACAAAEAwAgAEAAAAAAAAEAAAAAABAAAAAQAAAAAAE=</HashCode>
       <FileName>Models\Entities\New.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="QuanLyKho.Models.Entities.Order">
-    <Position X="18.25" Y="0.5" Width="1.5" />
+    <Position X="22.75" Y="6" Width="1.5" />
+    <AssociationLine Name="ShipStatus" Type="QuanLyKho.Models.Entities.ShipStatus" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="23.562" Y="6" />
+        <Point X="23.562" Y="5.75" />
+        <Point X="25.5" Y="5.75" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="PaymentStatus" Type="QuanLyKho.Models.Entities.PaymentStatus" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="24.25" Y="9.75" />
+        <Point X="24.795" Y="9.75" />
+        <Point X="24.795" Y="10.75" />
+        <Point X="25.5" Y="10.75" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Staff" Type="QuanLyKho.Models.Entities.Staff" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="23.5" Y="10.44" />
+        <Point X="23.5" Y="15.419" />
+        <Point X="27.5" Y="15.419" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Customer" Type="QuanLyKho.Models.Entities.Customer" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="23.875" Y="10.44" />
+        <Point X="23.875" Y="12.023" />
+        <Point X="28" Y="12.023" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAEDAEAAACAAAAAAAAAQFAEAQCAAQBACIAAAAQEAAAE=</HashCode>
+      <HashCode>AAEDAEAAASAAAAAAABAAUAEAQCAAQBACIAAQAQEAAAE=</HashCode>
       <FileName>Models\Entities\Order.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ShipStatus" />
+      <Property Name="PaymentStatus" />
+      <Property Name="Staff" />
+      <Property Name="Customer" />
+      <Property Name="Store" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.OrderDetail" Collapsed="true">
-    <Position X="2.25" Y="2.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.OrderDetail">
+    <Position X="19.75" Y="6" Width="2" />
+    <AssociationLine Name="ProductWareHouse" Type="QuanLyKho.Models.Entities.ProductWareHouse" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="20.875" Y="9.286" />
+        <Point X="20.875" Y="12.219" />
+        <Point X="19.5" Y="12.219" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>EAECAAAAAQAAAAAAAAAAAAEAAAAAABAAAAAAgAAIAAE=</HashCode>
+      <HashCode>EAECAAAAAQAAAAAIAAAAAAEAAAAAAFAAAAAAggAIAAE=</HashCode>
       <FileName>Models\Entities\OrderDetail.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Order" />
+      <Property Name="Product" />
+      <Property Name="ProductWareHouse" />
+    </ShowAsAssociation>
   </Class>
   <Class Name="QuanLyKho.Models.Entities.Product">
-    <Position X="11.75" Y="1" Width="1.5" />
+    <Position X="13.75" Y="6" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAKAAIEARAgC4AAIABQAIUAICAAABAABAAAAAgCCAE=</HashCode>
+      <HashCode>AAAKAAIEARAgCoAAIBAQAIUAICAAABAABAAQAAgCCAE=</HashCode>
       <FileName>Models\Entities\Product.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Property Name="Category" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.ProductClassification" Collapsed="true">
-    <Position X="5.75" Y="2.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.ProductClassification">
+    <Position X="0.75" Y="1.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>EAACBAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Entities\ProductClassification.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.ProductDetailedConfig" Collapsed="true">
-    <Position X="7.5" Y="2.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.ProductDetailedConfig">
+    <Position X="13.25" Y="2.75" Width="2" />
+    <AssociationLine Name="Product" Type="QuanLyKho.Models.Entities.Product" FixedFromPoint="true">
+      <Path>
+        <Point X="14.562" Y="4.43" />
+        <Point X="14.562" Y="6" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>EAACAAAAAgAAAAAAABAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
       <FileName>Models\Entities\ProductDetailedConfig.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Product" />
+      <Property Name="Config" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.ProductImage" Collapsed="true">
-    <Position X="0.5" Y="3.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.ProductImage">
+    <Position X="11" Y="12.5" Width="1.5" />
+    <AssociationLine Name="Product" Type="QuanLyKho.Models.Entities.Product" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="12.5" Y="13.938" />
+        <Point X="13.084" Y="13.938" />
+        <Point X="13.084" Y="11.274" />
+        <Point X="13.75" Y="11.274" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>EAECAAAEAAAgAQIAAAAAAAEAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <HashCode>EAECAAAEAQAgAAIAAAAAAAEAAAAAAAAAAAAQAAAAAAE=</HashCode>
       <FileName>Models\Entities\ProductImage.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Product" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.ProductPromotion" Collapsed="true">
-    <Position X="2.25" Y="3.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.ProductPromotion">
+    <Position X="10.75" Y="7.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>EAACAAACABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Entities\ProductPromotion.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Promotion" />
+      <Property Name="Product" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.ProductWareHouse" Collapsed="true">
-    <Position X="4" Y="3.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.ProductWareHouse">
+    <Position X="17.75" Y="11.25" Width="1.75" />
+    <AssociationLine Name="Product" Type="QuanLyKho.Models.Entities.Product" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17.75" Y="12.949" />
+        <Point X="17.375" Y="12.949" />
+        <Point X="17.375" Y="11.091" />
+        <Point X="15.75" Y="11.091" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="WareHouse" Type="QuanLyKho.Models.Entities.WareHouse" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="18.625" Y="14.536" />
+        <Point X="18.625" Y="18" />
+        <Point X="22.75" Y="18" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>EAACAAAEAAAAAQAAAAAAAAEABAAAAAAAAAAAoAAAAAE=</HashCode>
+      <HashCode>EAACAAAEAQAAAAAAABAAAAEABAAAAAAAAAAQoAAAAAE=</HashCode>
       <FileName>Models\Entities\ProductWareHouse.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Product" />
+      <Property Name="WareHouse" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.Promotion" Collapsed="true">
-    <Position X="5.75" Y="3.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.Promotion">
+    <Position X="7.75" Y="7" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAACAAAEAAAgAQAAAAAAAAUgAAAAAAAAQAAACEACAAE=</HashCode>
+      <HashCode>AAACAAAEAQAgAAAAAAAAAAUgAAAAAAAAQAAQCEACAAE=</HashCode>
       <FileName>Models\Entities\Promotion.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="PromotionType" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.Receipt" Collapsed="true">
-    <Position X="7.5" Y="3.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.Receipt">
+    <Position X="17" Y="19.25" Width="3" />
+    <AssociationLine Name="WareHouse" Type="QuanLyKho.Models.Entities.WareHouse" FixedFromPoint="true">
+      <Path>
+        <Point X="20" Y="20.188" />
+        <Point X="22.75" Y="20.188" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="DestinationWarehouse" Type="QuanLyKho.Models.Entities.WareHouse" FixedFromPoint="true">
+      <Path>
+        <Point X="20" Y="19.602" />
+        <Point X="22.75" Y="19.602" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AAACAAAEAAAAAAAQAAAAAIAABCAAAAACAUAEIAABAAA=</HashCode>
       <FileName>Models\Entities\Receipt.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Type" />
+      <Property Name="WareHouse" />
+      <Property Name="DestinationWarehouse" />
+      <Property Name="Staff" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.ReceiptDetail" Collapsed="true">
-    <Position X="0.5" Y="4.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.ReceiptDetail">
+    <Position X="14.5" Y="15.5" Width="1.5" />
+    <AssociationLine Name="Receipt" Type="QuanLyKho.Models.Entities.Receipt" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="15.25" Y="18.209" />
+        <Point X="15.25" Y="19.778" />
+        <Point X="17" Y="19.778" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="Product" Type="QuanLyKho.Models.Entities.Product" ManuallyRouted="true" FixedToPoint="true">
+      <Path>
+        <Point X="15.25" Y="15.5" />
+        <Point X="15.25" Y="15.313" />
+        <Point X="15.25" Y="12.171" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>UAACAAAEAAAAAAAIAAAAAAAAAAAAAAAAACAAgAAQAAA=</HashCode>
       <FileName>Models\Entities\ReceiptDetail.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Receipt" />
+      <Property Name="Product" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.Staff" Collapsed="true">
-    <Position X="2.25" Y="4.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.Staff">
+    <Position X="27.5" Y="15" Width="1.5" />
+    <AssociationLine Name="WareHouse" Type="QuanLyKho.Models.Entities.WareHouse" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="27.5" Y="16.256" />
+        <Point X="27.125" Y="16.256" />
+        <Point X="27.125" Y="17.938" />
+        <Point X="24.5" Y="17.938" />
+      </Path>
+    </AssociationLine>
+    <AssociationLine Name="User" Type="QuanLyKho.Models.Entities.AppUser" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="29" Y="15.897" />
+        <Point X="31.625" Y="15.897" />
+        <Point X="31.625" Y="9.25" />
+        <Point X="31.25" Y="9.25" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAEDAAAEACAAAQCAAAAAQA2ABAAQAAACAAAAIAAAAAE=</HashCode>
+      <HashCode>AAEDAAAEASAAAACAAAAAQA2ABAAQAAACAAAQIAAAAAE=</HashCode>
       <FileName>Models\Entities\Staff.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Gender" />
+      <Property Name="WareHouse" />
+      <Property Name="User" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.VnPay" Collapsed="true">
-    <Position X="4" Y="4.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.VnPay">
+    <Position X="28" Y="6" Width="1.5" />
+    <AssociationLine Name="Order" Type="QuanLyKho.Models.Entities.Order" FixedToPoint="true">
+      <Path>
+        <Point X="28" Y="6.805" />
+        <Point X="24.25" Y="6.805" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>EAECAAAAAQAAAAAAACAAAAAAAAAAQAAAABAAAAAAgAA=</HashCode>
       <FileName>Models\Entities\VnPay.cs</FileName>
     </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Order" />
+    </ShowAsAssociation>
   </Class>
-  <Class Name="QuanLyKho.Models.Entities.WareHouse" Collapsed="true">
-    <Position X="5.75" Y="4.5" Width="1.5" />
+  <Class Name="QuanLyKho.Models.Entities.WareHouse">
+    <Position X="22.75" Y="17" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAECAAAEAAAAAQAAAAAAQAUAICAAAAACAAAAAAABAAE=</HashCode>
+      <HashCode>AAECAAAEAQAAAAAAAAAAQAUAICAAAAACAAAQAAABAAE=</HashCode>
       <FileName>Models\Entities\WareHouse.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Enum Name="QuanLyKho.Models.Entities.Gender" Collapsed="true">
-    <Position X="0.5" Y="6.5" Width="1.5" />
+  <Class Name="Microsoft.AspNetCore.Identity.IdentityUser">
+    <Position X="30.75" Y="6.75" Width="2.25" />
+    <InheritanceLine Type="Microsoft.AspNetCore.Identity.IdentityUser&lt;TKey&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="32.25" Y="5.312" />
+        <Point X="32.625" Y="5.312" />
+        <Point X="32.625" Y="6.375" />
+        <Point X="31.938" Y="6.375" />
+        <Point X="31.938" Y="6.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Class>
+  <Class Name="Microsoft.AspNetCore.Identity.IdentityUser&lt;TKey&gt;">
+    <Position X="30" Y="1.5" Width="2.25" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="QuanLyKho.Models.Entities.PaymentMethod">
+    <Position X="8" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAEAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\Order.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="QuanLyKho.Models.Entities.Gender">
+    <Position X="30" Y="17" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
       <FileName>Models\Entities\Gender.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="QuanLyKho.Models.Entities.PromotionType" Collapsed="true">
-    <Position X="2.25" Y="6.5" Width="1.5" />
+  <Enum Name="QuanLyKho.Models.Entities.PromotionType">
+    <Position X="10.75" Y="9.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAEAAAAAAA=</HashCode>
       <FileName>Models\Entities\Promotion.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="QuanLyKho.Models.Entities.ReceiptType" Collapsed="true">
-    <Position X="4" Y="6.5" Width="1.5" />
+  <Enum Name="QuanLyKho.Models.Entities.ReceiptType">
+    <Position X="14" Y="20.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAIAAABQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Entities\ReceiptType.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="QuanLyKho.Models.Entities.Status" Collapsed="true">
-    <Position X="5.75" Y="6.5" Width="1.5" />
+  <Enum Name="QuanLyKho.Models.Entities.Status">
+    <Position X="8" Y="14.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAEAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\Entities\Status.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="QuanLyKho.Models.Entities.WarehouseType" Collapsed="true">
-    <Position X="7.5" Y="6.5" Width="1.5" />
+  <Enum Name="QuanLyKho.Models.Entities.WarehouseType">
+    <Position X="8" Y="13" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAQAAAAA=</HashCode>
       <FileName>Models\Entities\WareHouse.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="QuanLyKho.Models.Entities.ShipStatus">
+    <Position X="25.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAgAAAAAAAAgAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Models\Entities\Order.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="QuanLyKho.Models.Entities.PaymentStatus">
+    <Position X="25.5" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Entities\Order.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Segoe UI" Size="9" />

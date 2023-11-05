@@ -21,7 +21,7 @@ namespace QuanLyKho.Services
         {
             Console.WriteLine("Running Update promotion price StartDate !!!!!");
 
-            var promotions = await _context.Promotions.Include(prm => prm.ProductPromotions).Where(prm => prm.Status == Status.Show).Where(prm => prm.StartDate.Date == DateTime.Now.Date).ToListAsync();
+            var promotions = await _context.Promotions.Include(prm => prm.ProductPromotions).Where(prm => prm.Status == Status.Show).Where(prm => prm.StartDate.Date <= DateTime.Now.Date).ToListAsync();
             foreach (var promotion in promotions)
             {
                 if (promotion.PromotionType == Models.Entities.PromotionType.Discount)

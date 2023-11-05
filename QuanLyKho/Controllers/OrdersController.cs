@@ -15,6 +15,9 @@ namespace QuanLyKho.Controllers
     {
         private readonly AppDbContext _context;
 
+        /// <summary>
+        /// Phương thức khởi tạo
+        /// </summary>
         public OrdersController(AppDbContext context)
         {
             _context = context;
@@ -29,6 +32,9 @@ namespace QuanLyKho.Controllers
         //    return View(await _context.Orders.ToListAsync());
         //}
 
+        /// <summary>
+        /// Action trả về View danh sách tất cả các hóa đơn có trong hệ thống
+        /// </summary>
         public async Task<IActionResult> Index(string filter = "All")
         {
             var ordersQuery = _context.Orders.AsQueryable();
@@ -47,6 +53,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action trả về View thông tin chi tiết của hóa đơn(GET)
+        /// </summary>
         public async Task<IActionResult> Details(int id)
         {
             var order = await _context.Orders.Include(o => o.Store)
@@ -62,6 +71,9 @@ namespace QuanLyKho.Controllers
             return View(order);
         }
 
+        /// <summary>
+        /// Action duyệt đơn(POST)
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Details(int orderId, string orderDetailIdsJson, List<int> productWarehouseIds, bool? isComplete)
         {
@@ -168,6 +180,9 @@ namespace QuanLyKho.Controllers
             return View(order);
         }
 
+        /// <summary>
+        /// Action trả về View cập nhật thông tin cho hóa đơn
+        /// </summary>
         public IActionResult Edit(int id)
         {
             var order = _context.Orders.Find(id);
@@ -177,6 +192,9 @@ namespace QuanLyKho.Controllers
             return View(order);
         }
 
+        /// <summary>
+        /// Action cập nhật hóa đơn
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Edit(Order orderSubmit, ShipStatus oldShipStatus)
         {

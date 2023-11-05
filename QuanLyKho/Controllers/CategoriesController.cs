@@ -15,12 +15,18 @@ namespace QuanLyKho.Controllers
         public string PrimaryTitle = "Categories";
 
 
+        /// <summary>
+        /// Phương thức khởi tạo
+        /// </summary>
         public CategoriesController(AppDbContext context)
         {
             _context = context;
         }
 
         // GET: Categories
+        /// <summary>
+        /// Action trả về view danh sách danh mục
+        /// </summary>
         public async Task<IActionResult> Index(string filter = "All")
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
@@ -41,6 +47,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Categories/Details/5
+        /// <summary>
+        /// Action trả về view chi tiết danh mục
+        /// </summary>
         public async Task<IActionResult> Details(int? id)
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
@@ -61,6 +70,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Categories/Create
+        /// <summary>
+        /// Action trả về view tạo danh mục(GET)
+        /// </summary>
         public IActionResult Create()
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
@@ -70,6 +82,9 @@ namespace QuanLyKho.Controllers
         // POST: Categories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// Action tạo mới danh mục(POST)
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,Status")] Category category, IFormFile iconFile)
@@ -97,6 +112,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: Categories/Edit/5
+        /// <summary>
+        /// Action trả về view cập nhật thông tin danh mục(GET)
+        /// </summary>
         public async Task<IActionResult> Edit(int? id)
         {
             ViewData["PrimaryTitle"] = PrimaryTitle;
@@ -122,6 +140,9 @@ namespace QuanLyKho.Controllers
         }
 
         // POST: Categories/Edit/5
+        /// <summary>
+        /// Action cập nhật thông tin danh mục(POST)
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Icon,Status")] Category category, int[] configs, IFormFile? iconFile)
@@ -218,6 +239,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action xóa danh mục
+        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -287,6 +311,9 @@ namespace QuanLyKho.Controllers
 
 
 
+        /// <summary>
+        /// Action ẩn/hiện danh mục
+        /// </summary>
         public async Task<IActionResult> Display(int id)
         {
             var category = await _context.Categories.FindAsync(id);
@@ -305,6 +332,9 @@ namespace QuanLyKho.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// Phương thức kiểm tra danh mục tồn tại hay chưa
+        /// </summary>
         private bool CategoryExists(int id)
         {
             return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();

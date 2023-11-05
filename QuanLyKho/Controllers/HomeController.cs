@@ -14,12 +14,18 @@ namespace QuanLyKho.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _context;
 
+        /// <summary>
+        /// Phương thức khởi tạo
+        /// </summary>
         public HomeController(ILogger<HomeController> logger, AppDbContext context)
         {
             _logger = logger;
             _context = context;
         }
 
+        /// <summary>
+        /// Action trả về View Dashboard
+        /// </summary>
         public async Task<IActionResult> Index()
         {
             var thisMonth = DateTime.Today.Month;
@@ -44,7 +50,9 @@ namespace QuanLyKho.Controllers
             return View();
         }
 
-        // tính tổng doanh thu trong năm hiện tại
+        /// <summary>
+        /// Phương thức tính tổng doanh thu trong năm hiện tại
+        /// </summary>
         private async Task<double> TotalRevenueInYear()
         {
             var thisYear = DateTime.Today.Year;
@@ -54,7 +62,9 @@ namespace QuanLyKho.Controllers
             return totalRevenue;
         }
 
-        // Lấy tất cả các đơn hàng trong năm => thống kê theo tháng
+        /// <summary>
+        /// Phương thức lấy tất cả các đơn hàng trong năm => thống kê theo tháng
+        /// </summary>
         private async Task<List<Order>> TotalRevenueByMonth()
         {
             var thisYear = DateTime.Today.Year;
@@ -71,7 +81,10 @@ namespace QuanLyKho.Controllers
             return orders;
         }
 
-        // Lấy tất cả các đơn hàng trong tháng
+
+        /// <summary>
+        /// Phương thức lấy tất cả các đơn hàng trong tháng
+        /// </summary>
         private async Task<List<Order>> getOrderInMonth(int month, int year)
         {
             var orders = await _context.Orders.Where(o => o.CreatedTime.Month == month && o.CreatedTime.Year == year && o.ShipStatus == ShipStatus.Success).ToListAsync();
@@ -79,11 +92,17 @@ namespace QuanLyKho.Controllers
             return orders;
         }
 
+        /// <summary>
+        /// Action trả về View Privacy
+        /// </summary>
         public IActionResult Privacy()
         {
             return View();
         }
 
+        /// <summary>
+        /// Action trả về View báo lỗi
+        /// </summary>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

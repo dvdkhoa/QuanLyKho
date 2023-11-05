@@ -22,6 +22,8 @@
                     <div class="card-body" style="display: block;">
                         <div asp-validation-summary="All" class="text-danger"></div>
                         <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="CreatedTime" />
+
                         <div class="form-group">
                             <label asp-for="Name">Promotion Name</label>
                             <input asp-for="Name" type="text" class="form-control">

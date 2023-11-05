@@ -18,12 +18,18 @@ namespace QuanLyKho.Controllers
     {
         private readonly AppDbContext _context;
 
+        /// <summary>
+        /// Phương thức khởi tạo
+        /// </summary>
         public NewsController(AppDbContext context)
         {
             _context = context;
         }
 
         // GET: News
+        /// <summary>
+        /// Action trả về View danh sách tất cả tin tức có trong hệ thống
+        /// </summary>
         public async Task<IActionResult> Index(string filter = "All")
         {
             if (_context.News == null)
@@ -42,6 +48,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: News/Details/5
+        /// <summary>
+        /// Action trả về View thông tin chi tiết tin tức
+        /// </summary>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.News == null)
@@ -60,12 +69,18 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: News/Create
+        /// <summary>
+        /// Action trả về View tạo mới tin tức(GET)
+        /// </summary>
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: News/Create
+        /// <summary>
+        /// Action tạo mới tin tức(POST)
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Title,Content,Description")] New @new, IFormFile? inputImage)
@@ -96,6 +111,9 @@ namespace QuanLyKho.Controllers
         }
 
         // GET: News/Edit/5
+        /// <summary>
+        /// Action trả về View cập nhật tin tức(GET)
+        /// </summary>
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.News == null)
@@ -112,9 +130,12 @@ namespace QuanLyKho.Controllers
         }
 
         // POST: News/Edit/5
+        /// <summary>
+        /// Action cập nhật tin tức(POST)
+        /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Content,Image,Status")] New @new, IFormFile? inputImage)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Content,Image,CreatedTime,Status")] New @new, IFormFile? inputImage)
         {
             try
             {
@@ -158,7 +179,7 @@ namespace QuanLyKho.Controllers
                 }
                 return View(@new);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
                 return RedirectToAction(nameof(Details), @new);
@@ -166,6 +187,9 @@ namespace QuanLyKho.Controllers
         }
 
         // POST: News/Delete/5
+        /// <summary>
+        /// Action xóa tin tức
+        /// </summary>
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -196,6 +220,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Action Ẩn/Hiện tin tức
+        /// </summary>
         public async Task<IActionResult> Display(int id)
         {
             var @new = await _context.News.FindAsync(id);
@@ -215,6 +242,9 @@ namespace QuanLyKho.Controllers
         }
 
 
+        /// <summary>
+        /// Phương thức kiểm tra tin tức đã tồn tại trong hệ thống hay chưa
+        /// </summary>
         private bool NewExists(int id)
         {
             return (_context.News?.Any(e => e.Id == id)).GetValueOrDefault();
