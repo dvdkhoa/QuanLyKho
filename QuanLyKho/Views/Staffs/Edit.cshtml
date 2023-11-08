@@ -8,7 +8,7 @@
 
 
 <section class="content pb-2">
-    <form asp-action="Edit" method="post">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
         <div class="row ">
             <div class="col-md-8 offset-2">
                 <div class="card card-primary">
@@ -26,6 +26,7 @@
                         <input asp-for="Id" type="hidden" >
                         <input asp-for="Email" type="hidden" />
                         <input type="hidden" asp-for="CreatedTime" />
+                        <input asp-for="Image" type="hidden" />
 
 
                         <div class="form-group">
@@ -48,6 +49,18 @@
                                 }
                             </select>
                             <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+                        <div class="input-group mb-3 mt-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroupFileAddon01">Image</span>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="img-staff" name="newImage" aria-describedby="inputGroupFileAddon01">
+                                <label class="custom-file-label" for="img-staff">Choose file</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <img id="img-review" src="#" class="h-25 w-25" style="display: none" />
                         </div>
                         <div class="form-group">
                             <label asp-for="PhoneNumber">PhoneNumber</label>
@@ -92,4 +105,50 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#img-review').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+                $('#img-review').show(1000)
+            }
+        }
+
+        $('#img-staff').on('change', function () {
+
+            const file = this.files[0];
+
+            if (file != null) {
+                const fileType = file['type'];
+                const validImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
+
+
+                if (!validImageTypes.includes(fileType)) {
+
+                    alert('Please submit image')
+
+                    $(this).next('.custom-file-label').html('Choose file');
+                    $('#img-review').hide(1000)
+
+                    return;
+                }
+
+                //get the file name
+                var fileName = $(this).val();
+                //replace the "Choose a file" label
+                $(this).next('.custom-file-label').html(fileName);
+                readURL(this)
+            }
+            else {
+                $(this).next('.custom-file-label').html('Choose file');
+                $('#img-review').hide(1000)
+            }
+        })
+    </script>
 }

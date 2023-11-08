@@ -75,6 +75,11 @@ namespace QuanLyKho.Models.Entities
         public AppUser? User { get; set; }
 
         /// <summary>
+        /// Ảnh nhân viên
+        /// </summary>
+        public string? Image { get; set; }
+
+        /// <summary>
         /// Phương thức khởi tạo
         /// </summary>
         public Staff()

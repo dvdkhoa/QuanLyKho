@@ -84,7 +84,7 @@
   <Class Name="QuanLyKho.Models.Entities.Customer">
     <Position X="28" Y="10.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEDAAAEASAAAAAAAAAAAA0ACAAAAAACAAAQIAAAAAE=</HashCode>
+      <HashCode>AAEDAAAEASAAAAAAAAAAAA0ACAAAABACAAAQIAAAAAE=</HashCode>
       <FileName>Models\Entities\Customer.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -125,15 +125,15 @@
     <AssociationLine Name="Staff" Type="QuanLyKho.Models.Entities.Staff" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="23.5" Y="10.44" />
-        <Point X="23.5" Y="15.419" />
-        <Point X="27.5" Y="15.419" />
+        <Point X="23.5" Y="15.438" />
+        <Point X="27.5" Y="15.438" />
       </Path>
     </AssociationLine>
     <AssociationLine Name="Customer" Type="QuanLyKho.Models.Entities.Customer" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="23.875" Y="10.44" />
-        <Point X="23.875" Y="12.023" />
-        <Point X="28" Y="12.023" />
+        <Point X="23.875" Y="12.116" />
+        <Point X="28" Y="12.116" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
@@ -320,22 +320,22 @@
     <Position X="27.5" Y="15" Width="1.5" />
     <AssociationLine Name="WareHouse" Type="QuanLyKho.Models.Entities.WareHouse" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="27.5" Y="16.256" />
-        <Point X="27.125" Y="16.256" />
+        <Point X="27.5" Y="16.313" />
+        <Point X="27.125" Y="16.313" />
         <Point X="27.125" Y="17.938" />
         <Point X="24.5" Y="17.938" />
       </Path>
     </AssociationLine>
     <AssociationLine Name="User" Type="QuanLyKho.Models.Entities.AppUser" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="29" Y="15.897" />
-        <Point X="31.625" Y="15.897" />
+        <Point X="29" Y="15.938" />
+        <Point X="31.625" Y="15.938" />
         <Point X="31.625" Y="9.25" />
         <Point X="31.25" Y="9.25" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>AAEDAAAEASAAAACAAAAAQA2ABAAQAAACAAAQIAAAAAE=</HashCode>
+      <HashCode>AAEDAAAEASAAAACAAAAAQA2ABAAQABACAAAQIAAAAAE=</HashCode>
       <FileName>Models\Entities\Staff.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>

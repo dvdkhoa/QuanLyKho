@@ -112,7 +112,7 @@ namespace QuanLyKho.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Staff staff, string role) //[Bind("Name,DateOfBirth,Gender, Email, PhoneNumber,Address,StartDay,WareHouseId,UserId, ")] 
+        public async Task<IActionResult> Create(Staff staff, string role, IFormFile? newImage) //[Bind("Name,DateOfBirth,Gender, Email, PhoneNumber,Address,StartDay,WareHouseId,UserId, ")] 
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -123,6 +123,11 @@ namespace QuanLyKho.Controllers
                     if (ModelState.IsValid)
                     {
                         Staff newStaff = await _staffService.CreateStaff(staff);
+                        if (newImage != null)
+                        {
+                            var imagePath = await CloudinaryHelper.UploadFileToCloudinary(newImage, "Staffs");
+                            newStaff.Image = imagePath;
+                        }
 
                         if (newStaff != null)
                         {
@@ -184,7 +189,7 @@ namespace QuanLyKho.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, Staff staff)
+        public async Task<IActionResult> Edit(string id, Staff staff, IFormFile? newImage)
         {
             if (id != staff.Id)
             {
@@ -195,6 +200,12 @@ namespace QuanLyKho.Controllers
             {
                 try
                 {
+                    if (newImage != null)
+                    {
+                        var imagePath = await CloudinaryHelper.UploadFileToCloudinary(newImage, "Staffs");
+                        staff.Image = imagePath;
+                    }
+
                     _context.Update(staff);
                     await _context.SaveChangesAsync();
                 }
@@ -344,4 +355,7 @@ namespace QuanLyKho.Controllers
             return null;
         }
     }
+
+
+    
 }

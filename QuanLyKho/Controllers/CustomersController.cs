@@ -131,5 +131,27 @@ namespace QuanLyKho.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [AllowAnonymous]
+        [HttpPost("/api/customers/changeImage")]
+        public async Task<IActionResult> ChangeImage(string id, IFormFile imgFile)
+        {
+            if (imgFile is null || string.IsNullOrEmpty(id))
+                return BadRequest();
+
+            var customer = await _context.Customer.FindAsync(id);
+
+            if (customer is null)
+                return NotFound();
+
+            var imgPath = await CloudinaryHelper.UploadFileToCloudinary(imgFile, "Customers");
+            if (imgPath != null)
+            {
+                customer.Image = imgPath;
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            return BadRequest();
+        }
     }
 }

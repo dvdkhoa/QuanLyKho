@@ -11,6 +11,10 @@
         /// </summary>
         public string Name { get; set; }
         /// <summary>
+        /// Ảnh đại diện
+        /// </summary>
+        public string? Image { get; set; }
+        /// <summary>
         /// Địa chỉ
         /// </summary>
         public string Address { get; set; }
