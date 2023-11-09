@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    ViewData["PrimaryTitle"] = "Receipts";
 }
 
 @section Styles {
@@ -18,7 +19,9 @@
 <!-- /.card -->
 <div class="card">
     <div class="card-header">
-        <a class="card-title" asp-action="Create" >Create receipt</a>
+        <a class="card-title" asp-action="Create" >Create import/export receipt</a> 
+
+        <a class="card-title float-right" asp-action="CreateTransferReceipt">Create transfer receipt</a>
     </div>
     <!-- /.card-header -->
     <div class="card-body">
@@ -27,8 +30,8 @@
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.Id)</th>
                     <th>@Html.DisplayNameFor(model => model.DateCreated)</th>
-                    <th>@Html.DisplayNameFor(model => model.StaffId)</th>
-                    <th>@Html.DisplayNameFor(model => model.WareHouseId)</th>
+                    <th>Staff</th>
+                    <th>WareHouse/Store</th>
                     <th>@Html.DisplayNameFor(model => model.Type)</th>
                     <th>Action</th>
                 </tr>
@@ -39,8 +42,14 @@
                     <tr>
                         <td>@receipt.Id</td>
                         <td>@receipt.DateCreated.ToShortDateString()</td>
-                        <td>@receipt.StaffId</td>
-                        <td>@receipt.WareHouseId</td>
+                        <td>@receipt.Staff.Name (@receipt.StaffId)</td>
+                        @if(receipt.Type == QuanLyKho.Models.Entities.ReceiptType.Transfer){
+                            <td>@receipt.WareHouse.Name (@receipt.WareHouseId) => @receipt.DestinationWarehouse.Name (@receipt.DestinationWarehouseId)</td>
+                        }
+                        else
+                        {
+                            <td>@receipt.WareHouse.Name (@receipt.WareHouseId)</td>
+                        }
                         <td>@receipt.Type</td>
                         <td class="text-center">
                             <a class="btn-sm btn-primary" asp-action="Details" asp-route-id="@receipt.Id"><i class="fas fa-info-circle"></i></a>

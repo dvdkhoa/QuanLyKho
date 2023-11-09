@@ -83,5 +83,16 @@ namespace QuanLyKho.Models.Entities
 
             return totalString;
         }
+
+        // Khi tạo mới thì gọi
+        /// <summary>
+        /// Set thời gian tạo mới lần đầu
+        /// </summary>
+        public void SetCreatedTime()
+        {
+            this.DateCreated = DateTime.Now;
+        }
+
+        
     }
 }

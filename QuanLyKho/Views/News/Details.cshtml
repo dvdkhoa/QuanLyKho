@@ -27,6 +27,10 @@
                     <td>@Model.Title</td>
                 </tr>
                 <tr>
+                    <td>Description</td>
+                    <td>@Model.Description</td>
+                </tr>
+                <tr>
                     <td>Icon</td>
                     <td>
                         <img src="@Model.Image" width="32px" />
@@ -42,11 +46,11 @@
                 </tr>
                 <tr>
                     <td>Created time</td>
-                    <td>@Model.CreatedTime</td>
+                    <td>@Model.CreatedTime.ToShortDateString()</td>
                 </tr>
                 <tr>
                     <td>Last updated</td>
-                    <td>@Model.LastUpdated</td>
+                    <td>@Model.LastUpdated.ToShortDateString()</td>
                 </tr>
             </tbody>
         </table>

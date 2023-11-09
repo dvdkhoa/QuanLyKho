@@ -181,6 +181,34 @@ namespace QuanLyKho.Controllers
                 return NotFound();
             }
 
+
+            // Lấy danh sách sản phẩm chưa tồn tại trong khuyến mãi này, đồng thời phải đảm bảm sản phẩm này
+            // không được nằm trong khuyến mãi giảm giá nào khác(khuyễn mãi giảm giá và tặng sản phẩm có thể áp dùng
+            // đồng thời trên 1 sản phẩm được)
+
+            var productPromotionIds = await _context.ProductPromotions
+                                                    .Where(pp => pp.PromotionId == promotionId).Select(pp => pp.ProductId)
+                                                    .ToListAsync();
+
+            // Bổ sung thêm: 1 sản phẩm đã thuộc khuyến mãi giảm giá có tác dụng trong thời gian này thì không được thêm vào cho khuyến mãi giảm giá khác
+            // Đem xuống phần kiểm trả bên phương thức post
+            //var otherPromotionalProductIds = await _context.ProductPromotions.Include(pp => pp.Promotion)
+            //                                                .Where(pp => pp.Promotion.PromotionType == PromotionType.Discount
+            //                                                    && pp.Promotion.EndDate <= DateTime.Now.Date).Select(pp => pp.ProductId).ToListAsync();
+
+            var selectProducts = await _context.Products
+                                         .Where(p => !productPromotionIds.Contains(p.Id))
+                                         .ToListAsync();
+
+            //var products = await _context.Products
+            //                             .Where(p => !productPromotionIds.Contains(p.Id)
+            //                                        || !otherPromotionalProductIds.Contains(p.Id))
+            //                             .ToListAsync();
+
+
+            ViewData["ProductId"] = new SelectList(selectProducts, "Id", "Name");
+
+
             // Bổ sung thêm: 1 sản phẩm đã thuộc khuyến mãi giảm giá có tác dụng trong thời gian này thì không được thêm vào cho khuyến mãi giảm giá khác
             if (promotion.PromotionType == PromotionType.Discount)
             {
@@ -202,7 +230,8 @@ namespace QuanLyKho.Controllers
                 if (idExists.Count > 0)
                 {
                     ModelState.AddModelError("", $"Products with Id: {string.Join(",", idExists)} already exist in another promotion");
-                    return View();
+
+                    return View(promotionId);
                 }
             }
 
@@ -239,7 +268,7 @@ namespace QuanLyKho.Controllers
                             if (kq == 0)
                             {
                                 ModelState.AddModelError("", "Updating the promotional price for products failed! ");
-                                return View();
+                                return View(promotionId);
                             }
                         }
                     }

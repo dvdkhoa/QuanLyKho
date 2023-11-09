@@ -101,6 +101,7 @@ namespace QuanLyKho.Controllers
                     using (var transaction = _context.Database.BeginTransaction())
                     {
                         var newProduct = createProductModel.Product;
+                        newProduct.SetCreatedTime();
                         await _context.Products.AddAsync(newProduct);
                         var result = await _context.SaveChangesAsync();
 
@@ -108,6 +109,7 @@ namespace QuanLyKho.Controllers
                         {
                             if (createProductModel.Images!.Count > 0)
                             {
+                                int i = 1;
                                 foreach (var image in createProductModel.Images)
                                 {
                                     var imagePath = await CloudinaryHelper.UploadFileToCloudinary(image, newProduct.Id);
@@ -118,9 +120,11 @@ namespace QuanLyKho.Controllers
                                         Status = Status.Show,
                                         CreatedTime = DateTime.Now,
                                         LastUpdated = DateTime.Now,
-                                        Product = newProduct
+                                        Product = newProduct,
+                                        Order = i
                                     };
                                     _context.ProductImages.Add(productImage);
+                                    i++;
                                 }
                                 await _context.SaveChangesAsync();
                                 transaction.Commit();

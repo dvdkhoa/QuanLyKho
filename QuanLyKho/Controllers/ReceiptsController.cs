@@ -52,7 +52,7 @@ namespace QuanLyKho.Controllers
         /// </summary>
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Receipts.Where(receipt => receipt.Status == Status.Show).Include(r => r.Staff).Include(r => r.WareHouse);
+            var appDbContext = _context.Receipts.Where(receipt => receipt.Status == Status.Show).Include(r => r.Staff).Include(r => r.WareHouse).Include(r => r.DestinationWarehouse);
             return View(await appDbContext.ToListAsync());
         }
 
@@ -287,6 +287,7 @@ namespace QuanLyKho.Controllers
                 }
 
                 _context.Add(receipt);
+                receipt.SetCreatedTime();
                 _context.SaveChanges();
 
                 List<ProductWareHouse> _productWareHouses = new List<ProductWareHouse>();
@@ -633,9 +634,18 @@ namespace QuanLyKho.Controllers
         /// </summary>
         public IActionResult CreateTransferReceipt()
         {
-            ViewData["StaffId"] = new SelectList(_context.Staffs, "Id", "Id");
             ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id");
             ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
+
+            if (this.User.IsInRole("Admin"))
+            {
+                ViewData["StaffId"] = new SelectList(_context.Staffs.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
+            }
+            else
+            {
+                string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                ViewData["StaffId"] = _context.Staffs.Where(s => s.UserId == userId).FirstOrDefault().Id;
+            }
 
             return View();
         }
@@ -675,6 +685,7 @@ namespace QuanLyKho.Controllers
                     }
                 }
                 _context.Add(receipt);
+                receipt.SetCreatedTime();
                 _context.SaveChanges();
 
                 List<ProductWareHouse> _productWareHouses = new List<ProductWareHouse>();
@@ -690,8 +701,18 @@ namespace QuanLyKho.Controllers
                         transaction.Rollback();
                         ModelState.AddModelError("", $"Product {i.ProductId} in warehouse ({receipt.WareHouseId}) has quantity less than quantity you want transfer");
                         ViewData["StaffId"] = new SelectList(_context.Staffs, "Id", "Id");
+                        if (this.User.IsInRole("Admin"))
+                        {
+                            ViewData["StaffId"] = new SelectList(_context.Staffs.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
+                        }
+                        else
+                        {
+                            string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                            ViewData["StaffId"] = _context.Staffs.Where(s => s.UserId == userId).FirstOrDefault().Id;
+                        }
                         ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id");
-                        ViewData["ProductId"] = new MultiSelectList(_context.Products, "Id", "Id", ProductIds);
+                        ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
+                        //ViewData["ProductId"] = new MultiSelectList(_context.Products, "Id", "Id", ProductIds);
                         return View("CreateTransferReceipt", receipt);
                     }
                     // Thực hiện cập nhật ls ProductWarehouse cho kho lấy hàng trước
