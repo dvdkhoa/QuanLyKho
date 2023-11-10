@@ -85,6 +85,22 @@ namespace QuanLyKho.Controllers
             {
                 if (isComplete.Value)
                 {
+                    if (order.PaymentMethod == PaymentMethod.COD)
+                    {
+                        var bill = await _context.Bills.FirstOrDefaultAsync(b => b.OrderId == order.Id);
+                        bill.MoneyReceived = order.Total;
+                        bill.MoneyRefund = order.Total;
+                        bill.StatusPay = (int)PaymentStatus.Paid;
+                    }
+                    //else if (orderSubmit.PaymentMethod == PaymentMethod.Direct)
+                    //{
+                    //    var bill = await _context.Bills.FirstOrDefaultAsync(b => b.OrderId == orderSubmit.Id);
+                    //}
+                    //else if (orderSubmit.PaymentMethod == PaymentMethod.VnPay)
+                    //{
+                    //    var vnpay = await _context.VnPays.FirstOrDefaultAsync(v => v.OrderId == orderSubmit.Id);
+                    //}
+
                     order.ShipStatus = ShipStatus.Success;
                     order.SetUpdatedTime();
                     await _context.SaveChangesAsync();
