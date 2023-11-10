@@ -102,6 +102,7 @@ namespace QuanLyKho.Controllers
                     //}
 
                     order.ShipStatus = ShipStatus.Success;
+                    order.PaymentStatus = PaymentStatus.Paid;
                     order.SetUpdatedTime();
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Details", orderId);

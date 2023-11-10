@@ -51,8 +51,6 @@
                         <th>@Html.DisplayNameFor(model => model.Percent)</th>
                         <th>@Html.DisplayNameFor(model => model.StartDate)</th>
                         <th>@Html.DisplayNameFor(model => model.EndDate)</th>
-                        <th>@Html.DisplayNameFor(model => model.CreatedTime)</th>
-                        <th>@Html.DisplayNameFor(model => model.LastUpdated)</th>
                         <th>@Html.DisplayNameFor(model => model.Status)</th>
                         <th>Action</th>
                     </tr>
@@ -66,8 +64,6 @@
                             <th>@p.Percent</th>
                             <th>@p.StartDate.ToCustomDateTimeStr()</th>
                             <th>@p.EndDate.ToCustomDateTimeStr()</th>
-                            <th>@p.CreatedTime.ToCustomDateTimeStr()</th>
-                            <th>@p.LastUpdated.ToCustomDateTimeStr()</th>
                             <td>@p.Status</td>
                             <td class="text-center">
                                 <a class="btn-sm btn-primary" asp-action="Details" asp-route-id="@p.Id"><i class="fas fa-info-circle"></i></a>

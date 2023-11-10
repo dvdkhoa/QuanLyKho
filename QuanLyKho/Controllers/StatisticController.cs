@@ -416,26 +416,49 @@ namespace QuanLyKho.Controllers
                 }
                 else // Ngược lại, nếu warehouseId null hoặc = 'all' thì left join
                 {
-                    var out_of_stock_products = (from p in _context.Products
-                                                 join pw in _context.ProductWareHouses.Where(pw => pw.Quantity == 0) on p.Id equals pw.ProductId into a
-                                                 from b in a.DefaultIfEmpty()
-                                                 select new { p, pw = b }).ToList();
+                    //var out_of_stock_products = (from p in _context.Products
+                    //                             join pw in _context.ProductWareHouses.Where(pw => pw.Quantity == 0) on p.Id equals pw.ProductId into a
+                    //                             from b in a.DefaultIfEmpty()
+                    //                             select new { p, pw = b }).ToList();
 
-
-                    var productStatistics = out_of_stock_products.Select(a =>
+                    var product_list = _context.Products.Include(p => p.ProductWareHouses).ToList();
+                    var out_of_stock_products = product_list.Where(p =>
                     {
-                        var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => rd.ProductId == a.p.Id && rd.Receipt.Type == ReceiptType.Import)?.Receipt.DateCreated;
+                        var totalQuantity = p.ProductWareHouses.Sum(pw => pw.Quantity);
+
+                        return totalQuantity == 0;
+                    }).ToList();
+
+                    var productStatistics = out_of_stock_products.Select(p =>
+                    {
+                        var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => rd.ProductId == p.Id && rd.Receipt.Type == ReceiptType.Import)?.Receipt.DateCreated;
                         return new ProductStatisticInfoModel
                         {
-                            Id = a.p.Id,
-                            Price = a.p.Price,
-                            Name = a.p.Name,
-                            Status = a.p.Status,
-                            Unit = a.p.Unit,
-                            InventoryNumber = a.pw?.Quantity ?? 0,
+                            Id = p.Id,
+                            Price = p.Price,
+                            Name = p.Name,
+                            Status = p.Status,
+                            Unit = p.Unit,
+                            InventoryNumber = 0,
                             DateImported = importedDate
                         };
                     }).ToList();
+
+
+                    //var productStatistics = out_of_stock_products.Select(a =>
+                    //{
+                    //    var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => rd.ProductId == a.p.Id && rd.Receipt.Type == ReceiptType.Import)?.Receipt.DateCreated;
+                    //    return new ProductStatisticInfoModel
+                    //    {
+                    //        Id = a.p.Id,
+                    //        Price = a.p.Price,
+                    //        Name = a.p.Name,
+                    //        Status = a.p.Status,
+                    //        Unit = a.p.Unit,
+                    //        InventoryNumber = a.pw?.Quantity ?? 0,
+                    //        DateImported = importedDate
+                    //    };
+                    //}).ToList();
 
                     return Ok(productStatistics);
                 }
