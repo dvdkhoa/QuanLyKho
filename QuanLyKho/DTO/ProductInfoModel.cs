@@ -20,6 +20,8 @@ namespace QuanLyKho.DTO
         public double? PromotionPrice { get; set; }
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
+        public int? CategoryBrandId { get; set; }
+        public CategoryBrand? CategoryBrand { get; set; }
         public int Quantity { get;set; }
         public List<ProductWareHouse>? ProductWarehouses { get; set; }
         public List<ProductImage>? ProductImages { get; set; }

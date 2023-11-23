@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = "Promotion detail";
+    ViewData["PrimaryTitle"] = "Promotions";
+
 }
 
 
@@ -58,6 +60,10 @@
                     <td>Lasted update</td>
                     <td>@Model.LastUpdated.ToCustomDateTimeStr()</td>
                 </tr>
+                <tr>
+                    <td>Status</td>
+                    <td>@Model.Status</td>
+                </tr>
             </tbody>
         </table>
         <hr />
@@ -89,7 +95,7 @@
                             </td>
                             <td>@Helpers.PriceToVND(item.Product.Price)</td>
                             <td>@(item.Product.PromotionPrice != null ? Helpers.PriceToVND(item.Product.PromotionPrice.Value) : "")</td>
-                            <td>
+                            <td class="text-center">
                                 <a class="btn-sm btn-danger btn-delete" data-id="@item.ProductId" role="button"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>

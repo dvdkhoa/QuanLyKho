@@ -227,13 +227,13 @@
                     const datarows = res.map(i => {
                         return [
                             i.id,
-                            i.name,
-                            i.price,
+                            `<a href="/Products/Details/${i.id}">${i.name}</a>`,
+                            i.price?.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"),
                             i.unit,
                             i.imported,
                             i.dateImported != null ? (new Date(i.dateImported)).formatMMDDYYYY() : '',
                             i.inputMoney,
-                            i.warehouseId,
+                            `<a href="/Warehouses/Details/${i.warehouseId}">${i.warehouseId}</a>`,
                             i.inventoryNumber
                         ]
                     })

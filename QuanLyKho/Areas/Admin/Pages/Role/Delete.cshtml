@@ -1,19 +1,22 @@
 ﻿@page "/admin/role/delete-role/{roleId}"
 @model QuanLyKho.Areas.Admin.Pages.Role.DeleteModel
 @{
-    ViewData["title"] = "Xóa vai trò";
+    ViewData["title"] = "Delete role";
     ViewData["PrimaryTitle"] = "Roles";
 
 }
-<div class="col-md-8 offset-md-1">
-    <h3>Bạn có chắc chắn muốn xóa vai trò <span class="font-weight-bold">@Model.Role.Name</span></h3>
-    <div>
-        <a asp-page="./Index">Quay về danh sách vai trò</a>
+<div class="col-xl-8 offset-xl-1 p-5">
+    <h3>Are you want to delete role: <span class="font-weight-bold">@Model.Role.Name ?</span></h3>
+    <div class="d-flex justify-content-between">
+        <div>
+            <a asp-page="./Index">Back to list</a>
+        </div>
+        <form method="post">
+            <input class="btn btn-danger btn-sm" type="submit" value="Yes" />
+        </form>
     </div>
     <hr />
-    <form method="post">
-        <input class="btn btn-danger btn-sm" type="submit" value="Đồng ý xóa" />
-    </form>
+    
 </div>
 
 

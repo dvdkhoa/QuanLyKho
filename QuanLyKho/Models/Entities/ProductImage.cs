@@ -3,39 +3,39 @@
     public class ProductImage
     {
         /// <summary>
-        /// Id
+        /// Getter và Setter cho Id
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// Id sản phẩm
+        /// Getter và Setter cho Id sản phẩm
         /// </summary>
         public string ProductId { get; set; }
         /// <summary>
-        /// Đường dẫn
+        /// Getter và Setter cho Đường dẫn
         /// </summary>
         public string Path { get; set; }
         /// <summary>
-        /// Mô tả
+        /// Getter và Setter cho Mô tả
         /// </summary>
         public string? Description { get; set; }
         /// <summary>
-        /// Thứ tự
+        /// Getter và Setter cho Thứ tự
         /// </summary>
         public int? Order { get; set; }
         /// <summary>
-        /// Thời gian tạo lần đầu
+        /// Getter và Setter cho Thời gian tạo lần đầu
         /// </summary>
         public DateTime CreatedTime { get; set; }
         /// <summary>
-        /// Thời gian cập nhật lần cuối
+        /// Getter và Setter cho Thời gian cập nhật lần cuối
         /// </summary>
         public DateTime LastUpdated { get; set; }
         /// <summary>
-        /// Trạng thái
+        /// Getter và Setter cho Trạng thái
         /// </summary>
         public Status Status { get; set; }
         /// <summary>
-        /// Sản phẩm
+        /// Getter và Setter cho Sản phẩm
         /// </summary>
         public Product Product { get; set; }
 

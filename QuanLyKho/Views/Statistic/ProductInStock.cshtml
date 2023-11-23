@@ -3,6 +3,7 @@
 
 @{
     ViewData["title"] = "ProductInStock";
+    ViewData["PrimaryTitle"] = "Products in stock";
 }
 
 
@@ -27,7 +28,7 @@
                     <th>Price</th>
                     <th>Imported</th>
                     <th>Exported</th>
-                    <th>Input Money</th>
+                    <th>Input Money(VNĐ)</th>
                     <th>Revenue</th>
                     <th>Inventory Number</th>
                 </tr>
@@ -37,7 +38,9 @@
                 {
                     <tr>
                         <td>@p.Id</td>
-                        <td>@p.Name</td>
+                        <td>
+                            <a asp-action="Details" asp-controller="Products" asp-route-id="@p.Id">@p.Name</a>
+                        </td>
                         <td>@Helpers.PriceToVND(p.Price)</td>
                         <td>@p.Imported</td>
                         <td>@p.Exported</td>

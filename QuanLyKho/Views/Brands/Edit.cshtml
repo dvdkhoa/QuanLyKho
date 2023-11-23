@@ -1,0 +1,154 @@
+﻿@model QuanLyKho.Models.Entities.Brand
+@using QuanLyKho.Models.Entities;
+
+@{
+    ViewData["Title"] = "Edit";
+    ViewData["PrimaryTitle"] = "Brands";
+
+    var selectedValues = ViewData["SelectedValues"] as List<int>;
+}
+
+
+
+<section class="content">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input asp-for="Id" type="hidden" />
+        <input type="hidden" asp-for="Thumbnail" />
+        <input type="hidden" asp-for="CreatedTime" />
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Edit brand: <span class="text-warning text-bold">@Model.Name (id: @Model.Id)</span></h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="display: block;">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Name">Configuration Name</label>
+                            <input asp-for="Name" type="text" class="form-control">
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Categories</label>
+                            <select id="select-category" class="w-100" name="newCategories" multiple>
+                                <option disabled>Select categories</option>
+                                @foreach (var cate in ViewBag.Categories!)
+                                {
+                                    if (selectedValues?.Contains(cate.Id))
+                                    {
+                                        <option value="@cate.Id" selected>@cate.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@cate.Id">@cate.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="input-group mb-3 mt-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroupFileAddon01">Image</span>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="newThumbnail" name="newThumbnail" aria-describedby="inputGroupFileAddon01">
+                                <label class="custom-file-label" for="newThumbnail">Choose file</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <img id="img-review" src="#" class="h-25 w-25" style="display: none" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Status">Status</label>
+                            <select asp-for="Status" class="form-control custom-select">
+                                <option selected="" disabled="">Select one</option>
+                                @foreach (Status status in Enum.GetValues(typeof(Status)))
+                                {
+                                    <option value="@status">@status.ToString()</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                <input type="submit" value="Update" class="btn btn-success float-right">
+            </div>
+        </div>
+    </form>
+</section>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/lib/multiple-select/multiple-select.min.js"></script>
+    <link href="~/lib/multiple-select/multiple-select.min.css" rel="stylesheet" />
+    <script>
+        $("#select-category").multipleSelect({
+            selectAll: false,
+            keepOpen: false,
+            isOpen: false,
+        });
+    </script>
+
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#img-review').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+                $('#img-review').show(1000)
+            }
+        }
+
+        $('#newThumbnail').on('change', function () {
+
+            const file = this.files[0];
+
+            if (file != null) {
+                const fileType = file['type'];
+                const validImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
+
+
+                if (!validImageTypes.includes(fileType)) {
+
+                    alert('Please submit image')
+
+                    $(this).next('.custom-file-label').html('Choose file');
+                    $('#img-review').hide(1000)
+                    $('#newThumbnail').val('')
+
+                    return;
+                }
+
+                //get the file name
+                var fileName = $(this).val();
+                //replace the "Choose a file" label
+                $(this).next('.custom-file-label').html(fileName);
+                readURL(this)
+            }
+            else {
+                $(this).next('.custom-file-label').html('Choose file');
+                $('#img-review').hide(1000)
+            }
+        })
+    </script>
+}

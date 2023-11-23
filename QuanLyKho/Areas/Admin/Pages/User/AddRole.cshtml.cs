@@ -37,7 +37,7 @@ namespace QuanLyKho.Areas.Admin.Pages.User
         public SelectList allRoles { get; set; }
 
         [BindProperty]
-        [Display(Name ="Danh sách các vai trò")]
+        [Display(Name ="List roles")]
         public string[] RoleNames { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string id)

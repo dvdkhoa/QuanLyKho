@@ -58,7 +58,7 @@
                         <th>Customer name</th>
                         <th>Email</th>
                         <th>Phone</th>
-                        <th>Total</th>
+                        <th>Total(VNĐ)</th>
                         <th>Payment status</th>
                         <th>Ship status</th>
                         <th>Date created</th>
@@ -74,7 +74,7 @@
                             <td>@item.CustomerName</td>
                             <td>@item.Email</td>
                             <td>@item.PhoneNumber</td>
-                            <td>@item.Total</td>
+                            <td>@Helpers.PriceToVND(item.Total)</td>
                             <td>@item.PaymentMethod</td>
                             <td>@item.ShipStatus</td>
                             <td>@item.CreatedTime.ToCustomDateTimeStr()</td>

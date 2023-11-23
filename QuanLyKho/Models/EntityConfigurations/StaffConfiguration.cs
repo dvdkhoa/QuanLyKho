@@ -18,6 +18,9 @@ namespace QuanLyKho.Models.EntityConfigurations
 
             builder.Property(s => s.Gender).IsRequired();
 
+            builder.Property(s => s.Image).IsRequired(false);
+
+
             builder.HasOne(s=>s.WareHouse)
                     .WithMany(wh=>wh.Staffs)
                     .HasForeignKey(s=>s.WareHouseId)

@@ -3,55 +3,55 @@
     public class Customer
     {
         /// <summary>
-        /// Id khách hàng
+        /// Getter và Setter cho Id khách hàng
         /// </summary>
         public string Id { get; set; }
         /// <summary>
-        /// Tên khách hàng
+        /// Getter và Setter cho Tên khách hàng
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// Ảnh đại diện
+        /// Getter và Setter cho Ảnh đại diện
         /// </summary>
         public string? Image { get; set; }
         /// <summary>
-        /// Địa chỉ
+        /// Getter và Setter cho Địa chỉ
         /// </summary>
         public string Address { get; set; }
         /// <summary>
-        /// Số điện thoại
+        /// Getter và Setter cho Số điện thoại
         /// </summary>
         public string Phone { get; set; }
         /// <summary>
-        /// Ngày sinh
+        /// Getter và Setter cho Ngày sinh
         /// </summary>
         public DateTime Dob { get; set; }
         /// <summary>
-        /// Địa chỉ email
+        /// Getter và Setter cho Địa chỉ email
         /// </summary>
         public string Email { get; set; }
         /// <summary>
-        /// Thời gian tạo lần đầu
+        /// Getter và Setter cho Thời gian tạo lần đầu
         /// </summary>
         public DateTime CreatedTime { get; set; }
         /// <summary>
-        /// Thời gian cập nhật lần cuối
+        /// Getter và Setter cho Thời gian cập nhật lần cuối
         /// </summary>
         public DateTime LastUpdated { get; set; }
         /// <summary>
-        /// Trạng thái
+        /// Getter và Setter cho Trạng thái
         /// </summary>
         public Status Status { get; set; }
         /// <summary>
-        /// Danh sách các hóa đơn đã mua
+        /// Getter và Setter cho Danh sách các hóa đơn đã mua
         /// </summary>
         public List<Order>? Orders { get; set; }
         /// <summary>
-        /// Id tài khoản
+        /// Getter và Setter cho Id tài khoản
         /// </summary>
         public string UserId { get; set; }
         /// <summary>
-        /// Tài khoản
+        /// Getter và Setter cho Tài khoản
         /// </summary>
         public AppUser? User { get; set; }
 

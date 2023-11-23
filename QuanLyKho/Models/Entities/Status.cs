@@ -5,10 +5,10 @@
         /// <summary>
         /// Ẩn
         /// </summary>
-        Hide,
+        Hide = 0,
         /// <summary>
         /// Hiện
         /// </summary>
-        Show
+        Show = 1
     }
 }

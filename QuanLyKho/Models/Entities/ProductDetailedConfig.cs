@@ -3,28 +3,28 @@
     public class ProductDetailedConfig
     {
         /// <summary>
-        /// Id chi tiết cấu hình sản phẩm
+        /// Getter và Setter cho Id chi tiết cấu hình sản phẩm
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// Id sản phẩm
+        /// Getter và Setter cho Id sản phẩm
         /// </summary>
         public string ProductId { get; set; }
         /// <summary>
-        /// Id cấu hình chi tiết
+        /// Getter và Setter cho Id cấu hình chi tiết
         /// </summary>
         public int ConfigId { get; set; }
         /// <summary>
-        /// Nội dung
+        /// Getter và Setter cho Nội dung
         /// </summary>
         public string? Value { get; set; }
 
         /// <summary>
-        /// Sản phẩm
+        /// Getter và Setter cho Sản phẩm
         /// </summary>
         public Product? Product { get; set; }
         /// <summary>
-        /// Cấu hình chi tiết
+        /// Getter và Setter cho Cấu hình chi tiết
         /// </summary>
         public DetailedConfig? Config { get; set; }
     }

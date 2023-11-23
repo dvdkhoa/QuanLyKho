@@ -36,11 +36,11 @@ namespace QuanLyKho.Areas.Admin.Pages.User
             [Required]
             [StringLength(100, ErrorMessage = "{0} phải dài từ {2} đến {1} ký tự.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Mật khẩu mới")]
+            [Display(Name = "New password")]
             public string NewPassword { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Xác nhận mật khẩu")]
+            [Display(Name = "Confirm password")]
             [Compare("NewPassword", ErrorMessage = "Nhập lại mật khẩu không chính xác.")]
             public string ConfirmPassword { get; set; }
         }

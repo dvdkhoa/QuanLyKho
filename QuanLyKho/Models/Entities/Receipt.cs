@@ -8,55 +8,55 @@ namespace QuanLyKho.Models.Entities
     public class Receipt
     {
         /// <summary>
-        /// Id phiếu
+        /// Getter và Setter cho Id phiếu
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// Thời gian tạo lần đầu
+        /// Getter và Setter cho Thời gian tạo lần đầu
         /// </summary>
         public DateTime DateCreated { get; set; }
         /// <summary>
-        /// Loại phiếu
+        /// Getter và Setter cho Loại phiếu
         /// </summary>
         public ReceiptType Type { get; set; }
         /// <summary>
-        /// Trạng thái
+        /// Getter và Setter cho Trạng thái
         /// </summary>
         public Status Status { get; set; }
         /// <summary>
-        /// Id Kho/Cửa hàng
+        /// Getter và Setter cho Id Kho/Cửa hàng
         /// </summary>
         public string WareHouseId { get; set; }
 
         /// <summary>
-        /// Kho/Cửa hàng
+        /// Getter và Setter cho Kho/Cửa hàng
         /// </summary>
         [JsonIgnore]
         [InverseProperty("Receipts")]
         public WareHouse? WareHouse { get; set; }
 
         /// <summary>
-        /// Id Kho/Cửa hàng đích đến
+        /// Getter và Setter cho Id Kho/Cửa hàng đích đến
         /// </summary>
         public string? DestinationWarehouseId { get; set; }
 
         /// <summary>
-        /// Kho/Cửa hàng đích đến
+        /// Getter và Setter cho Kho/Cửa hàng đích đến
         /// </summary>
         [ForeignKey("DestinationWarehouseId")]
         public WareHouse? DestinationWarehouse { get; set; }
         /// <summary>
-        /// Id nhân viên
+        /// Getter và Setter cho Id nhân viên
         /// </summary>
         public string StaffId { get; set; }
 
         /// <summary>
-        /// Nhân viên
+        /// Getter và Setter cho Nhân viên
         /// </summary>
         [JsonIgnore]
         public Staff? Staff { get; set; }
         /// <summary>
-        /// Danh sách chi tiết phiếu
+        /// Getter và Setter cho Danh sách chi tiết phiếu
         /// </summary>
         public List<ReceiptDetail>? ReceiptDetails { get; set; }
 

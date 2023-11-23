@@ -1,87 +1,94 @@
-﻿namespace QuanLyKho.Models.Entities
+﻿
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
+namespace QuanLyKho.Models.Entities
 {
     public class Order
     {
         /// <summary>
-        /// Id hóa đơn
+        /// Getter và Setter cho Id hóa đơn
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// Id khách hàng
+        /// Getter và Setter cho Id khách hàng
         /// </summary>
         public string? CustomerId { get; set; }
         /// <summary>
-        /// Tên khách hàng
+        /// Getter và Setter cho Tên khách hàng
         /// </summary>
         public string? CustomerName { get; set; }
         /// <summary>
-        /// Số điện thoại
+        /// Getter và Setter cho Số điện thoại
         /// </summary>
         public string? PhoneNumber { get; set; }
         /// <summary>
-        /// Email
+        /// Getter và Setter cho Email
         /// </summary>
         public string? Email { get; set; }
         /// <summary>
-        /// Địa chỉ
+        /// Getter và Setter cho Địa chỉ
         /// </summary>
         public string? Address { get; set; }
         /// <summary>
-        /// Ghi chú
+        /// Getter và Setter cho Ghi chú
         /// </summary>
         public string? Note { get; set; }
         /// <summary>
-        /// Phương thức thanh toán
+        /// Getter và Setter cho Phương thức thanh toán
         /// </summary>
         public string? PaymentMethod { get; set; }
         /// <summary>
-        /// Tạm tính
+        /// Getter và Setter cho Tạm tính
         /// </summary>
         public double TmpTotal { get; set; }
         /// <summary>
-        /// Tổng cộng
+        /// Getter và Setter cho Tổng cộng
         /// </summary>
         public double Total { get; set; }
         /// <summary>
-        /// Id nhân viên
+        /// Getter và Setter cho Id nhân viên
         /// </summary>
         public string StaffId { get; set; }
         /// <summary>
-        /// Id cửa hàng
+        /// Getter và Setter cho Id cửa hàng
         /// </summary>
         public string? StoreId { get; set; }
         /// <summary>
-        /// Trạng thái giao hàng
+        /// Getter và Setter cho Trạng thái giao hàng
         /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
         public ShipStatus ShipStatus { get; set; }
         /// <summary>
-        /// Trạng thái thanh toán
+        /// Getter và Setter cho Trạng thái thanh toán
         /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
         public PaymentStatus PaymentStatus { get; set; }
         /// <summary>
-        /// Thời gian tạo lần đầu
+        /// Getter và Setter cho Thời gian tạo lần đầu
         /// </summary>
         public DateTime CreatedTime { get; set; }
         /// <summary>
-        /// Thời gian cập nhật lần cuối
+        /// Getter và Setter cho Thời gian cập nhật lần cuối
         /// </summary>
         public DateTime LastUpdated { get; set; }
 
         /// <summary>
-        /// Nhân viên
+        /// Getter và Setter cho Nhân viên
         /// </summary>
         public Staff? Staff { get; set; }
         /// <summary>
-        /// Khách hàng
+        /// Getter và Setter cho Khách hàng
         /// </summary>
         public Customer? Customer { get; set; }
         /// <summary>
-        /// Cửa hàng
+        /// Getter và Setter cho Cửa hàng
         /// </summary>
         public WareHouse? Store { get; set; }
 
         /// <summary>
-        /// Danh sách chi tiết hóa đơn
+        /// Getter và Setter cho Danh sách chi tiết hóa đơn
         /// </summary>
         public List<OrderDetail>? OrderDetails { get; set; }
 
@@ -105,11 +112,11 @@
         /// <summary>
         /// Chưa thanh toán
         /// </summary>
-        Unpaid,
+        Unpaid = 0,
         /// <summary>
         /// Đã thanh toán
         /// </summary>
-        Paid
+        Paid = 1
     }
 
 

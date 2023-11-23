@@ -51,6 +51,7 @@ namespace QuanLyKho.Controllers
                 return NotFound();
 
             customer.User = _context.Users.Find(customer.UserId);
+            customer.Orders = _context.Orders.Where(o => o.CustomerId == id).Include(o => o.Store).ToList();
 
             return View(customer);
         }

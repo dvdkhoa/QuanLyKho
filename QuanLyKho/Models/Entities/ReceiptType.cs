@@ -5,14 +5,14 @@
         /// <summary>
         /// Phiếu xuất kho
         /// </summary>
-        Export,
+        Export = 0,
         /// <summary>
         /// Phiếu nhập kho
         /// </summary>
-        Import,
+        Import = 1,
         /// <summary>
         /// Phiếu chuyển kho
         /// </summary>
-        Transfer
+        Transfer = 2
     }
 }

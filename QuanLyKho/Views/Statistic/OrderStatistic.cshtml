@@ -136,8 +136,10 @@
                     <th>Customer</th>
                     <th>Sale staff</th>
                     <th>Store</th>
-                    <th>Total</th>
+                    <th>Total(VNĐ)</th>
+                    <th>Payment status</th>
                     <th>Payment method</th>
+                    <th>Ship status</th>
                     <th>DateCreated</th>
             </thead>
             <tbody>
@@ -310,14 +312,19 @@
 
                     const datarows = res.map(i => {
 
+                        const customer = i.customerId ? `<a href="/Customers/Details/${i.customerId}">${i.customerName}(${i.customerId})</a>` : i.customerName;
+
+                        const store = i.storeId ? `<a href="/Warehouses/Details/${i.storeId}">${i.store.name}(${i.storeId})</a>` : '';
 
                         return [
                             `<a href="/Orders/Details/${i.id}">${i.id}</a>`,
-                            `<a href="/Customers/Details/${i.customerId}">${i.customerName}</a>`,
-                            i.staffId,
-                            i.storeId,
-                            i.total,
+                            customer,
+                            i.staffId ? `<a href="/Staffs/Details/${i.staffId}">${i.staff.name}(${i.staffId})</a>`  : '',
+                            store,
+                            i.total.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"),
+                            i.paymentStatus,
                             i.paymentMethod,
+                            i.shipStatus,
                             (new Date(i.createdTime)).formatMMDDYYYY()
                         ]
                     })

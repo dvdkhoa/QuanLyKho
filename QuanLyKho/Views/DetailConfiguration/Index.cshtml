@@ -27,6 +27,7 @@
         <table id="example1" class="table table-bordered table-striped">
             <thead>
                 <tr>
+                    <th>Id</th>
                     <th>Name</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -38,6 +39,7 @@
                     @foreach (var cate in Model)
                     {
                         <tr>
+                            <td>@cate.Id</td>
                             <td>@cate.Name</td>
                             <td>@cate.Status</td>
                             <td class="text-center">

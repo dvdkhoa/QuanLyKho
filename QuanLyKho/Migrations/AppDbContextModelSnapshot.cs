@@ -17,7 +17,7 @@ namespace QuanLyKho.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.22")
+                .HasAnnotation("ProductVersion", "6.0.23")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -220,6 +220,27 @@ namespace QuanLyKho.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("QuanLyKho.Models.Entities.Banner", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Banners");
+                });
+
             modelBuilder.Entity("QuanLyKho.Models.Entities.Bill", b =>
                 {
                     b.Property<int>("Id")
@@ -252,6 +273,36 @@ namespace QuanLyKho.Migrations
                         .IsUnique();
 
                     b.ToTable("Bills");
+                });
+
+            modelBuilder.Entity("QuanLyKho.Models.Entities.Brand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Thumbnail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Brands");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Cart", b =>
@@ -356,6 +407,29 @@ namespace QuanLyKho.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("QuanLyKho.Models.Entities.CategoryBrand", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("BrandId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BrandId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("CategoryBrands");
+                });
+
             modelBuilder.Entity("QuanLyKho.Models.Entities.CategoryDetailedConfig", b =>
                 {
                     b.Property<int>("Id")
@@ -388,36 +462,6 @@ namespace QuanLyKho.Migrations
                     b.ToTable("CategoryDetailedConfigs");
                 });
 
-            modelBuilder.Entity("QuanLyKho.Models.Entities.Classification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Classifications");
-                });
-
             modelBuilder.Entity("QuanLyKho.Models.Entities.Customer", b =>
                 {
                     b.Property<string>("Id")
@@ -438,7 +482,6 @@ namespace QuanLyKho.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastUpdated")
@@ -642,6 +685,9 @@ namespace QuanLyKho.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int?>("CategoryBrandId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
@@ -665,7 +711,8 @@ namespace QuanLyKho.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .UseCollation("Latin1_General_CI_AI");
 
                     b.Property<string>("Origin")
                         .HasColumnType("nvarchar(max)");
@@ -690,33 +737,11 @@ namespace QuanLyKho.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryBrandId");
+
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("QuanLyKho.Models.Entities.ProductClassification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("ClassificationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProductId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClassificationId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ProductClassifications");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.ProductDetailedConfig", b =>
@@ -968,7 +993,6 @@ namespace QuanLyKho.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Image")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("LastUpdated")
@@ -1160,6 +1184,25 @@ namespace QuanLyKho.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("QuanLyKho.Models.Entities.CategoryBrand", b =>
+                {
+                    b.HasOne("QuanLyKho.Models.Entities.Brand", "Brand")
+                        .WithMany("CategoryBrands")
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("QuanLyKho.Models.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Brand");
+
+                    b.Navigation("Category");
+                });
+
             modelBuilder.Entity("QuanLyKho.Models.Entities.CategoryDetailedConfig", b =>
                 {
                     b.HasOne("QuanLyKho.Models.Entities.Category", "Category")
@@ -1241,31 +1284,19 @@ namespace QuanLyKho.Migrations
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Product", b =>
                 {
+                    b.HasOne("QuanLyKho.Models.Entities.CategoryBrand", "CategoryBrand")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryBrandId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("QuanLyKho.Models.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Category");
-                });
 
-            modelBuilder.Entity("QuanLyKho.Models.Entities.ProductClassification", b =>
-                {
-                    b.HasOne("QuanLyKho.Models.Entities.Classification", "Classification")
-                        .WithMany("ProductClassifications")
-                        .HasForeignKey("ClassificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("QuanLyKho.Models.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Classification");
-
-                    b.Navigation("Product");
+                    b.Navigation("CategoryBrand");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.ProductDetailedConfig", b =>
@@ -1408,6 +1439,11 @@ namespace QuanLyKho.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("QuanLyKho.Models.Entities.Brand", b =>
+                {
+                    b.Navigation("CategoryBrands");
+                });
+
             modelBuilder.Entity("QuanLyKho.Models.Entities.Cart", b =>
                 {
                     b.Navigation("CartDetails");
@@ -1420,9 +1456,9 @@ namespace QuanLyKho.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("QuanLyKho.Models.Entities.Classification", b =>
+            modelBuilder.Entity("QuanLyKho.Models.Entities.CategoryBrand", b =>
                 {
-                    b.Navigation("ProductClassifications");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("QuanLyKho.Models.Entities.Customer", b =>

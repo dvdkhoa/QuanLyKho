@@ -3,48 +3,48 @@
     public class Promotion
     {
         /// <summary>
-        /// Id
+        /// Getter và Setter cho Id
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// Tên CTKM
+        /// Getter và Setter cho Tên CTKM
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// Loại khuyến mãi
+        /// Getter và Setter cho Loại khuyến mãi
         /// </summary>
         public PromotionType PromotionType { get; set; }
         /// <summary>
-        /// Phần trăm khuyến mãi
+        /// Getter và Setter cho Phần trăm khuyến mãi
         /// </summary>
         public int? Percent { get; set; }
         /// <summary>
-        /// Mô tả
+        /// Getter và Setter cho Mô tả
         /// </summary>
         public string? Description { get; set; }
         /// <summary>
-        /// Ngày bắt đầu
+        /// Getter và Setter cho Ngày bắt đầu
         /// </summary>
         public DateTime StartDate { get; set; }
         /// <summary>
-        /// Ngày kết thúc
+        /// Getter và Setter cho Ngày kết thúc
         /// </summary>
         public DateTime EndDate { get; set; }
         /// <summary>
-        /// Thời gian tạo lần đầu
+        /// Getter và Setter cho Thời gian tạo lần đầu
         /// </summary>
         public DateTime CreatedTime { get; set; }
         /// <summary>
-        /// Thời gian lần cuối cập nhật
+        /// Getter và Setter cho Thời gian lần cuối cập nhật
         /// </summary>
         public DateTime LastUpdated { get; set; }
         /// <summary>
-        /// Trạng thái
+        /// Getter và Setter cho Trạng thái
         /// </summary>
         public Status Status { get; set; }
 
         /// <summary>
-        /// Danh sách chi tiết sản phẩm thuộc CTKM
+        /// Getter và Setter cho Danh sách chi tiết sản phẩm thuộc CTKM
         /// </summary>
         public List<ProductPromotion>? ProductPromotions { get; set; }
 
@@ -74,10 +74,10 @@
         /// <summary>
         /// Khuyến mãi giảm giá
         /// </summary>
-        Discount,
+        Discount = 0,
         /// <summary>
         /// Khuyến mãi tặng quà
         /// </summary>
-        Gift,
+        Gift = 1,
     }
 }

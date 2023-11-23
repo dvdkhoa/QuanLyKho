@@ -1,15 +1,15 @@
 ﻿@page
 @model AddRoleModel
 @{
-    ViewData["Title"] = "Thiết lập mật khẩu";
-    ViewData["page"] = "Tài khoản";
+    ViewData["Title"] = "Setup roles";
+    ViewData["PrimaryTitle"] = "Users";
 }
 <partial name="_StatusMessage" for="StatusMessage" />
 
 
 <div class="row">
     <div class="col-md-8 offset-md-1">
-        <h3>Thiết lập vai trò(Role) cho: <span class="font-weight-bold">@Model.user.UserName</span></h3>
+        <h3>Setup roles for: <span class="font-weight-bold">@Model.user.UserName</span></h3>
         <hr />
         <form id="set-password-form" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -18,9 +18,9 @@
                 @Html.ListBoxFor(m => m.RoleNames, Model.allRoles,
                 new { id = "select-role", @class = "w-100" })
             </div>
-            <button type="submit" class="btn btn-success btn-sm float-right">Đồng ý</button>
+            <button type="submit" class="btn btn-success btn-sm float-right">Save</button>
         </form>
-        <a asp-page="Index" >Trở về danh sách tài khoản</a>
+        <a asp-page="Index" >Back to list</a>
     </div>
 </div>
 

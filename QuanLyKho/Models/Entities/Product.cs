@@ -3,100 +3,102 @@
     public class Product
     {
         /// <summary>
-        /// Id
+        /// Getter và Setter cho Id
         /// </summary>
         public String Id { get; set; }
         /// <summary>
-        /// Tên sản phẩm
+        /// Getter và Setter cho Tên sản phẩm
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// Mô tả
+        /// Getter và Setter cho Mô tả
         /// </summary>
         public string? Description { get; set; }
         /// <summary>
-        /// Đơn giá
+        /// Getter và Setter cho Đơn giá
         /// </summary>
         public double Price { get; set; }
         /// <summary>
-        /// Giá khuyến mãi
+        /// Getter và Setter cho Giá khuyến mãi
         /// </summary>
         public double? PromotionPrice { get; set; }
         /// <summary>
-        /// Đơn vị tính
+        /// Getter và Setter cho Đơn vị tính
         /// </summary>
         public string? Unit { get; set; }
         /// <summary>
-        /// Nhà cung cấp
+        /// Getter và Setter cho Nhà cung cấp
         /// </summary>
         public string? Supplier { get; set; }
         /// <summary>
-        /// Hình ảnh
+        /// Getter và Setter cho Hình ảnh
         /// </summary>
         public string? Image { get; set; }
         /// <summary>
-        /// Xuất xứ
+        /// Getter và Setter cho Xuất xứ
         /// </summary>
         public string? Origin { get; set; }
         /// <summary>
-        /// Cân nặng
+        /// Getter và Setter cho Cân nặng
         /// </summary>
         public string? Weight { get; set; }
         /// <summary>
-        /// Thời gian hết hạn
+        /// Getter và Setter cho Thời gian hết hạn
         /// </summary>
         public DateTime? Expiry { get; set; }
         /// <summary>
-        /// Ngày sản xuất
+        /// Getter và Setter cho Ngày sản xuất
         /// </summary>
         public DateTime? ManufactoringDate { get; set; }
 
         /// <summary>
-        /// Id danh mục
+        /// Getter và Setter cho Id danh mục
         /// </summary>
         public int? CategoryId { get; set; }
+        public int? CategoryBrandId { get; set; }
         /// <summary>
-        /// Trạng thái
+        /// Getter và Setter cho Trạng thái
         /// </summary>
         public Status Status { get; set; }
         /// <summary>
-        /// Thời gian tạo lần đầu
+        /// Getter và Setter cho Thời gian tạo lần đầu
         /// </summary>
         public DateTime CreatedTime { get; set; }
         /// <summary>
-        /// Thời gian cập nhật lần cuối
+        /// Getter và Setter cho Thời gian cập nhật lần cuối
         /// </summary>
         public DateTime LastUpdated { get; set; }
         /// <summary>
-        /// Danh mục
+        /// Getter và Setter cho Danh mục
         /// </summary>
         public Category? Category { get; set; }
+        public CategoryBrand? CategoryBrand { get; set; }
         /// <summary>
-        /// Danh sách chi tiết sản phẩm kho
+        /// Getter và Setter cho Danh sách chi tiết sản phẩm kho
         /// </summary>
         public List<ProductWareHouse>? ProductWareHouses { get; set; }
         /// <summary>
-        /// Danh sách chi tiết phiếu xuất/nhập/chuyển kho
+        /// Getter và Setter cho Danh sách chi tiết phiếu xuất/nhập/chuyển kho
         /// </summary>
         public List<ReceiptDetail>? ReceiptDetails { get; set; }
         /// <summary>
-        /// Danh sách đơn hàng
+        /// Getter và Setter cho Danh sách đơn hàng
         /// </summary>
         public List<CartDetail>? CartDetails { get; set; }
         /// <summary>
-        /// Danh sách chi tiết đơn hàng
+        /// Getter và Setter cho Danh sách chi tiết đơn hàng
         /// </summary>
         public List<OrderDetail>? OrderDetails { get; set; }
         /// <summary>
-        /// Danh sách hình ảnh
+        /// Getter và Setter cho Danh sách hình ảnh
         /// </summary>
         public List<ProductImage>? ProductImages { get; set; }
         /// <summary>
-        /// Danh sách chi tiết sản phẩm khuyến mãi
+        /// Getter và Setter cho Danh sách chi tiết sản phẩm khuyến mãi
         /// </summary>
         public List<ProductPromotion>? ProductPromotions { get; set; }
         /// <summary>
-        /// Danh sách chi tiết cấu hình chi tiết của sản phẩm
+        /// Getter và Setter cho Danh sách chi tiết cấu hình chi tiết của sản phẩm
         /// </summary>
         public List<ProductDetailedConfig>? ProductDetailedConfigs { get; set; }
 

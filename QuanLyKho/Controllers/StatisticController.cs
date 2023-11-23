@@ -421,26 +421,21 @@ namespace QuanLyKho.Controllers
                     //                             from b in a.DefaultIfEmpty()
                     //                             select new { p, pw = b }).ToList();
 
-                    var product_list = _context.Products.Include(p => p.ProductWareHouses).ToList();
-                    var out_of_stock_products = product_list.Where(p =>
-                    {
-                        var totalQuantity = p.ProductWareHouses.Sum(pw => pw.Quantity);
+                    var out_of_stock_products = _context.ProductWareHouses.Where(pw => pw.Quantity == 0).Include(pw => pw.Product).ToList();
 
-                        return totalQuantity == 0;
-                    }).ToList();
-
-                    var productStatistics = out_of_stock_products.Select(p =>
+                    var productStatistics = out_of_stock_products.Select(pw =>
                     {
-                        var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => rd.ProductId == p.Id && rd.Receipt.Type == ReceiptType.Import)?.Receipt.DateCreated;
+                        var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => rd.ProductId == pw.ProductId && rd.Receipt.Type == ReceiptType.Import)?.Receipt.DateCreated;
                         return new ProductStatisticInfoModel
                         {
-                            Id = p.Id,
-                            Price = p.Price,
-                            Name = p.Name,
-                            Status = p.Status,
-                            Unit = p.Unit,
+                            Id = pw.ProductId,
+                            Price = pw.Product.Price,
+                            Name = pw.Product.Name,
+                            Status = pw.Status,
+                            Unit = pw.Product.Unit,
                             InventoryNumber = 0,
-                            DateImported = importedDate
+                            DateImported = importedDate,
+                            WarehouseId = pw.WareHouseId,
                         };
                     }).ToList();
 
@@ -481,7 +476,7 @@ namespace QuanLyKho.Controllers
                     product_temp.ForEach(p =>
                     {
                         var quantity = _productService.GetProductQuantity(p.Id);
-                        var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => rd.ProductId == p.Id && rd.Receipt.WareHouseId == warehouseId && rd.Receipt.Type == ReceiptType.Import)?.Receipt.DateCreated;
+                        var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => (rd.ProductId == p.Id && rd.Receipt.WareHouseId == warehouseId && rd.Receipt.Type == ReceiptType.Import) || (rd.ProductId == p.Id && rd.Receipt.DestinationWarehouseId == warehouseId && rd.Receipt.Type == ReceiptType.Transfer))?.Receipt.DateCreated;
 
                         var date = DateTime.Now.AddDays(-1);
                         if (importedDate?.Date == date.Date)
@@ -505,7 +500,7 @@ namespace QuanLyKho.Controllers
                     product_temp.ForEach(p =>
                     {
                         var quantity = _productService.GetProductQuantity(p.Id);
-                        var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => rd.ProductId == p.Id && rd.Receipt.WareHouseId == warehouseId && rd.Receipt.Type == ReceiptType.Import)?.Receipt.DateCreated;
+                        var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => (rd.ProductId == p.Id && rd.Receipt.WareHouseId == warehouseId && rd.Receipt.Type == ReceiptType.Import) || (rd.ProductId == p.Id && rd.Receipt.DestinationWarehouseId == warehouseId && rd.Receipt.Type == ReceiptType.Transfer))?.Receipt.DateCreated;
 
                         var startDay = DateTime.Now.AddDays(-14);
                         var endDay = DateTime.Today.AddDays(-7);
@@ -530,7 +525,7 @@ namespace QuanLyKho.Controllers
                     product_temp.ForEach(p =>
                     {
                         var quantity = _productService.GetProductQuantity(p.Id);
-                        var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => rd.ProductId == p.Id && rd.Receipt.WareHouseId == warehouseId && rd.Receipt.Type == ReceiptType.Import)?.Receipt.DateCreated;
+                        var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => (rd.ProductId == p.Id && rd.Receipt.WareHouseId == warehouseId && rd.Receipt.Type == ReceiptType.Import) || (rd.ProductId == p.Id && rd.Receipt.DestinationWarehouseId == warehouseId && rd.Receipt.Type == ReceiptType.Transfer))?.Receipt.DateCreated;
 
                         var month = DateTime.Today.Month;
                         var year = DateTime.Today.Year;
@@ -555,7 +550,7 @@ namespace QuanLyKho.Controllers
                     product_temp.ForEach(p =>
                     {
                         var quantity = _productService.GetProductQuantity(p.Id);
-                        var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => rd.ProductId == p.Id && rd.Receipt.WareHouseId == warehouseId && rd.Receipt.Type == ReceiptType.Import)?.Receipt.DateCreated;
+                        var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => (rd.ProductId == p.Id && rd.Receipt.WareHouseId == warehouseId && rd.Receipt.Type == ReceiptType.Import) || (rd.ProductId == p.Id && rd.Receipt.DestinationWarehouseId == warehouseId && rd.Receipt.Type == ReceiptType.Transfer))?.Receipt.DateCreated;
 
                         var quarter = (DateTime.Today.Month - 1) / 3 + 1; // Tính quý hiện tại;
                         var year = DateTime.Today.Year; // Năm hiện tại;
@@ -585,7 +580,7 @@ namespace QuanLyKho.Controllers
                     product_temp.ForEach(p =>
                     {
                         var quantity = _productService.GetProductQuantity(p.Id);
-                        var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => rd.ProductId == p.Id && rd.Receipt.WareHouseId == warehouseId && rd.Receipt.Type == ReceiptType.Import)?.Receipt.DateCreated;
+                        var importedDate = _context.ReceiptDetails.Include(rd => rd.Receipt).OrderBy(rd => rd.Id).LastOrDefault(rd => (rd.ProductId == p.Id && rd.Receipt.WareHouseId == warehouseId && rd.Receipt.Type == ReceiptType.Import) || (rd.ProductId == p.Id && rd.Receipt.DestinationWarehouseId == warehouseId && rd.Receipt.Type == ReceiptType.Transfer))?.Receipt.DateCreated;
 
                         if (importedDate?.Date >= dateFrom && importedDate?.Date <= dateTo)
                         {
@@ -655,7 +650,7 @@ namespace QuanLyKho.Controllers
         {
             if (_context.Orders == null) return BadRequest();
 
-            var orders = _context.Orders.AsEnumerable();
+            var orders = _context.Orders.Include(o => o.Staff).Include(o => o.Store).AsEnumerable();
 
             // Check dua tren loai phieu
             if (type == "all")
@@ -756,6 +751,7 @@ namespace QuanLyKho.Controllers
             {
                 order.OrderDetails = await _context.OrderDetails.Where(od => od.OrderId == order.Id).ToListAsync();
             }
+
             var kq = orders.ToList();
             return Json(kq);
         }

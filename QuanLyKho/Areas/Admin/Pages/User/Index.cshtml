@@ -1,8 +1,8 @@
 ﻿@page
 @model QuanLyKho.Areas.Admin.Pages.User.IndexModel
 @{
-    ViewData["title"] = "Danh sách User";
-    ViewData["page"] = "Tài khoản";
+    ViewData["Title"] = "List users";
+    ViewData["PrimaryTitle"] = "Users";
 }
 
 @section Styles {
@@ -24,9 +24,10 @@
     <div class="card-body">
         <table class="table table-bordered table-striped" id="table">
             <thead>
-                <tr>
+                <tr class="text-center">
+                    <th>Id</th>
                     <th>User</th>
-                    <th>Vai trò(Role)</th>
+                    <th>Roles</th>
                     <th>Tác vụ</th>
                 </tr>
             </thead>
@@ -34,11 +35,12 @@
                 @foreach (var user in Model.Users)
                 {
                     <tr>
-                        <td>@user.UserName</td>
+                        <td class="w-25">@user.Id</td>
+                        <td class="text-center">@user.UserName</td>
                         <td class="text-center">
                             @if (string.IsNullOrEmpty(user.RoleNames))
                             {
-                                <a class="text-dark btn-link" asp-page="AddRole" asp-route-id="@user.Id">+ Thêm vai trò</a>
+                                <a class="text-dark btn-link" asp-page="AddRole" asp-route-id="@user.Id">+ Add to roles</a>
                             }
                             else
                             {
@@ -46,7 +48,7 @@
                             }
                         </td>
                         <td class="text-center">
-                            <a class="btn btn-sm btn-primary" asp-page="SetPassword" asp-route-id="@user.Id">Đặt mật khẩu</a>
+                            <a class="btn btn-sm btn-primary" asp-page="SetPassword" asp-route-id="@user.Id">Reset password</a>
                         </td>
                     </tr>
                 }

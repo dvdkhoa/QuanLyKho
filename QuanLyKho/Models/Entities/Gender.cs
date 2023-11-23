@@ -5,10 +5,10 @@
         /// <summary>
         /// Nam
         /// </summary>
-        Male,
+        Male = 0,
         /// <summary>
         /// Nữ
         /// </summary>
-        Female
+        Female = 1
     }
 }

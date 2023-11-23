@@ -4,6 +4,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    ViewData["PrimaryTitle"] = "Promotions";
 }
 
 @section Styles {
@@ -61,7 +62,7 @@
                         <tr>
                             <td>@p.Id</td>
                             <td>@p.Name</td>
-                            <th>@p.Percent</th>
+                            <th>@(p.Percent != null ? p.Percent + "%" : "")</th>
                             <th>@p.StartDate.ToCustomDateTimeStr()</th>
                             <th>@p.EndDate.ToCustomDateTimeStr()</th>
                             <td>@p.Status</td>

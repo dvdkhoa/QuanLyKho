@@ -3,6 +3,10 @@
 
 @{
     ViewData["Title"] = "Create";
+    ViewData["PrimaryTitle"] = "Product";
+
+
+    string notify = ViewBag.notify;
 }
 
 @section Styles {
@@ -18,8 +22,10 @@
             height: 100%;
             width: 100%
         }
-
     </style>
+
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="~/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 }
 
 
@@ -131,7 +137,7 @@
             </form>
         </div>
         <div class="col-md-6">
-            <form asp-action="Create" asp-controller="Categories" method="post">
+            <form class="mt-3" asp-action="CreateCategory" asp-controller="Products" method="post" enctype="multipart/form-data">
                 <div class="card card-secondary">
                     <div class="card-header">
                         <h3 class="card-title">Category</h3>
@@ -143,7 +149,8 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        @*Phần này code cũ*@
+                        @*<div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group">
                             <label asp-for="Category.Name">Category Name</label>
                             <input asp-for="Category.Name" type="text" class="form-control">
@@ -165,8 +172,35 @@
                                 }
                             </select>
                             <span asp-validation-for="Category.Status" class="text-danger"></span>
-                        </div>
+                        </div>*@
 
+                        @*Phần này code mới*@
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Category.Name">Category Name</label>
+                            <input asp-for="Category.Name" type="text" class="form-control">
+                            <span asp-validation-for="Category.Name" class="text-danger"></span>
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Upload</span>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" name="iconFile" id="iconFile" accept=".png">
+                                <label class="custom-file-label" for="inputImages">Choose file</label>
+                            </div>
+                        </div>
+                        <div class="gallery"></div>
+                        @*<div class="form-group">
+                        <label asp-for="Icon">Category Icon</label>
+                        <input asp-for="Icon" type="file" class="form-control">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>*@
+                        <div class="form-group">
+                            <label asp-for="Category.Description">Category Description</label>
+                            <textarea asp-for="Category.Description" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Category.Description" class="text-danger"></span>
+                        </div>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -221,4 +255,93 @@
 
     @await Html.PartialAsync("_Summernote", new {height = 200, selector = "#Product_Description"})
     @await Html.PartialAsync("_Summernote", new {height = 200, selector = "#Category_Description"})
+
+
+    <script src="~/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
+
+    
+        @if(!string.IsNullOrEmpty(notify))
+        {
+        <text>
+            <script>
+                var Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+
+                const notify = '@notify';
+                if (notify.startsWith("Error")){
+                    Toast.fire({
+                        icon: 'error',
+                        //title: 'Something went wrong.'
+                        title: notify
+                    })
+                }
+                else{
+                    console.log("success")
+                    Toast.fire({
+                        icon: 'success',
+                        //title: 'Something went wrong.'
+                        title: notify
+                    })
+                }
+                
+            </script>
+        </text>
+        }
+
+    <script>
+        // Lấy thẻ input
+        const inputElement = document.getElementById('iconFile');
+        // Xác định các đuôi file hợp lệ
+        const validExtensions = ['png'];
+
+        // Xử lý sự kiện khi người dùng chọn file
+        inputElement.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            const fileName = file.name;
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+
+            // Kiểm tra xem đuôi file có hợp lệ hay không
+            if (!validExtensions.includes(fileExtension)) {
+                alert('Invalid file extension. Please select a file with the .png extension');
+                inputElement.value = '';
+            }
+        });
+
+
+
+        $(function () {
+            // Multiple images preview in browser
+            var imagesPreview = function (input, placeToInsertImagePreview) {
+
+                $(placeToInsertImagePreview).empty()
+
+                if (input.files) {
+                    var filesAmount = input.files.length;
+
+                    for (i = 0; i < filesAmount; i++) {
+                        var reader = new FileReader(); console.log(input.files[i])
+
+                        reader.onload = function (event) {
+                            $($.parseHTML(`
+                                            <div class="holder">
+                                                <img class="imgPreview" src="${event.target.result}" alt="pic" />
+                                            </div>
+                                        `)).appendTo(placeToInsertImagePreview)
+                        }
+                        reader.readAsDataURL(input.files[i]);
+                    }
+                }
+
+            };
+
+            $('#iconFile').on('change', function () {
+                imagesPreview(this, 'div.gallery');
+            });
+        });
+
+    </script>
 }

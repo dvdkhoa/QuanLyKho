@@ -10,9 +10,11 @@ namespace QuanLyKho.Models.EntityConfigurations
         {
             builder.HasKey(t => t.Id);
 
-            builder.Property(cate => cate.Name).IsRequired();
+            builder.Property(cus => cus.Name).IsRequired();
 
-            builder.Property(cate => cate.Status).IsRequired();
+            builder.Property(cus => cus.Image).IsRequired(false);
+
+            builder.Property(cus => cus.Status).IsRequired();
 
             builder.HasOne(t => t.User).WithOne()
                     .HasForeignKey<Customer>(t => t.UserId)

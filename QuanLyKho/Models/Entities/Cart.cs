@@ -3,20 +3,20 @@
     public class Cart
     {
         /// <summary>
-        /// Id giỏ hàng
+        /// Getter và Setter cho Id giỏ hàng
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// Id khách hàng
+        /// Getter và Setter cho Id khách hàng
         /// </summary>
         public string CustomerId { get; set; }
         /// <summary>
-        /// Khách hàng
+        /// Getter và Setter cho Khách hàng
         /// </summary>
         public Customer Customer { get; set; }
 
         /// <summary>
-        /// Danh sách chi tiết giỏ hàng
+        /// Getter và Setter cho Danh sách chi tiết giỏ hàng
         /// </summary>
         public List<CartDetail> CartDetails { get; set; }
     }

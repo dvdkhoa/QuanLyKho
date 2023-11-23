@@ -51,7 +51,7 @@
                     <th>@Html.DisplayNameFor(model => model.Id)</th>
                     <th>@Html.DisplayNameFor(model => model.Name)</th>
                     <th>@Html.DisplayNameFor(model => model.Email)</th>
-                    <th>@Html.DisplayNameFor(model => model.Address)</th>
+                    <th>@Html.DisplayNameFor(model => model.Phone)</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -63,7 +63,7 @@
                         <td>@customer.Id</td>
                         <td>@customer.Name</td>
                         <td>@customer.Email</td>
-                        <td>@customer.Address</td>
+                        <td>@customer.Phone</td>
                         <td>@customer.Status</td>
                         <td class="text-center">
                             <a class="btn-sm btn-primary" asp-action="Details" asp-route-id="@customer.Id"><i class="fas fa-info-circle"></i></a>

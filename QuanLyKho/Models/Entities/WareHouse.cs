@@ -1,4 +1,4 @@
-﻿
+﻿using jsonNewton = Newtonsoft.Json;
 using System.Text.Json.Serialization;
 
 namespace QuanLyKho.Models.Entities
@@ -6,51 +6,56 @@ namespace QuanLyKho.Models.Entities
     public class WareHouse
     {
         /// <summary>
-        /// Id kho/cửa hàng
+        /// Getter và Setter cho Id kho/cửa hàng
         /// </summary>
         public string Id { get; set; }
 
         /// <summary>
-        /// Tên kho
+        /// Getter và Setter cho Tên kho
         /// </summary>
         public string Name { get; set; }
         /// <summary>
-        /// Số điện thoại
+        /// Getter và Setter cho Số điện thoại
         /// </summary>
         public string? PhoneNumber { get; set; }
         /// <summary>
-        /// Địa chỉ
+        /// Getter và Setter cho Địa chỉ
         /// </summary>
         public string? Address { get; set; }
         /// <summary>
-        /// Danh sách sản phẩm kho
+        /// Getter và Setter cho Danh sách sản phẩm kho
         /// </summary>
         public List<ProductWareHouse>? ProductWareHouses { get; set; }
 
         /// <summary>
-        /// Danh sách nhân viên
+        /// Getter và Setter cho Danh sách nhân viên
         /// </summary>
+        [jsonNewton.JsonIgnore]
         [JsonIgnore]
         public List<Staff>? Staffs { get; set; }
         /// <summary>
-        /// Danh sách phiếu nhập/xuất/chuyển kho
+        /// Getter và Setter cho Danh sách phiếu nhập/xuất/chuyển kho
         /// </summary>
+        [jsonNewton.JsonIgnore]
+        [JsonIgnore]
         public List<Receipt>? Receipts { get; set; }
         /// <summary>
-        /// Trạng thái
+        /// Getter và Setter cho Trạng thái
         /// </summary>
         public Status Status { get; set; }
         /// <summary>
-        /// Thời gian tạo lần đầu
+        /// Getter và Setter cho Thời gian tạo lần đầu
         /// </summary>
         public DateTime? CreatedTime { get; set; }
         /// <summary>
-        /// Thời gian lần cuối cập nhật
+        /// Getter và Setter cho Thời gian lần cuối cập nhật
         /// </summary>
         public DateTime? LastUpdated { get; set; }
         /// <summary>
-        /// Danh sách đơn hàng
+        /// Getter và Setter cho Danh sách đơn hàng
         /// </summary>
+        [jsonNewton.JsonIgnore]
+        [JsonIgnore]
         public List<Order>? Orders { get; set; }
 
 

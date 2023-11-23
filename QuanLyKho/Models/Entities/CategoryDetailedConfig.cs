@@ -4,35 +4,35 @@
     public class CategoryDetailedConfig
     {
         /// <summary>
-        /// Id chi tiết cấu hình danh mục
+        /// Getter và Setter cho Id chi tiết cấu hình danh mục
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// Id danh mục
+        /// Getter và Setter cho Id danh mục
         /// </summary>
         public int CategoryId { get; set; }
         /// <summary>
-        /// Danh mục
+        /// Getter và Setter cho Danh mục
         /// </summary>
         public Category Category { get; set; }
         /// <summary>
-        /// Id cấu hình chi tiết
+        /// Getter và Setter cho Id cấu hình chi tiết
         /// </summary>
         public int ConfigId { get; set; }
         /// <summary>
-        /// Cấu hình chi tiết
+        /// Getter và Setter cho Cấu hình chi tiết
         /// </summary>
         public DetailedConfig DetailedConfig { get; set; }
         /// <summary>
-        /// Trạng thái
+        /// Getter và Setter cho Trạng thái
         /// </summary>
         public Status Status { get; set; }
         /// <summary>
-        /// Thời gian tạo lần đầu
+        /// Getter và Setter cho Thời gian tạo lần đầu
         /// </summary>
         public DateTime CreatedTime { get; set; }
         /// <summary>
-        /// Thời gian cập nhật lần cuối
+        /// Getter và Setter cho Thời gian cập nhật lần cuối
         /// </summary>
         public DateTime LastUpdated { get; set; }
 

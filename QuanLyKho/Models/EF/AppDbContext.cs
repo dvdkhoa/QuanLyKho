@@ -49,6 +49,9 @@ namespace QuanLyKho.Models.EF
             builder.ApplyConfiguration(new ProductDetailedConfigConfiguration());
             builder.ApplyConfiguration(new BillConfiguration());
             builder.ApplyConfiguration(new VnPayConfiguration());
+            builder.ApplyConfiguration(new BrandConfiguration());
+            builder.ApplyConfiguration(new CategoryBrandConfiguration());
+            builder.ApplyConfiguration(new BannerConfiguration());
 
 
 
@@ -70,6 +73,8 @@ namespace QuanLyKho.Models.EF
 
         // Tạo các DbSet
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Brand> Brands { get; set; }
+        public DbSet<CategoryBrand> CategoryBrands { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<WareHouse> WareHouses { get; set; }
         public DbSet<ProductWareHouse> ProductWareHouses { get; set; }
@@ -78,8 +83,8 @@ namespace QuanLyKho.Models.EF
         public DbSet<Staff> Staffs { get; set; }
         public DbSet<Customer> Customer { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
-        public DbSet<ProductClassification> ProductClassifications { get; set; }
-        public DbSet<Classification> Classifications { get; set; }
+        //public DbSet<ProductClassification> ProductClassifications { get; set; }
+        //public DbSet<Classification> Classifications { get; set; }
         public DbSet<DetailedConfig> DetailedConfigs { get; set; }
         public DbSet<CategoryDetailedConfig> CategoryDetailedConfigs { get; set; }
         public DbSet<ProductDetailedConfig> ProductDetailedConfigs { get; set; }
@@ -92,6 +97,6 @@ namespace QuanLyKho.Models.EF
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<Bill> Bills { get; set; }
         public DbSet<VnPay> VnPays { get; set; }
-
+        public DbSet<Banner> Banners { get; set; }
     }
 }

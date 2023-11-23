@@ -17,6 +17,7 @@ using QuanLyKho.Services;
 using QuanLyKho.Services.Implement;
 using Microsoft.AspNetCore.Authorization;
 using System.Net.WebSockets;
+using MimeKit.Encodings;
 
 namespace QuanLyKho.Controllers
 {
@@ -65,6 +66,14 @@ namespace QuanLyKho.Controllers
             ViewData["filter"] = filter;
 
             return View(await staffQuery.ToListAsync());
+        }
+
+        public async Task<IActionResult> StaffInRoles(string roleName)
+        {
+            var users = (await _userManager.GetUsersInRoleAsync(roleName)).Select(u => u.Id).ToList();
+            var staffs = _context.Staffs.Where(s => users.Contains(s.UserId));
+            ViewData["RoleName"] = roleName;
+            return View("Index", staffs);
         }
 
         // GET: Staffs/Details/5
@@ -357,5 +366,5 @@ namespace QuanLyKho.Controllers
     }
 
 
-    
+
 }

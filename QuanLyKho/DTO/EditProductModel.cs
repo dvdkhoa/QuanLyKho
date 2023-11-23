@@ -17,7 +17,10 @@ namespace QuanLyKho.DTO
         public DateTime? ManufactoringDate { get; set; }
 
         public int? CategoryId { get; set; }
+        public int? CategoryBrandId { get; set; }
         public Status Status { get; set; }
         public Category? Category { get; set; }
+        public CategoryBrand? CategoryBrand { get; set; }
+
     }
 }

@@ -23,15 +23,16 @@ namespace QuanLyKho.Services.Implement
         public ProductInfoModel? getProductInfo(string productId)
         {
             var product = _context.Products.Include(i => i.Category)
-                                        .Include(p => p.ProductImages)
-                                        .FirstOrDefault(p => p.Id == productId);
+                                            .Include(i => i.CategoryBrand).ThenInclude(i => i.Brand)
+                                            .Include(p => p.ProductImages)
+                                            .FirstOrDefault(p => p.Id == productId);
 
             if (product is null)
                 return null;
 
             int quantity = this.GetProductQuantity(productId);
             List<ProductWareHouse> productWareHouses = _context.ProductWareHouses
-                                                                .Include(pw=>pw.WareHouse)
+                                                                .Include(pw => pw.WareHouse)
                                                                 .Where(pw => pw.ProductId == productId).ToList();
 
             var productInfo = new ProductInfoModel
@@ -40,6 +41,8 @@ namespace QuanLyKho.Services.Implement
                 Name = product.Name,
                 Category = product.Category,
                 CategoryId = product.CategoryId,
+                CategoryBrandId = product.CategoryBrandId,
+                CategoryBrand = product.CategoryBrand,
                 Description = product.Description,
                 Price = product.Price,
                 Status = product.Status,
@@ -50,7 +53,7 @@ namespace QuanLyKho.Services.Implement
                 ManufacturingDate = product.ManufactoringDate,
                 CreatedTime = product.CreatedTime,
                 Expiry = product.Expiry,
-                PromotionPrice =product.PromotionPrice,
+                PromotionPrice = product.PromotionPrice,
                 Quantity = quantity,
                 LastUpdated = product.LastUpdated,
                 ProductWarehouses = productWareHouses,

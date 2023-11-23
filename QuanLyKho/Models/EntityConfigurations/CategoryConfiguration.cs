@@ -16,20 +16,24 @@ namespace QuanLyKho.Models.EntityConfigurations
         }
     }
 
-    public class ProductPromotionConfiguration : IEntityTypeConfiguration<ProductPromotion>
+    public class BrandConfiguration : IEntityTypeConfiguration<Brand>
     {
-        public void Configure(EntityTypeBuilder<ProductPromotion> builder)
+        public void Configure(EntityTypeBuilder<Brand> builder)
         {
-            builder.HasKey(t => new {t.ProductId, t.PromotionId});
-            
-            builder.HasOne(t=>t.Promotion)
-                    .WithMany(pm=>pm.ProductPromotions)
-                    .HasForeignKey(pm => pm.PromotionId)
-                    .OnDelete(DeleteBehavior.Restrict);
+            builder.HasKey(br => br.Id);
 
-            builder.HasOne(t => t.Product)
-                    .WithMany(pm => pm.ProductPromotions)
-                    .HasForeignKey(pm => pm.ProductId)
+            builder.Property(br => br.Name).IsRequired();
+        }
+    }
+    public class CategoryBrandConfiguration : IEntityTypeConfiguration<CategoryBrand>
+    {
+        public void Configure(EntityTypeBuilder<CategoryBrand> builder)
+        {
+            builder.HasKey(cb => cb.Id);
+
+            builder.HasOne(cb => cb.Brand)
+                    .WithMany(t => t.CategoryBrands)
+                    .HasForeignKey(t => t.BrandId)
                     .OnDelete(DeleteBehavior.Restrict);
         }
     }

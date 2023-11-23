@@ -3,19 +3,19 @@
     public class ProductPromotion
     {
         /// <summary>
-        /// Id CTKM
+        /// Getter và Setter cho Id CTKM
         /// </summary>
         public int PromotionId { get; set; }
         /// <summary>
-        /// CTKM
+        /// Getter và Setter cho CTKM
         /// </summary>
         public Promotion Promotion { get; set; }
         /// <summary>
-        /// Id sản phẩm
+        /// Getter và Setter cho Id sản phẩm
         /// </summary>
         public string ProductId { get; set; }
         /// <summary>
-        /// Sản phẩm
+        /// Getter và Setter cho Sản phẩm
         /// </summary>
         public Product Product { get; set; }
     }

@@ -6,34 +6,34 @@ namespace QuanLyKho.Models.Entities
     public class ReceiptDetail
     {
         /// <summary>
-        /// Id chi tiết phiếu nhập/xuất/chuyển kho
+        /// Getter và Setter cho Id chi tiết phiếu nhập/xuất/chuyển kho
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// Id phiếu nhập/xuất/chuyển kho
+        /// Getter và Setter cho Id phiếu nhập/xuất/chuyển kho
         /// </summary>
         public int ReceiptId { get; set; }
         /// <summary>
-        /// Id sản phẩm
+        /// Getter và Setter cho Id sản phẩm
         /// </summary>
         public string ProductId { get; set; }
         /// <summary>
-        /// Số lượng
+        /// Getter và Setter cho Số lượng
         /// </summary>
         public int Quantity { get; set; }
         /// <summary>
-        /// Trạng thái
+        /// Getter và Setter cho Trạng thái
         /// </summary>
         public Status Status { get; set; }
 
         /// <summary>
-        /// Phiếu nhập/xuất/chuyển kho
+        /// Getter và Setter cho Phiếu nhập/xuất/chuyển kho
         /// </summary>
         [JsonIgnore]
         public Receipt Receipt { get; set; }
 
         /// <summary>
-        /// Sản phẩm
+        /// Getter và Setter cho Sản phẩm
         /// </summary>
         [JsonIgnore]
         public Product Product { get; set; }

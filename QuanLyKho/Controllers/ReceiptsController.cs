@@ -272,7 +272,12 @@ namespace QuanLyKho.Controllers
 
                 if (newProducts != null)
                 {
-                    var products = newProducts.Select(newProduct => new Product { Id = newProduct.Id, Name = newProduct.Name, Price = newProduct.Price }).ToList();
+                    var products = newProducts.Select(newProduct =>
+                    {
+                        var product = new Product { Id = newProduct.Id, Name = newProduct.Name, Price = newProduct.Price };
+                        product.SetCreatedTime();
+                        return product;
+                    }).ToList();
                     await _context.Products.AddRangeAsync(products);
 
                     bool add_results = await _context.SaveChangesAsync() > 0;

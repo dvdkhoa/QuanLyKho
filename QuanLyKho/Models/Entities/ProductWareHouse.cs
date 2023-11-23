@@ -3,37 +3,37 @@
     public class ProductWareHouse
     {
         /// <summary>
-        /// Id
+        /// Getter và Setter cho Id
         /// </summary>
         public int Id { get; set; }
         public string WareHouseId { get; set; }
         /// <summary>
-        /// Id sản phẩm
+        /// Getter và Setter cho Id sản phẩm
         /// </summary>
         public string ProductId { get; set; }
         /// <summary>
-        /// Số lượng
+        /// Getter và Setter cho Số lượng
         /// </summary>
         public int Quantity { get; set; }
         /// <summary>
-        /// Sản phẩm
+        /// Getter và Setter cho Sản phẩm
         /// </summary>
         public Product Product { get; set; }
         public WareHouse WareHouse { get; set; }
         /// <summary>
-        /// Trạng thái
+        /// Getter và Setter cho Trạng thái
         /// </summary>
         public Status Status { get; set; }
         /// <summary>
-        /// Thời gian tạo lần đầu
+        /// Getter và Setter cho Thời gian tạo lần đầu
         /// </summary>
         public DateTime CreatedTime { get; set; }
         /// <summary>
-        /// Thời gian cập nhật lần cuối
+        /// Getter và Setter cho Thời gian cập nhật lần cuối
         /// </summary>
         public DateTime LastUpdated { get; set; }
         /// <summary>
-        /// Danh sách chi tiết hóa đơn
+        /// Getter và Setter cho Danh sách chi tiết hóa đơn
         /// </summary>
         public List<OrderDetail> OrderDetails { get; set; }
 

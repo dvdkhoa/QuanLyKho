@@ -84,6 +84,34 @@ namespace QuanLyKho.Controllers
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateCategory(CreateProductModel createProductModel, IFormFile? iconFile)
+        {
+            var category = createProductModel.Category;
+            if (category != null)
+            {
+               if(iconFile != null)
+                {
+                    var imagePath = await CloudinaryHelper.UploadFileToCloudinary(iconFile, "Categories");
+                    category.Icon = imagePath;
+                    category.SetCreatedTime();
+
+                    _context.AddAsync(category);
+                    var kq = await _context.SaveChangesAsync();
+                    if (kq > 0)
+                    {
+                        createProductModel.Category = null;
+                        ViewBag.notify = "Add category successfully";
+                        ModelState.Clear();
+                        return View("Create", createProductModel); ;
+                    }
+                }            
+            }
+            ViewBag.notify = "Error: Add category failed";
+            
+            return View("Create", createProductModel);
+        }
+
         // POST: Products/Create
         /// <summary>
         /// Action thêm mới sản phẩm(POST)
@@ -169,6 +197,10 @@ namespace QuanLyKho.Controllers
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
 
+            var brands = _context.CategoryBrands.Include(cb => cb.Brand).Where(cb => cb.CategoryId == product.CategoryId).Select(cb => new { Id = cb.Id, BrandName = cb.Brand.Name }).ToList();
+
+            ViewData["Brands"] = new SelectList(brands, "Id", "BrandName", product.CategoryBrandId);
+
             var editProductModel = _mapper.Map<EditProductModel>(product);
             return View(editProductModel);
         }
@@ -197,6 +229,7 @@ namespace QuanLyKho.Controllers
                     product.Name = editProductModel.Name;
                     product.Description = editProductModel.Description;
                     product.CategoryId = editProductModel.CategoryId;
+                    product.CategoryBrandId = editProductModel.CategoryBrandId;
                     product.Price = editProductModel.Price;
                     product.Unit = editProductModel.Unit;
                     product.Supplier = editProductModel.Supplier;

@@ -3,35 +3,35 @@
     public class VnPay
     {
         /// <summary>
-        /// Id hóa đơn thanh toán bằng Vnpay
+        /// Getter và Setter cho Id hóa đơn thanh toán bằng Vnpay
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// Id hóa đơn
+        /// Getter và Setter cho Id hóa đơn
         /// </summary>
         public int OrderId { get; set; }
         /// <summary>
-        /// Hóa đơn
+        /// Getter và Setter cho Hóa đơn
         /// </summary>
         public Order Order { get; set; }
         /// <summary>
-        /// Tên ngân hàng
+        /// Getter và Setter cho Tên ngân hàng
         /// </summary>
         public string BankName { get; set; }
         /// <summary>
-        /// Id giao dịch Vnpay
+        /// Getter và Setter cho Id giao dịch Vnpay
         /// </summary>
         public int TransactionId { get; set; }
         /// <summary>
-        /// Trạng thái giao dịch
+        /// Getter và Setter cho Trạng thái giao dịch
         /// </summary>
         public int TransactionStatus { get; set; }
         /// <summary>
-        /// Tiền thanh toán
+        /// Getter và Setter cho Tiền thanh toán
         /// </summary>
         public double Price { get; set; }
         /// <summary>
-        /// Ngày giờ thanh toán
+        /// Getter và Setter cho Ngày giờ thanh toán
         /// </summary>
         public DateTime DateTimePayment { get; set; }
     }
