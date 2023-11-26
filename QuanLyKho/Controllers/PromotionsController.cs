@@ -113,6 +113,13 @@ namespace QuanLyKho.Controllers
                         return View(promotion);
                     }
 
+                    if (promotion.PromotionType == PromotionType.Discount && promotion.Percent  == 0)
+                    {
+                        ModelState.AddModelError("", "Discount promotion needs to be large 0%");
+                        return View(promotion);
+                    }
+                    
+
                     promotion.SetCreatedTime();
                     await _context.AddAsync(promotion);
 

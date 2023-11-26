@@ -1,5 +1,5 @@
-﻿
-@model IEnumerable<QuanLyKho.Models.Entities.Receipt>
+﻿@model IEnumerable<QuanLyKho.Models.Entities.Receipt>
+@using QuanLyKho.Models.Entities;
 
 @{
     ViewData["Title"] = "Index";
@@ -25,6 +25,27 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
+
+        <form asp-action="Index" method="get">
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-group">
+                        <label>Display based on type:</label>
+                        <select class="form-control" id="display-select" asp-for="@ViewData["filter"]" name="filter">
+                            <option value="Show">Show</option>
+                            <option value="Hide">Hide</option>
+                            <option value="All">All</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-sm btn-app mt-3" id="filter-btn">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </div>
+        </form>
+
         <table id="example1" class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -33,6 +54,7 @@
                     <th>Staff</th>
                     <th>WareHouse/Store</th>
                     <th>@Html.DisplayNameFor(model => model.Type)</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -51,12 +73,15 @@
                             <td>@receipt.WareHouse.Name (@receipt.WareHouseId)</td>
                         }
                         <td>@receipt.Type</td>
+                        <td>@receipt.Status</td>
                         <td class="text-center">
                             <a class="btn-sm btn-primary" asp-action="Details" asp-route-id="@receipt.Id"><i class="fas fa-info-circle"></i></a>
                             @*<a class="btn-sm btn-secondary" asp-action="Edit" asp-route-id="@receipt.Id"><i class="fas fa-tools"></i></a>*@
-                            @*<a style="cursor: pointer" class="btn-sm btn-danger btn-delete" data-id="@receipt.Id">
-                                <i class="fas fa-trash"></i>
-                            </a>*@
+                            @if(receipt.Status == Status.Show){
+                                <a style="cursor: pointer" class="btn-sm btn-danger btn-delete" data-id="@receipt.Id">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            }
                         </td>
                     </tr>
                 }
@@ -172,7 +197,7 @@
                     }).fail(() => {
                         Toast.fire({
                             icon: 'error',
-                            title: 'Something went wrong.'
+                            title: error.responseText !== '' ? error.responseText : 'Something went wrong.'
                         })
                     })
 

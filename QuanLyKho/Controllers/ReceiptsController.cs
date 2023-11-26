@@ -50,10 +50,21 @@ namespace QuanLyKho.Controllers
         /// <summary>
         /// Action trả về View danh sách tất cả các kho trong hệ thống
         /// </summary>
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string filter = "Show")
         {
-            var appDbContext = _context.Receipts.Where(receipt => receipt.Status == Status.Show).Include(r => r.Staff).Include(r => r.WareHouse).Include(r => r.DestinationWarehouse);
-            return View(await appDbContext.ToListAsync());
+            if (_context.Receipts == null)
+                return Problem("Entity set 'AppDbContext.Receipts'  is null.");
+
+            var receiptQuery = _context.Receipts.Include(r => r.Staff).Include(r => r.WareHouse).Include(r => r.DestinationWarehouse).AsQueryable();
+
+            if (filter == "Show")
+                receiptQuery = receiptQuery.Where(c => c.Status == Status.Show).AsQueryable();
+            else if (filter == "Hide")
+                receiptQuery = receiptQuery.Where(c => c.Status == Status.Hide).AsQueryable();
+
+            ViewData["filter"] = filter;
+
+            return View(await receiptQuery.ToListAsync());
         }
 
         // GET: Receipts/Details/5
@@ -205,7 +216,6 @@ namespace QuanLyKho.Controllers
         /// Action xóa phiếu
         /// </summary>
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Receipts == null)
@@ -213,9 +223,51 @@ namespace QuanLyKho.Controllers
                 return Problem("Entity set 'AppDbContext.Receipts'  is null.");
             }
             var receipt = await _context.Receipts.FindAsync(id);
-            if (receipt != null)
+            if (receipt != null && receipt.Status == Status.Show)
             {
-                _context.Receipts.Remove(receipt);
+                var receiptDetails = await _context.ReceiptDetails.Where(rc => rc.ReceiptId == receipt.Id).ToListAsync();
+
+                if(receipt.Type == ReceiptType.Import)
+                {
+                    receiptDetails.ForEach(rc =>
+                    {
+                        var productWarehouse = _context.ProductWareHouses.FirstOrDefault(pw => pw.ProductId == rc.ProductId && pw.WareHouseId == receipt.WareHouseId);
+                        if (productWarehouse != null)
+                        {
+                            productWarehouse.Quantity -= rc.Quantity;
+                        }
+                    });
+                } 
+                else if (receipt.Type == ReceiptType.Export)
+                {
+                    receiptDetails.ForEach(rc =>
+                    {
+                        var productWarehouse = _context.ProductWareHouses.FirstOrDefault(pw => pw.ProductId == rc.ProductId && pw.WareHouseId == receipt.WareHouseId);
+                        if (productWarehouse != null)
+                        {
+                            productWarehouse.Quantity += rc.Quantity;
+                        }
+                    });
+                }
+                else if(receipt.Type == ReceiptType.Transfer)
+                {
+                    receiptDetails.ForEach(rc =>
+                    {
+                        var productWarehouse = _context.ProductWareHouses.FirstOrDefault(pw => pw.ProductId == rc.ProductId && pw.WareHouseId == receipt.WareHouseId);
+                        if (productWarehouse != null)
+                        {
+                            productWarehouse.Quantity += rc.Quantity;
+                        }
+
+                        var productDestinationWarehouse = _context.ProductWareHouses.FirstOrDefault(pw => pw.ProductId == rc.ProductId && pw.WareHouseId == receipt.DestinationWarehouseId);
+                        if (productDestinationWarehouse != null)
+                        {
+                            productDestinationWarehouse.Quantity -= rc.Quantity;
+                        }
+                    });
+                }
+
+                receipt.Status = Status.Hide;
             }
 
             await _context.SaveChangesAsync();
@@ -236,11 +288,47 @@ namespace QuanLyKho.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateReceipt(Receipt receipt, List<string>? ProductIds, List<int>? productQuantitys, List<NewProductModel>? newProducts)
+        public async Task<IActionResult> Create(Receipt receipt, List<string>? ProductIds, List<int>? productQuantitys, List<NewProductModel>? newProducts)
         {
             if (receipt == null || (ProductIds is null && newProducts is null) || (ProductIds?.Count == 0 && newProducts?.Count == 0))
             {
+                ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id");
+                ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
+
                 ModelState.AddModelError("", "Please complete all information");
+
+
+                if (this.User.IsInRole("Admin"))
+                {
+                    ViewData["StaffId"] = new SelectList(_context.Staffs.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
+                }
+                else
+                {
+                    string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    ViewData["StaffId"] = _context.Staffs.Where(s => s.UserId == userId).FirstOrDefault().Id;
+                }
+
+                return View(receipt);
+            }
+            // check số lượng 
+            var productsInValid = productQuantitys.Exists(quantity => quantity < 1);
+            var newProductInValid = newProducts.Exists(newProduct => newProduct.Quantity < 1);
+
+            if (productsInValid || newProductInValid)
+            {
+                if (this.User.IsInRole("Admin"))
+                {
+                    ViewData["StaffId"] = new SelectList(_context.Staffs.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
+                }
+                else
+                {
+                    string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    ViewData["StaffId"] = _context.Staffs.Where(s => s.UserId == userId).FirstOrDefault().Id;
+                }
+
+                ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id");
+                ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
+                ModelState.AddModelError("", "The quantity of each product must be greater than 0");
                 return View(receipt);
             }
 
@@ -363,7 +451,17 @@ namespace QuanLyKho.Controllers
                         {
                             transaction.Rollback();
                             ModelState.AddModelError("", $"Product {i.ProductId} has quantity less than quantity you want export");
-                            ViewData["StaffId"] = new SelectList(_context.Staffs, "Id", "Id");
+
+                            if (this.User.IsInRole("Admin"))
+                            {
+                                ViewData["StaffId"] = new SelectList(_context.Staffs.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
+                            }
+                            else
+                            {
+                                string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                                ViewData["StaffId"] = _context.Staffs.Where(s => s.UserId == userId).FirstOrDefault().Id;
+                            }
+
                             ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id");
                             ViewData["ProductId"] = new MultiSelectList(_context.Products, "Id", "Id", ProductIds);
                             return View("Create", receipt);
@@ -386,7 +484,16 @@ namespace QuanLyKho.Controllers
             }
             else
             {
-                ViewData["StaffId"] = new SelectList(_context.Staffs, "Id", "Id");
+                if (this.User.IsInRole("Admin"))
+                {
+                    ViewData["StaffId"] = new SelectList(_context.Staffs.Where(w => w.Status == Status.Show).ToList(), "Id", "Id");
+                }
+                else
+                {
+                    string userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    ViewData["StaffId"] = _context.Staffs.Where(s => s.UserId == userId).FirstOrDefault().Id;
+                }
+
                 ViewData["WareHouseId"] = new SelectList(_context.WareHouses, "Id", "Id");
                 ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
 
