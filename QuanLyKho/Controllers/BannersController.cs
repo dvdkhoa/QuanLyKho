@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QuanLyKho.Extensions;
 using QuanLyKho.Models.EF;
 using QuanLyKho.Models.Entities;
 
 namespace QuanLyKho.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class BannersController : Controller
     {
         private readonly AppDbContext _context;

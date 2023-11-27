@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyKho.Extensions;
@@ -9,6 +10,7 @@ using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace QuanLyKho.Controllers
 {
+    [Authorize(Roles = "Admin,Manager,Storekeeper")]
     public class BrandsController : Controller
     {
         private readonly AppDbContext _context;

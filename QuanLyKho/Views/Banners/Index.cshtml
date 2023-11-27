@@ -29,8 +29,8 @@
             <thead >
                 <tr>
                     <th width="20px">ID</th>
-                    <th>Key</th>
-                    <th class="w-25">Image</th>
+                    <th class="w-25">Key</th>
+                    <th class="w-50">Image</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -41,7 +41,7 @@
                         <td class="align-middle">@item.Id</td>
                         <td class="align-middle">@item.Key</td>
                         <td class="text-center" style="width: 64px">
-                            <img src="@item.Path" class="w-75">
+                            <img src="@item.Path" width="250px" height="auto">
                         </td>
                         <td class="text-center align-middle" >
                             <a class="btn-sm btn-primary" asp-action="Details" asp-route-id="@item.Id"><i class="fas fa-info-circle"></i></a>
@@ -104,7 +104,7 @@
         var table = {}
         $(function () {
             table = $("#example1").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "responsive": true, "lengthChange": false, "autoWidth": false, "pageLength": 5
             });
 
             table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');

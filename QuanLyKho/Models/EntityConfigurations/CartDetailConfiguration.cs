@@ -16,6 +16,9 @@ namespace QuanLyKho.Models.EntityConfigurations
 
             builder.Property(t => t.ProducPrice).IsRequired();
 
+            builder.Property(t => t.PromotionPrice).IsRequired(false);
+
+
             builder.Property(t => t.Status).IsRequired();
 
             builder.HasOne(t => t.Cart)

@@ -37,7 +37,7 @@
         /// <summary>
         /// Getter và Setter cho Giá khuyến mãi
         /// </summary>
-        public double PromotionPrice { get; set; }
+        public double? PromotionPrice { get; set; }
         /// <summary>
         /// Getter và Setter cho Hình ảnh sản phẩm
         /// </summary>
