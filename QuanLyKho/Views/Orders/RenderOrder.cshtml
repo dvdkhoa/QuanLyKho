@@ -1,0 +1,166 @@
+﻿@model QuanLyKho.Models.Entities.Order;
+@using QuanLyKho.Extensions;
+@using QuanLyKho.Models.Entities;
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Render Order</title>
+
+    <style>
+        .invoice-title h2, .invoice-title h3 {
+            display: inline-block;
+        }
+
+        .table > tbody > tr > .no-line {
+            border-top: none;
+        }
+
+        .table > thead > tr > .no-line {
+            border-bottom: none;
+        }
+
+        .table > tbody > tr > .thick-line {
+            border-top: 2px solid;
+        }
+
+        .limitedText {
+            white-space: nowrap; /* Ngăn chữ xuống dòng */
+            overflow: hidden; /* Ẩn phần vượt quá giới hạn */
+            text-overflow: ellipsis; /* Hiển thị dấu chấm ba chấm (...) khi vượt quá giới hạn */
+            max-width: 100px; /* Giới hạn chiều rộng của thẻ */
+        }
+    </style>
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="invoice-title">
+                    <h2>Invoice</h2><h3 class="pull-right">Order # 12345</h3>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <address>
+                            <strong>Billed To</strong><br>
+                            @Model.CustomerName<br>
+                        </address>
+                    </div>
+                    @if(Model.PaymentMethod != PaymentMethod.Direct)
+                    {
+                        <div class="col-xs-6 text-right">
+                            <address>
+                                <strong>Shipped To</strong><br>
+                                @Model.Address
+                            </address>
+                        </div>
+                    }
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <address>
+                            <strong>Payment Method:</strong> @Model.PaymentMethod <br>
+                            <strong>Payment status:</strong> @Model.PaymentStatus <br>
+                            <strong>Email:</strong> @Model.Email
+                        </address>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <address>
+                            <strong>Order Date</strong><br>
+                            @Model.CreatedTime.ToShortDateString()<br>
+                        </address>
+                    </div>
+                </div>
+                    <div class="row">
+                    @if (Model.Staff != null)
+                    {
+                        <div class="col-xs-6">
+                            <address>
+                                <strong>Staff:</strong> @Model.Staff?.Name (@Model.StaffId)<br>
+                            </address>
+                        </div>
+                    }
+                    @if(Model.Store != null)
+                    {
+                        <div class="col-xs-6 text-right">
+                            <address>
+                                <strong>Store:</strong>@Model.Store?.Name (@Model.StoreId)<br><br>
+                            </address>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><strong>Order summary</strong></h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <td><strong>Id</strong></td>
+                                        <td><strong>Product name</strong></td>
+                                        <td class="text-center"><strong>Price(vnđ)</strong></td>
+                                        <td class="text-center"><strong>Quantity</strong></td>
+                                        <td class="text-right"><strong>Totals(vnđ)</strong></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.OrderDetails)
+                                    {
+                                        var amount = item.getAmount();
+                                        <tr>
+                                            <td>@item.ProductId</td>
+                                            <td class="limitedText">@item.ProductName</td>
+                                            <td class="text-center">@Helpers.PriceToVND(item.Price)</td>
+                                            <td class="text-center">@item.Quantity</td>
+                                            <td class="text-right">@Helpers.PriceToVND(amount)</td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td class="thick-line"></td>
+                                        <td class="thick-line"></td>
+                                        <td class="thick-line"></td>
+                                        <td class="thick-line text-center"><strong>Subtotal</strong></td>
+                                        <td class="thick-line text-right">@Helpers.PriceToVND(Model.TmpTotal)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="no-line"></td>
+                                        <td class="no-line"></td>
+                                        <td class="no-line"></td>
+                                        <td class="no-line text-center"><strong>Shipping</strong></td>
+                                        <td class="no-line text-right">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="no-line"></td>
+                                        <td class="no-line"></td>
+                                        <td class="no-line"></td>
+                                        <td class="no-line text-center"><strong>Total</strong></td>
+                                        <td class="no-line text-right">@Helpers.PriceToVND(Model.Total)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -548,7 +548,7 @@ namespace QuanLyKho.Controllers
                                 PagesCount = true,
                                 WebSettings = { DefaultEncoding = "utf-8", UserStyleSheet = stylesPath,  },
                                 HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
-                                FooterSettings = { FontName = "Arial", FontSize = 10, Line = true, Center = "Inventory management", Spacing = 5,}
+                                FooterSettings = { FontName = "Arial", FontSize = 10, Line = true, Center = "SmallHall", Spacing = 5,}
                             },
 
                         }

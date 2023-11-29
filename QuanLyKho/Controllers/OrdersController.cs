@@ -1,4 +1,6 @@
-﻿using MailKit.Search;
+﻿using DinkToPdf;
+using DinkToPdf.Contracts;
+using MailKit.Search;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp;
@@ -14,13 +16,15 @@ namespace QuanLyKho.Controllers
     public class OrdersController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IConverter _converter;
 
         /// <summary>
         /// Phương thức khởi tạo
         /// </summary>
-        public OrdersController(AppDbContext context)
+        public OrdersController(AppDbContext context, IConverter converter)
         {
             _context = context;
+            _converter = converter;
         }
 
         //public async Task<IActionResult> Index()
@@ -264,6 +268,62 @@ namespace QuanLyKho.Controllers
                 return View(orderSubmit);
             }
             return View(orderSubmit);
+        }
+
+
+        [AllowAnonymous]
+        public async Task<IActionResult> RenderOrder(int id)
+        {
+            if (id == 0)
+                return BadRequest();
+            var order = await _context.Orders
+                                        .Include(r => r.Staff)
+                                        .Include(r => r.Store)
+                                        .Include(r => r.Customer)
+                                        .FirstOrDefaultAsync(r => r.Id == id);
+            if (order == null)
+                return BadRequest();
+
+            order.OrderDetails = _context.OrderDetails.Include(d => d.Product).Where(od => od.OrderId == id).ToList();
+
+            return View(order);
+        }
+
+
+        public async Task<IActionResult> ExportOrder(int id)
+        {
+            var order = _context.Orders.Include(r => r.OrderDetails).FirstOrDefault(r => r.Id == id);
+            if (order == null)
+                return NotFound();
+
+            //var stylesPath = Path.Combine(Environment.CurrentDirectory, "wwwroot", "lib", "bootstrap", "dist", "css", "bootstrap.css");
+            var doc = new HtmlToPdfDocument()
+            {
+                GlobalSettings = {
+                    ColorMode = ColorMode.Color,
+                    Orientation = Orientation.Portrait,
+                    PaperSize = DinkToPdf.PaperKind.A4,
+                    Margins = new MarginSettings() { Top = 10, Bottom=20, Left=20, Right=20 },
+                },
+                Objects = {
+                            new ObjectSettings()
+                            {
+                                Page = "https://localhost:7055/Orders/RenderOrder/"+id,
+                                //HtmlContent = this.generateHtml(receipt), 
+                                PagesCount = true,
+                                WebSettings = { DefaultEncoding = "utf-8"  },
+                                //HeaderSettings = { FontName = "Arial", FontSize = 9, Right = "Page [page] of [toPage]", Line = true },
+                                FooterSettings = { FontName = "Arial", FontSize = 10, Line = true, Center = "SmallHall", Spacing = 5,}
+                            },
+
+                        }
+            };
+            var bytes = _converter.Convert(doc);
+
+
+            var stream = new MemoryStream(bytes);
+
+            return File(stream, "application/pdf");
         }
     }
 }
