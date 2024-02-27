@@ -1,0 +1,101 @@
+﻿@model QuanLyKho.Models.Entities.Staff
+
+@{
+    ViewData["Title"] = "Details";
+    ViewData["PrimaryTitle"] = "Staffs";
+
+}
+
+<div class="card">
+    @if (!string.IsNullOrEmpty(Model.Image))
+    {
+        <div class="row pt-3">
+            <div class="mx-auto" style="height: 300px; width: 300px">
+                <img src="@Model.Image" class="w-100 h-100 img-thumbnail rounded-circle" />
+            </div>
+        </div>
+    }
+    <div class="card-header"></div>
+    <div class="card-body">
+        <table class="table table-striped table-bordered">
+            <tbody>
+                <tr>
+                    <td>Id</td>
+                    <td>@Model.Id</td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>@Model.Name</td>
+                </tr>
+                <tr>
+                    <td>Dob</td>
+                    <td>@Model.DateOfBirth.ToShortDateString()</td>
+                </tr>
+                <tr>
+                    <td>Gender</td>
+                    <td>@Model.Gender</td>
+                </tr>
+                <tr>
+                    <td>Phone</td>
+                    <td>@Model.PhoneNumber</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>@Model.Email</td>
+                </tr>
+                <tr>
+                    <td>Address</td>
+                    <td>@Model.Address</td>
+                </tr>
+                <tr>
+                    <td>StartDay</td>
+                    <td>@Model.StartDay.ToShortDateString()</td>
+                </tr>
+                <tr>
+                    @if (Model.WareHouse.Id.StartsWith("CH"))
+                    {
+                        <td>Store</td>
+                        <td>@Model.WareHouse.Name</td>
+                    }
+                    else
+                    {
+                        <td>Warehouse</td>
+                        <td>@Model.WareHouse.Name</td>
+                    }
+                    
+                </tr>
+                <tr>
+                    <td>User</td>
+                    @if(this.User.IsInRole("Admin"))
+                    {
+                        <td>
+                            <a asp-page="/User/AddRole" asp-area="Admin" asp-route-id="@Model.UserId">@Model.User?.UserName</a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>@Model.User?.UserName</td>
+                    }
+                </tr>
+                <tr>
+                    <td>Status</td>
+                    <td>@Model.Status</td>
+                </tr>
+                <tr>
+                    <td>Created time</td>
+                    <td>@Model.CreatedTime.ToShortDateString()</td>
+                </tr>
+                <tr>
+                    <td>Lasted update</td>
+                    <td>@Model.LastUpdated.ToShortDateString()</td>
+                </tr>
+            </tbody>
+        </table>
+        <hr />
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+</div>
+

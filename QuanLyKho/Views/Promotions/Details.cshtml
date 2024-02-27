@@ -1,0 +1,208 @@
+﻿@using QuanLyKho.Extensions;
+@model QuanLyKho.Models.Entities.Promotion
+
+@{
+    ViewData["Title"] = "Promotion detail";
+    ViewData["PrimaryTitle"] = "Promotions";
+
+}
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="~/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+}
+
+
+<div class="card">
+    <div class="card-header">
+        <a asp-action="AddPromotionalProducts" asp-route-id="@Model.Id">Add products to promotion</a>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped table-bordered">
+            <tbody>
+                <tr>
+                    <td>Id</td>
+                    <td>@Model.Id</td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>@Model.Name</td>
+                </tr>
+                <tr>
+                    <td>Promotion type</td>
+                    <td>@Model.PromotionType</td>
+                </tr>
+                <tr>
+                    <td>Percent</td>
+                    <td>@Model.Percent</td>
+                </tr>
+                <tr>
+                    <td>Description</td>
+                    <td>@Html.Raw(Model.Description)</td>
+                </tr>
+                <tr>
+                    <td>Start date</td>
+                    <td>@Model.StartDate.ToCustomDateTimeStr()</td>
+                </tr>
+                <tr>
+                    <td>End date</td>
+                    <td>@Model.EndDate.ToCustomDateTimeStr()</td>
+                </tr>
+                <tr>
+                    <td>Created time</td>
+                    <td>@Model.CreatedTime.ToCustomDateTimeStr()
+                </tr>
+                <tr>
+                    <td>Lasted update</td>
+                    <td>@Model.LastUpdated.ToCustomDateTimeStr()</td>
+                </tr>
+                <tr>
+                    <td>Status</td>
+                    <td>@Model.Status</td>
+                </tr>
+            </tbody>
+        </table>
+        <hr />
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+            <a asp-action="Index">Back to List</a>
+        </div>
+        <hr />
+        @if (Model.ProductPromotions?.Count > 0)
+        {
+            <table class="table table-striped table-bordered" id="productTable">
+
+                <thead>
+                    <tr>
+                        <th>Product Id</th>
+                        <th>Product name</th>
+                        <th>Price</th>
+                        <th>Promotional price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ProductPromotions)
+                    {
+                        <tr>
+                            <td>@item.ProductId</td>
+                            <td>
+                                <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.Id">@item.Product.Name</a>
+                            </td>
+                            <td>@Helpers.PriceToVND(item.Product.Price)</td>
+                            <td>@(item.Product.PromotionPrice != null ? Helpers.PriceToVND(item.Product.PromotionPrice.Value) : "")</td>
+                            <td class="text-center">
+                                <a class="btn-sm btn-danger btn-delete" data-id="@item.ProductId" role="button"><i class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+        }
+        else
+        {
+            <p>No products</p>
+        }
+        
+    </div>
+</div>
+
+
+
+@section Scripts {
+
+    <!-- DataTables  & Plugins -->
+    <script src="~/admin/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
+    <script src="~/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
+
+
+    <script>
+        $(function () {
+            var table = $('#productTable').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+
+
+            var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+        console.log($('.btn-delete'))
+        $('.btn-delete').click(function () {
+
+
+            var clickedBtnID = $(this).attr('data-id');
+
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        url: `/Promotions/RemovePromotionalProduct`,
+                        method: 'post',
+                        data: {
+                            productId: clickedBtnID,
+                            promotionId: @Model.Id
+                        }
+                    }).done(() => {
+
+                        var tr = $(this).parents('tr');
+                        //tr.remove()
+
+                        table.row(tr).remove().draw()
+
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        )
+                    }).fail(() => {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Something went wrong.'
+                        })
+                    })
+
+
+                }
+            })
+        })
+        });
+
+        $('#modal-sm').modal(options)
+    </script>
+
+
+
+    <script>
+        
+    </script>
+}
+

@@ -1,0 +1,305 @@
+﻿@model QuanLyKho.Models.Entities.Receipt
+@using QuanLyKho.Models.Entities;
+
+
+@{
+    ViewData["Title"] = "Create";
+    ViewData["PrimaryTitle"] = "Receipts";
+}
+
+
+
+@section Styles {
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/admin/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+}
+
+
+
+<section class="content ml-2">
+    <form asp-action="Create" method="post">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card card-primary row">
+                    <div class="card-header">
+                        <h3 class="card-title">Create Receipt</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="display: block;">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="form-group">
+                            <label asp-for="Type">Type</label>
+                            <select id="select-type" asp-for="Type" class="form-control custom-select">
+                                <option selected="" disabled="">Select one</option>
+                                @foreach (ReceiptType type in Enum.GetValues(typeof(ReceiptType)))
+                                {
+                                    if (type != ReceiptType.Transfer)
+                                    {
+                                        <option value="@type">@type.ToString()</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="Type" class="text-danger"></span>
+                        </div>
+
+                        @if (this.User.IsInRole("Admin"))
+                        {
+                            <div class="form-group">
+                                <label asp-for="StaffId">Staff</label>
+                                <select class="form-control select2bs4 w-100" asp-for="StaffId" asp-items="@ViewBag.StaffId" style="width: 100%;">
+                                    <option selected="" disabled>Select staff</option>
+                                </select>
+                                <span asp-validation-for="StaffId" class="text-danger"></span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group">
+                                <label asp-for="StaffId">Staff</label>
+                                <input class="form-control" value="@ViewBag.StaffId" disabled />
+                            </div>
+                            <input asp-for="StaffId" value="@ViewBag.StaffId" type="hidden" />
+                        }
+
+
+                        <div class="form-group">
+                            <label for="select-warehouse">Warehouse</label>
+                            <select id="select-warehouse" class="form-control" name="WareHouseId" asp-for="@Model.WareHouseId" asp-items="@ViewBag.WareHouseId" style="width: 100%;">
+                                <option selected="" disabled>Select Warehouse</option>
+                            </select>
+                            <span asp-validation-for="WareHouseId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- /.card-body -->
+                </div>
+                <div class="row">
+                    <div class="col-md-12 pb-3">
+                        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                        <input id="btn-submit" type="submit" value="Create receipt" class="btn btn-success float-right">
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+            <div class="col-md-8">
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">Products</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="display: block;">
+                        <div id="new-product-checker-form" class="form-group" style="display: none">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" id="new-product-checker">
+                                <label class="custom-control-label" for="new-product-checker">New product</label>
+                            </div>
+                        </div>
+                        <div class="form-group select2-purple">
+                            <select id="product-select" class="select2 select2-hidden-accessible" name="ProductIds" asp-items="@ViewBag.ProductId" multiple="" data-dropdown-css-class="select2-purple" data-placeholder="Add products" style="width: 100%;" data-select2-id="7" tabindex="-1" aria-hidden="true">
+                            </select>
+                        </div>
+
+                        <div id="product-form">
+                        </div>
+
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+                <div id="new-products-form" class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">New products</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="display: block;">
+                        <div class="form-group">
+                            <label for="range-new-products">Number of new products: <span id="number-new-products">0</span></label>
+                            <input type="range" min="0" max="20" class="custom-range custom-range-teal" id="range-new-products">
+                        </div>
+                        <div id="form-new-products">
+                            @*<div class="row border px-1 py-2">
+                            <div class="input-group  col-xl-3">
+                            <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="ID">
+                            </div>
+                            <div class="input-group col-xl-6">
+                            <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Name">
+                            </div>
+                            <div class="input-group col-xl-3">
+                            <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            </div>
+                            <input type="number" class="form-control" placeholder="Price">
+                            </div>
+                            </div>*@
+                        </div>
+
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+</section>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <!-- Select2 -->
+    <script src="~/admin/plugins/select2/js/select2.full.min.js"></script>
+
+    <script>
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+
+        $('#select-warehouse').select2({
+            theme: 'bootstrap4'
+        })
+
+        $('#new-products-form').hide()
+
+
+        $('#new-product-checker').change(function () {
+            if (this.checked)
+                $('#new-products-form').show(1000)
+            else
+                $('#new-products-form').hide(1000)
+        })
+
+
+        $(document).on('input', '#range-new-products', function () {
+
+            var number_new_product = $(this).val()
+
+            $('#number-new-products').html(number_new_product);
+
+            var element_form_new_products = ''
+
+            for (let i = 0; i < number_new_product; i++) {
+                console.log(i)
+                element_form_new_products += `
+                                                            <div class="row border px-1 py-2 mb-1">
+                                                                        <div class="input-group  col-xl-2 position-relative  mt-1">
+                                                                   <div class="ribbon-wrapper">
+                                                                        <div class="ribbon bg-success">
+                                                                          ${i + 1}
+                                                                        </div>
+                                                                      </div>
+                                                                    <div class="input-group-prepend">
+                                                                         <span class="input-group-text"><i class="fas fa-fingerprint"></i></i></span>
+                                                                    </div>
+                                                                    <input name="newProducts[${i}][id]" type="text" class="form-control" placeholder="ID" required>
+                                                                </div>
+                                                                <div class="input-group col-xl-5 mt-1">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text"><i class="fas fa-signature"></i></span>
+                                                                    </div>
+                                                                                    <input name="newProducts[${i}][name]" type="text" class="form-control" placeholder="Name" required>
+                                                                </div>
+                                                                <div class="input-group col-xl-3 mt-1">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text"><i class="fas fa-money-bill-wave"></i></span>
+                                                                    </div>
+                                                                        <input name="newProducts[${i}][price]" type="number" class="form-control" placeholder="Price" required>
+                                                                </div>
+                                                                <div class="input-group col-xl-2 mt-1">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text"><i class="fas fa-sort-numeric-up"></i></span>
+                                                                    </div>
+                                                                        <input name="newProducts[${i}][quantity]" type="number" class="form-control" placeholder="Quantity" required>
+                                                                </div>
+                                                              </div>`
+            }
+            $('#form-new-products').empty()
+
+            $('#form-new-products').append(element_form_new_products)
+        });
+
+        // loading mỗi lần đầu tiên
+        $('#product-select').ready(function () {
+            const values = $('#product-select').val()
+
+            const elements = values.map(value => {
+                return `
+                                                    <div class="input-group mb-3">
+                                                      <div class="input-group-prepend">
+                                                        <span class="input-group-text">${value}</span>
+                                                      </div>
+                                                              <input type="number" name="productQuantitys[]" min="0" step="1" class="form-control" placeholder="Quantity">
+                                                    </div>
+                                                `
+            })
+            $('#product-form').empty()
+            $('#product-form').append(elements)
+        })
+
+
+        $('#product-select').change(function () {
+            const values = $(this).val()
+
+            console.log(values)
+
+            const elements = values.map(value => {
+                return `
+                                            <div class="input-group mb-3">
+                                              <div class="input-group-prepend">
+                                                <span class="input-group-text">${value}</span>
+                                              </div>
+                                                      <input type="number" name="productQuantitys[]" min="0" step="1" class="form-control" placeholder="Quantity">
+                                            </div>
+                                        `
+            })
+            $('#product-form').empty()
+            $('#product-form').append(elements)
+        })
+
+        $('#select-type').change(function () {
+            if ($(this).val() == 'Import') {
+                console.log('import')
+                $('#new-product-checker-form').show(500)
+            }
+            else {
+                console.log('export')
+                $('#new-product-checker').prop('checked', false)
+                $('#new-product-checker-form').hide(500)
+                $('#new-products-form').hide(1000)
+            }
+        })
+
+        $('#btn-submit').click(function () {
+            console.log('submit')
+        })
+
+
+
+
+    </script>
+}

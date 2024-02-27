@@ -1,0 +1,206 @@
+﻿@model QuanLyKho.Models.Entities.Receipt
+@using QuanLyKho.Models.Entities;
+
+
+@{
+    ViewData["Title"] = "Create";
+    ViewData["PrimaryTitle"] = "Receipts";
+}
+
+
+
+@section Styles {
+    <!-- Select2 -->
+    <link rel="stylesheet" href="~/admin/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+}
+
+
+
+<section class="content ml-2">
+    <form asp-action="CreateTransferReceipt" method="post">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card card-primary row">
+                    <div class="card-header">
+                        <h3 class="card-title">Create Receipt</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="display: block;">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="form-group">
+                            <label asp-for="Type">Type</label>
+                            <select id="select-type" asp-for="Type" class="form-control custom-select">
+                                <option selected="" value="@ReceiptType.Transfer">Transfer</option>
+                            </select>
+                            <span asp-validation-for="Type" class="text-danger"></span>
+                        </div>
+
+                        @if (this.User.IsInRole("Admin"))
+                        {
+                            <div class="form-group">
+                                <label asp-for="StaffId">Staff</label>
+                                <select class="form-control select2bs4 w-100" asp-for="StaffId" asp-items="@ViewBag.StaffId" style="width: 100%;">
+                                    <option selected="" disabled>Select staff</option>
+                                </select>
+                                <span asp-validation-for="StaffId" class="text-danger"></span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group">
+                                <label asp-for="StaffId">Staff</label>
+                                <input class="form-control" value="@ViewBag.StaffId" disabled />
+                            </div>
+                            <input asp-for="StaffId" value="@ViewBag.StaffId" type="hidden" />
+                        }
+
+                        <div class="form-group">
+                            <label for="select-warehouse">Warehouse</label>
+                            <select id="select-warehouse" class="form-control" name="WareHouseId" asp-for="@Model.WareHouseId" asp-items="@ViewBag.WareHouseId" style="width: 100%;">
+                                <option selected="" disabled>Select Warehouse</option>
+                            </select>
+                            <span asp-validation-for="WareHouseId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="select-destination-warehouse">Destination warehouse</label>
+                            <select id="select-destination-warehouse" class="form-control" asp-for="@Model.DestinationWarehouseId" asp-items="@ViewBag.WareHouseId" style="width: 100%;">
+                                <option selected="" disabled>Select destination warehouse</option>
+                            </select>
+                            <span asp-validation-for="DestinationWarehouseId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- /.card-body -->
+                </div>
+                <div class="row">
+                    <div class="col-md-12 pb-3">
+                        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                        <input id="btn-submit" type="submit" value="Create receipt" class="btn btn-success float-right">
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+            <div class="col-md-8">
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">Products</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="display: block;">
+                        <div class="form-group select2-purple">
+                            <select id="product-select" class="select2 select2-hidden-accessible" name="ProductIds" multiple="" data-dropdown-css-class="select2-purple" data-placeholder="Add products" style="width: 100%;" data-select2-id="7" tabindex="-1" aria-hidden="true">
+                                
+                            </select>
+                        </div>
+
+                        <div id="product-form">
+                        </div>
+
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+</section>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <!-- Select2 -->
+    <script src="~/admin/plugins/select2/js/select2.full.min.js"></script>
+
+    <script>
+        //Initialize Select2 Elements
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        })
+
+        $('#select-warehouse').select2({
+            theme: 'bootstrap4'
+        })
+
+        $('#select-destination-warehouse').select2({
+            theme: 'bootstrap4'
+        })
+
+
+        $('#select-warehouse').on('change', function(){
+            
+            // clear product-select và product-form
+            $('#product-select').empty()
+            $('#product-form').empty()
+            // call ajax
+            $.ajax({
+                url: '/Products/GetProductByWarehouseId/'+$(this).val(),
+                success: function(data){
+                    console.log(data)
+
+                    // set các option cho product-select
+                    const elements = data.map(value => {
+                        console.log('for')
+                        return `<option value="${value.id}">${value.id}</option>`
+                    })
+                    $('#product-select').append(elements)
+                }
+            })
+        })
+
+
+        // loading mỗi lần đầu tiên
+        $('#product-select').ready(function () {
+            const values = $('#product-select').val()
+
+            const elements = values.map(value => {
+                return `
+                                                            <div class="input-group mb-3">
+                                                              <div class="input-group-prepend">
+                                                                <span class="input-group-text">${value}</span>
+                                                              </div>
+                                                                      <input tyFpe="number" name="productQuantitys[]" min="0" step="1" class="form-control" placeholder="Quantity">
+                                                            </div>
+                                                        `
+            })
+            $('#product-form').empty()
+            $('#product-form').append(elements)
+        })
+
+
+        $('#product-select').change(function () {
+            const values = $(this).val()
+
+            console.log(values)
+
+            const elements = values.map(value => {
+                return `
+                                                    <div class="input-group mb-3">
+                                                      <div class="input-group-prepend">
+                                                        <span class="input-group-text">${value}</span>
+                                                      </div>
+                                                              <input type="number" name="productQuantitys[]" min="0" step="1" class="form-control" placeholder="Quantity">
+                                                    </div>
+                                                `
+            })
+            $('#product-form').empty()
+            $('#product-form').append(elements)
+        })
+    </script>
+}

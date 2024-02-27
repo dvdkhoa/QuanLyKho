@@ -1,0 +1,122 @@
+﻿@model QuanLyKho.Models.Entities.Customer
+@using QuanLyKho.Extensions;
+
+@{
+    ViewData["Title"] = "Details";
+    ViewData["PrimaryTitle"] = "Customers";
+
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+}
+
+<div class="card">
+    <div class="card-header"></div>
+    <div class="card-body">
+        <table class="table table-striped table-bordered">
+            <tbody>
+                <tr>
+                    <td>Id</td>
+                    <td>@Model.Id</td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>@Model.Name</td>
+                </tr>
+                <tr>
+                    <td>Date of birth</td>
+                    <td>@Model.Dob.ToShortDateString()</td>
+                </tr>
+                <tr>
+                    <td>Phone</td>
+                    <td>@Model.Phone</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>@Model.Email</td>
+                </tr>
+                <tr>
+                    <td>Address</td>
+                    <td>@Model.Address</td>
+                </tr>
+                <tr>
+                    <td>User</td>
+                    <td>@Model.User?.UserName</td>
+                </tr>
+            </tbody>
+        </table>
+        <hr />
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+            <a asp-action="Index">Back to List</a>
+        </div>
+        <hr />
+        <table class="table table-striped table-bordered" id="table-order">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Created time</th>
+                    <th>Tmp total(vnđ)</th>
+                    <th>Total(vnđ)</th>
+                    <th>Payment Status</th>
+                    <th>Payment method</th>
+                    <th>Ship status</th>
+                    @*<th>Store</th>*@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.Orders)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="Details" asp-controller="Orders" asp-route-id="@order.Id">@order.Id</a>
+                        </td>
+                        <td>@order.CreatedTime.ToShortDateString()</td>
+                        <td>@Helpers.PriceToVND(order.TmpTotal)</td>
+                        <td>@Helpers.PriceToVND(order.Total)</td>
+                        <td>@order.PaymentStatus</td>
+                        <td>@order.PaymentMethod</td>
+                        <td>@order.ShipStatus</td>
+                        @*<td>@order.Store?.Name</td>*@
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <!-- DataTables  & Plugins -->
+    <script src="~/admin/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/jszip/jszip.min.js"></script>
+    <script src="~/admin/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="~/admin/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+
+
+    <script>
+        $(function () {
+            const table = $("#table-order").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            })
+
+            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+        });
+    </script>
+
+}

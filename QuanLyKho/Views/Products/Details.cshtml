@@ -1,0 +1,276 @@
+﻿@model QuanLyKho.DTO.ProductInfoModel
+@using QuanLyKho.Extensions
+@using System.Text.Json;
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/lib/spotlight/spotlight.min.css">
+
+    <link rel="stylesheet" href="~/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    
+}
+
+
+<div class="card">
+    <div class="card-header">
+        <div class="float-right">
+            <a asp-action="ImportHistory" asp-route-id="@Model.Id">Import history</a>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+
+        <!-- DONUT CHART -->
+        @if (Model.ProductWarehouses != null && Model.ProductWarehouses.Count > 0)
+        {
+            var sl = Model.ProductWarehouses.Sum(pw => pw.Quantity);
+
+            if (sl > 0)
+            {
+                <div class="card card-danger">
+                    <div class="card-header">
+                        <h3 class="card-title">Product quantity chart</h3>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            }
+        }
+
+        @{
+            if (Model.ProductWarehouses != null && Model.ProductWarehouses.Count > 0)
+            {
+                <p class="text-bold">Product quantity details:</p>
+                <table id="productWarehouses" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Warehouse</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pw in Model.ProductWarehouses)
+                        {
+                            <tr>
+                                <td>@pw.WareHouseId</td>
+                                <td>@pw.Quantity</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+
+        <hr />
+
+        <table class="table table-bordered table-striped">
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Id)</td>
+                <td>@Model.Id</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Name)</td>
+                <td>@Model.Name</td>
+            </tr>
+
+            <tr>
+                <td>Total Quantity</td>
+                <td>@Model.Quantity</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Category)</td>
+                <td>@Html.DisplayFor(m => m.Category.Name)</td>
+            </tr>
+            <tr>
+                <td>Brand</td>
+                <td>@Html.DisplayFor(m => m.CategoryBrand.Brand.Name)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Description)</td>
+                <td>@Html.Raw(Model.Description)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Unit)</td>
+                <td>@Html.DisplayFor(m => m.Unit)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Price)</td>
+                <td class="text-bold">@(Helpers.PriceToVND(Model.Price)) vnd </td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Supplier)</td>
+                <td>@Html.DisplayFor(m => m.Supplier)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Origin)</td>
+                <td>@Html.DisplayFor(m => m.Origin)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Weight)</td>
+                <td>@Html.DisplayFor(m => m.Weight)</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.Expiry)</td>
+                <td>@Model.Expiry</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.ManufacturingDate)</td>
+                <td>@Model.ManufacturingDate?.ToShortDateString()</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.CreatedTime)</td>
+                <td>@Model.CreatedTime?.ToShortDateString()</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.LastUpdated)</td>
+                <td>@Model.LastUpdated?.ToShortDateString()</td>
+            </tr>
+            <tr>
+                <td>@Html.DisplayNameFor(m => m.PromotionPrice)</td>
+                <td>@Html.DisplayFor(m => m.PromotionPrice)</td>
+            </tr>
+            <tr>
+                <td>
+                    Images
+                    <br>
+                    <a asp-action="EditImages" asp-route-id="@Model.Id">Edit images</a>
+                </td>
+                <td>
+                    @{
+                        if (Model.ProductImages != null)
+                        {
+                            foreach (var image in Model.ProductImages)
+                            {
+                                <a class="spotlight" href="@image.Path" data-animation="slide,fade,scale">
+                                    <img src="@image.Path" class="img-thumbnail" width="100" height="100" />
+                                </a>
+                            }
+                        }
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td>Detailed configurations</td>
+                <td>
+                    <a asp-action="ProductConfigs" asp-route-id="@Model.Id">Edit detailed configurations</a>
+                </td>
+            </tr>
+        </table>
+        <hr />
+
+        <div>
+            <a class="btn btn-link" asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+            <a class="btn btn-link" asp-action="Index">Back to List</a>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <!-- DataTables  & Plugins -->
+    <script src="~/admin/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/jszip/jszip.min.js"></script>
+    <script src="~/admin/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="~/admin/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+    <script>
+        $('#productWarehouses').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    </script>
+
+
+    <script src="~/lib/spotlight/spotlight.min.js"></script>
+
+
+    @if (Model.ProductWarehouses?.Count > 0)
+    {
+        var jsonData = JsonSerializer.Serialize(Model.ProductWarehouses.Select(pw => new
+        {
+            name = pw.WareHouse.Name,
+            sl = pw.Quantity
+        }).ToList());
+
+        <text>
+            <script>
+                const jsonData = @Html.Raw(jsonData)
+                    console.log('json data: ', jsonData)
+
+                const labels = jsonData.map(data => data.name)
+                const quantityPercents = jsonData.map(data => data.sl)
+
+                const colors = jsonData.map(data => getRandomColor())
+
+                //-------------
+                //- DONUT CHART -
+                //-------------
+                // Get context with jQuery - using jQuery's .get() method.
+                var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
+                var donutData = {
+                    labels: labels,
+                    datasets: [
+                        {
+                            data: quantityPercents, //, '#00c0ef', '#3c8dbc', '#d2d6de'
+                            backgroundColor: colors //['#f56954', '#00a65a', '#f39c12'],
+                        }
+                    ]
+                }
+                var donutOptions = {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                }
+                //Create pie or douhnut chart
+                // You can switch between pie and douhnut using the method below.
+                new Chart(donutChartCanvas, {
+                    type: 'doughnut',
+                    data: donutData,
+                    options: donutOptions
+                })
+
+
+
+                function getRandomColor() {
+                    var letters = '0123456789ABCDEF';
+                    var color = '#';
+                    for (var i = 0; i < 6; i++) {
+                        color += letters[Math.floor(Math.random() * 16)];
+                    }
+                    return color;
+                }
+
+
+            </script>
+        </text>
+    }
+}

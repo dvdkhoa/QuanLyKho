@@ -12,9 +12,14 @@ namespace QuanLyKho.Models.EntityConfigurations
 
             builder.Property(s => s.Name).IsRequired();
 
+            builder.Property(s=>s.Email).IsRequired();
+
             builder.Property(s => s.DateOfBirth).IsRequired();
 
             builder.Property(s => s.Gender).IsRequired();
+
+            builder.Property(s => s.Image).IsRequired(false);
+
 
             builder.HasOne(s=>s.WareHouse)
                     .WithMany(wh=>wh.Staffs)
@@ -22,9 +27,9 @@ namespace QuanLyKho.Models.EntityConfigurations
                     .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(s => s.User)
-                    .WithOne(u=>u.Staff)
+                    .WithOne()
                     .HasForeignKey<Staff>(s => s.UserId)
-                    .HasForeignKey<AppUser>(u=>u.StaffId);
+                    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

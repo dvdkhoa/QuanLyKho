@@ -1,0 +1,84 @@
+﻿@model string;
+
+@{
+    ViewBag.title = "Add images";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          type="text/css"
+          href="~/css/file_upload_style.css" />
+
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="~/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="~/admin/plugins/toastr/toastr.min.css">
+
+}
+
+<div class="col-12 px-5">
+    <div class="custom-file-container" data-upload-id="my-unique-id"></div>
+    <br />
+    <button class="btn btn-primary btn-block" id="btn-upload">Upload</button>
+</div>
+
+@section Scripts {
+    <script src="~/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script src="~/admin/plugins/toastr/toastr.min.js"></script>
+    <script src="https://unpkg.com/file-upload-with-preview/dist/file-upload-with-preview.iife.js"></script>
+    <script>
+        const upload = new FileUploadWithPreview.FileUploadWithPreview('my-unique-id', {
+            images: {
+                baseImage: '/files/custom-image.svg',
+            },
+            text: {
+                browse: 'Choose',
+                chooseFile: 'Take your pick...',
+                label: 'Choose Files to Upload',
+            },
+            multiple: true,
+        });
+
+
+        var Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 5000
+        });
+
+
+        $('#btn-upload').on('click', () => {
+            const form_data = new FormData();
+
+            form_data.append('id', '@Model')
+
+            upload.cachedFileArray.forEach(file => {
+                form_data.append("files", file, file.name)
+            })
+
+            Toast.fire({
+                icon: 'warning',
+                title: 'The system is uploading images'
+            })
+
+            $.ajax({
+                url: '/products/addimages',
+                type: 'POST',
+                data: form_data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: () => {
+                    console.log("doneeeeee")
+                    upload.resetPreviewPanel();
+                    Toast.close()
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Upload images successfully!'
+                    })
+                },
+            })
+        })
+    </script>
+}

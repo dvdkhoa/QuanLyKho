@@ -1,0 +1,156 @@
+﻿@model QuanLyKho.Models.Entities.Staff
+@using QuanLyKho.Models.Entities;
+
+@{
+    ViewData["Title"] = "Edit";
+    ViewData["PrimaryTitle"] = "Staffs";
+
+}
+
+
+
+<section class="content pb-2">
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div class="row ">
+            <div class="col-md-8 offset-2">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Update Staff</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="display: block;">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+
+                        <input asp-for="Id" type="hidden" >
+                        <input asp-for="Email" type="hidden" />
+                        <input type="hidden" asp-for="CreatedTime" />
+                        <input asp-for="Image" type="hidden" />
+
+
+                        <div class="form-group">
+                            <label asp-for="Name">Name</label>
+                            <input asp-for="Name" type="text" class="form-control">
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="DateOfBirth">Date Of Birth</label>
+                            <input asp-for="DateOfBirth" type="date" class="form-control">
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Gender">Gender</label>
+                            <select asp-for="Gender" class="form-control custom-select">
+                                <option selected="" disabled="">Select one</option>
+                                @foreach (Gender gender in Enum.GetValues(typeof(Gender)))
+                                {
+                                    <option value="@gender">@gender.ToString()</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+                        <div class="input-group mb-3 mt-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="inputGroupFileAddon01">Image</span>
+                            </div>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="img-staff" name="newImage" aria-describedby="inputGroupFileAddon01">
+                                <label class="custom-file-label" for="img-staff">Choose file</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <img id="img-review" src="#" class="h-25 w-25" style="display: none" />
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber">PhoneNumber</label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Address">Address</label>
+                            <textarea asp-for="Address" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="StartDay">Start day</label>
+                            <input asp-for="StartDay" type="date" class="form-control">
+                            <span asp-validation-for="StartDay" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="WareHouseId">Warehouse</label>
+                            <select class="form-control custom-select" asp-for="WareHouseId" asp-items="@ViewBag.WareHouseId">
+                                <option selected="">Select Warehouse</option>
+                            </select>
+                            <span asp-validation-for="WareHouseId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                <input type="submit" value="Update Staff" class="btn btn-success float-right">
+            </div>
+        </div>
+    </form>
+</section>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#img-review').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+                $('#img-review').show(1000)
+            }
+        }
+
+        $('#img-staff').on('change', function () {
+
+            const file = this.files[0];
+
+            if (file != null) {
+                const fileType = file['type'];
+                const validImageTypes = ['image/gif', 'image/jpeg', 'image/png'];
+
+
+                if (!validImageTypes.includes(fileType)) {
+
+                    alert('Please submit image')
+
+                    $(this).next('.custom-file-label').html('Choose file');
+                    $('#img-review').hide(1000)
+
+                    return;
+                }
+
+                //get the file name
+                var fileName = $(this).val();
+                //replace the "Choose a file" label
+                $(this).next('.custom-file-label').html(fileName);
+                readURL(this)
+            }
+            else {
+                $(this).next('.custom-file-label').html('Choose file');
+                $('#img-review').hide(1000)
+            }
+        })
+    </script>
+}

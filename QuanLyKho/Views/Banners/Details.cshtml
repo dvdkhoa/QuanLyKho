@@ -1,0 +1,46 @@
+﻿@model QuanLyKho.Models.Entities.Banner
+
+@{
+    ViewData["Title"] = "Details";
+    ViewData["PrimaryTitle"] = "Banners";
+
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+}
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="font-weight-bold">Banner details:</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr>
+                    <td>Id</td>
+                    <td>@Model.Id</td>
+                </tr>
+                <tr>
+                    <td>Title</td>
+                    <td>@Model.Key</td>
+                </tr>
+                <tr>
+                    <td>Image</td>
+                    <td>
+                        <img src="@Model.Path" width="300px" height="auto" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <hr />
+
+        <div>
+            <a class="btn btn-link" asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+            <a class="btn btn-link" asp-action="Index">Back to List</a>
+        </div>
+    </div>
+</div>

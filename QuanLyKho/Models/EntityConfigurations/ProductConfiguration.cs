@@ -10,14 +10,22 @@ namespace QuanLyKho.Models.EntityConfigurations
         {
             builder.HasKey(x => x.Id);
 
-            builder.Property(cate => cate.Name).IsRequired();
+            builder.Property(cate => cate.Name)
+                    .UseCollation("Latin1_General_CI_AI")
+                    .IsRequired();
 
             builder.Property(cate => cate.Status).IsRequired();
 
             builder.HasOne(p => p.Category)
+
                     .WithMany(cate=>cate.Products)
                     .HasForeignKey(p=>p.CategoryId)
                     .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(p => p.CategoryBrand)
+                    .WithMany(cate => cate.Products)
+                    .HasForeignKey(p => p.CategoryBrandId)
+                    .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

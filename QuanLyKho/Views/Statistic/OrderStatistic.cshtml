@@ -1,0 +1,352 @@
+﻿@using QuanLyKho.Models.Entities;
+@{
+    ViewBag.title = "Order statistic";
+    ViewData["page"] = "Order statistic";
+    ViewData["PrimaryTitle"] = "Order statistic";
+}
+
+@section Styles{
+    <link rel="stylesheet" href="~/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="~/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+
+
+}
+
+
+
+<div class="card">
+    <div class="card-header">
+        <p class="card-title">Statistic</p>
+    </div>
+    <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-lg-6">
+                <select id="type" name="type" class="form-control p-2" aria-label="Default select example">
+                    <option selected>Choose the statistic type</option>
+                    <option value="d">Today</option>
+                    <option value="w">This week</option>
+                    <option value="m">This month</option>
+                    <option value="q">This Quarter</option>
+                    <option value="t">Other</option>
+                </select>
+            </div>
+
+            <div class="col-lg-6 mt-2 pl-5 row">
+                <div class="col form-group custom-control custom-radio">
+                    <input type="radio" name="type" id="inlineRadio1" value="all" checked class="custom-control-input custom-control-input-danger">
+                    <label for="inlineRadio1" class="custom-control-label">All</label>
+                </div>
+                <div class="col form-group custom-control custom-radio">
+                    <input type="radio" name="type" id="inlineRadio2" value="direct" class="custom-control-input custom-control-input-success">
+                    <label for="inlineRadio2" class="custom-control-label">Direct</label>
+                </div>
+                <div class="col form-group custom-control custom-radio">
+                    <input type="radio" name="type" id="inlineRadio3" value="cod" class="custom-control-input custom-control-input-primary">
+                    <label for="inlineRadio3" class="custom-control-label">COD</label>
+                </div>
+                <div class="col form-group custom-control custom-radio">
+                    <input type="radio" name="type" id="inlineRadio4" value="vnpay" class="custom-control-input custom-control-input-warning">
+                    <label for="inlineRadio4" class="custom-control-label">VnPay</label>
+                </div>
+            </div>
+
+        </div>
+        <div id="tuychon" class="row g-3 mb-3">
+            <div class="col">
+                <label for="from">From:</label>
+                <input type="date" id="from" name="from" class="form-control">
+            </div>
+            <div class="col">
+                <label class="form-label" for="to">To:</label>
+                <input type="date" id="to" name="to" class="form-control">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <select id="base" name="type" class="form-control p-2" aria-label="Default select example">
+                    <option selected disabled>Based on information of</option>
+                    <option value="all">All</option>
+                    <option value="staff">Staff</option>
+                    <option value="warehouse">Store</option>
+                    <option value="customer">Customer</option>
+                    <option value="product">Product</option>
+                </select>
+            </div>
+            <div class="col-lg-6">
+                @*<input id="input-id" type="text" placeholder="ID" class="form-control" style="display:none" />*@
+                @if (ViewBag.Warehouses != null)
+                {
+                    <select id="input-warehouse-id" class="form-control" style="display:none">
+                        <option>Select store</option>
+                        @foreach (WareHouse wareHouse in ViewBag.Warehouses)
+                        {
+                            <option value="@wareHouse.Id">@wareHouse.Name</option>
+                        }
+                    </select>
+                }
+                @if (ViewBag.Staff != null)
+                {
+
+                    <select id="input-staff-id" class="form-control w-100 " style="display: none">
+                        <option selected disabled>Select staff</option>
+                        @foreach (Staff staff in ViewBag.Staff)
+                        {
+                            <option value="@staff.Id">@staff.Name</option>
+                        }
+                    </select>
+
+                }
+                @if (ViewBag.Customers != null)
+                {
+
+                    <select id="input-customer-id" class="form-control w-100 " style="display: none">
+                        <option selected disabled>Select customer</option>
+                        @foreach (Customer customer in ViewBag.Customers)
+                        {
+                            <option value="@customer.Id">@customer.Name</option>
+                        }
+                    </select>
+
+                }
+                @if (ViewBag.Products != null)
+                {
+
+                    <select id="input-product-id" class="form-control w-100 " style="display: none">
+                        <option selected disabled>Select product</option>
+                        @foreach (Product product in ViewBag.Products)
+                        {
+                            <option value="@product.Id">@product.Name</option>
+                        }
+                    </select>
+
+                }
+            </div>
+        </div>
+        <div class="row">
+            <button id="btnOK" class="btn btn-sm btn-primary ml-2 my-2">Statistic</button>
+        </div>
+
+        <table id="example1" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Customer</th>
+                    <th>Sale staff</th>
+                    <th>Store</th>
+                    <th>Total(VNĐ)</th>
+                    <th>Payment status</th>
+                    <th>Payment method</th>
+                    <th>Ship status</th>
+                    <th>DateCreated</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(() => {
+            const InputMa = $("input[name=ma]")
+            const tuychon = document.getElementById("tuychon")
+
+            tuychon.style.display = 'none'
+
+            InputMa.prop('disabled', true)
+
+            $("input[name=type]").on('change', () => { // Xử lý change radio trong này, để đó khoan hẳn sử lý.
+                if ($("input[name=type]:checked").val() === 'import') {
+
+                }
+                else if ($("input[name=type]:checked").val() === 'export') {
+
+                }
+                else {
+
+                }
+            })
+        })
+
+        $("#type").on('change', (e) => {
+
+            const value = e.target.value
+            console.log('1 cái gì đó', value)
+
+            if (!(value === 't')) {
+                console.log('Ẩn tùy chọn')
+                tuychon.style.display = 'none'
+            }
+            else {
+                console.log('Mở lại tùy chọn')
+                tuychon.style.display = 'flex'
+            }
+
+        })
+
+        $('#base').change(function () {
+            var value = $(this).val()
+            if (value === 'all') {
+                $('#input-warehouse-id').hide(500)
+                $('#input-staff-id').hide(500)
+                $('#input-customer-id').hide(500)
+                $('#input-product-id').hide(500)
+
+            }
+            else if (value == 'staff') {
+                $('#input-staff-id').show(500)
+                $('#input-warehouse-id').hide(500)
+                $('#input-customer-id').hide(500)
+                $('#input-product-id').hide(500)
+
+            }
+            else if (value == 'warehouse') {
+                $('#input-warehouse-id').show(500)
+                $('#input-staff-id').hide(500)
+                $('#input-customer-id').hide(500)
+                $('#input-product-id').hide(500)
+            }
+            else if (value == 'customer') {
+                $('#input-customer-id').show(500)
+                $('#input-warehouse-id').hide(500)
+                $('#input-staff-id').hide(500)
+                $('#input-product-id').hide(500)
+            }
+            else if (value == 'product') {
+                $('#input-product-id').show(500)
+                $('#input-staff-id').hide(500)
+                $('#input-warehouse-id').hide(500)
+                $('#input-customer-id').hide(500)
+            }
+        })
+
+
+    </script>
+
+
+
+    <!-- DataTables  & Plugins -->
+    <script src="~/admin/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/jszip/jszip.min.js"></script>
+    <script src="~/admin/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="~/admin/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+    <script src="~/admin/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+
+    <script src="~/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
+
+
+
+    <script>
+        $(function () {
+            const table = $("#example1").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            })
+            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+            console.log(table)
+
+            $("#btnOK").on('click', () => {
+                console.log('bấm rồi')
+                submit()
+            })
+
+            function submit() {
+                const kieu = $("#type").val()
+                const base = $('#base').val()
+                let data = {
+                    time: kieu,
+                    type: $("input[name=type]:checked").val(),
+                    baseAs: base,
+                    //baseId: $('#input-id').val()
+                }
+
+                if (base === 'staff') {
+                    data.baseId = $('#input-staff-id').val()
+                }
+                else if (base === 'warehouse') {
+                    data.baseId = $('#input-warehouse-id').val()
+                }
+                else if (base === 'customer') {
+                    data.baseId = $('#input-customer-id').val()
+                }
+                else if (base === 'product') {
+                    data.baseId = $('#input-product-id').val()
+                }
+
+
+                if (kieu === 't') {
+                    data = { ...data, from: $("input[name=from]").val(), to: $("input[name=to]").val() }
+                }
+
+
+                console.log('dữ liệu gửi đi', data)
+
+                let dataShow = []
+
+                $.ajax({
+                    url: '/api/statistic/orderstatistic',
+                    type: 'post',
+                    data: data
+                }).done((res) => {
+                    console.log('Kết quả trả về: ', res)
+
+                    Date.prototype.formatMMDDYYYY = function () {
+                        return this.getDate() + "/" +
+                            (this.getMonth() + 1) +
+                            "/" + this.getFullYear();
+                    }
+
+                    const datarows = res.map(i => {
+
+                        const customer = i.customerId ? `<a href="/Customers/Details/${i.customerId}">${i.customerName}(${i.customerId})</a>` : i.customerName;
+
+                        const store = i.storeId ? `<a href="/Warehouses/Details/${i.storeId}">${i.store.name}(${i.storeId})</a>` : '';
+
+                        return [
+                            `<a href="/Orders/Details/${i.id}">${i.id}</a>`,
+                            customer,
+                            i.staffId ? `<a href="/Staffs/Details/${i.staffId}">${i.staff.name}(${i.staffId})</a>`  : '',
+                            store,
+                            i.total.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"),
+                            i.paymentStatus,
+                            i.paymentMethod,
+                            i.shipStatus,
+                            (new Date(i.createdTime)).formatMMDDYYYY()
+                        ]
+                    })
+                    console.log(datarows)
+
+                    table.clear()
+
+                    // Thêm dữ liệu vào bảng
+                    table.rows.add(datarows).draw();
+                })
+            }
+
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+        $('#modal-sm').modal(options)
+    </script>
+}

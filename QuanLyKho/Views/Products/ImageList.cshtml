@@ -1,0 +1,62 @@
+﻿@model List<QuanLyKho.Models.Entities.ProductImage>
+
+
+@{
+    ViewData["Title"] = "ImageList";
+}
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="~/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+}
+
+
+<!-- /.card -->
+<div class="card">
+    <div class="card-header">
+        <a class="card-title" asp-action="Create" asp-controller="Products">Add product</a>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table id="example1" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Description</th>
+                    <th>CreatedTime</th>
+                    <th>LastUpdated</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var image in Model)
+                {
+                    <tr>
+                        <td>
+                            <img src="@image.Path" />
+                        </td>
+                        <td>@image.Description</td>
+                        <td>@image.CreatedTime</td>
+                        <td>@image.LastUpdated</td>
+                        <td>@image.Status</td>
+                        <td class="text-center">
+                            <a class="btn-sm btn-primary" asp-action="Details" asp-route-id="@image.Id"><i class="fas fa-info-circle"></i></a>
+                            <a class="btn-sm btn-secondary" asp-action="Edit" asp-route-id="@image.Id"><i class="fas fa-tools"></i></a>
+                            <a class="btn-sm btn-danger btn-delete" data-id="@image.Id" role="button"><i class="fas fa-trash"></i></a>
+
+                            @*<a class="btn-sm btn-danger" data-toggle="modal" data-target="#modal-sm"><i class="fas fa-trash"></i></a>*@
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
+<!-- /.card -->

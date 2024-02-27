@@ -1,0 +1,38 @@
+﻿@page
+@model AddRoleModel
+@{
+    ViewData["Title"] = "Setup roles";
+    ViewData["PrimaryTitle"] = "Users";
+}
+<partial name="_StatusMessage" for="StatusMessage" />
+
+
+<div class="row">
+    <div class="col-md-8 offset-md-1">
+        <h3>Setup roles for: <span class="font-weight-bold">@Model.user.UserName</span></h3>
+        <hr />
+        <form id="set-password-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="RoleNames"></label>
+                @Html.ListBoxFor(m => m.RoleNames, Model.allRoles,
+                new { id = "select-role", @class = "w-100" })
+            </div>
+            <button type="submit" class="btn btn-success btn-sm float-right">Save</button>
+        </form>
+        <a asp-page="Index" >Back to list</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/multiple-select/multiple-select.min.js"></script>
+    <link href="~/lib/multiple-select/multiple-select.min.css" rel="stylesheet" />
+    <script>
+        $("#select-role").multipleSelect({
+            selectAll: false,
+            keepOpen: false,
+            isOpen: false,
+        });
+    </script>
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,300 @@
+﻿@model List<QuanLyKho.DTO.InventoryHistory>
+@using System.Text.Json;
+@{
+    ViewData["title"] = "Import history";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="~/admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+
+}
+
+
+<!-- /.card -->
+<div class="card">
+    <div class="card-header">
+        <a class="card-title" href="#" onclick="history.back()"> Back to product details</a>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+
+        @if (Model != null && Model.Count > 0)
+        {
+            <!-- BAR CHART -->
+            <div class="card card-success">
+                <div class="card-header">
+                    <h3 class="card-title">History Chart</h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="chart">
+                        <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        }
+
+        <hr />
+
+        <table id="example1" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Receipt</th>
+                    <th>Product</th>
+                    <th>Product name</th>
+                    <th>Quantity</th>
+                    <th>Warehouse</th>
+                    <th>Date</th>
+                    <th>ReceiptType</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var history in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-controller="Receipts" asp-action="Details" asp-route-id="@history.ReceiptDetail.Receipt.Id">@history.ReceiptDetail.Receipt.Id</a>
+                        </td>
+                        <td>@history.Product.Id</td>
+                        <td>@history.Product.Name</td>
+                        <td>@history.ReceiptDetail.Quantity</td>
+                        <td>@history.WareHouse.Name (@history.WareHouse.Id)</td>
+                        <td>@history.ReceiptDetail.Receipt.DateCreated.ToShortDateString()</td>
+                        <td>@history.ReceiptDetail.Receipt.Type</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
+<!-- /.card -->
+
+<div class="modal fade" id="modal-sm" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Alert</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Change status category ?</p>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger">OK</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@section Scripts {
+
+    <!-- DataTables  & Plugins -->
+    <script src="~/admin/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/jszip/jszip.min.js"></script>
+    <script src="~/admin/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="~/admin/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+
+    <script src="~/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
+
+
+
+    <script>
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+    </script>
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <script>
+            @{
+                var data = Model.Select(i => new
+                {
+                    date = i.ReceiptDetail.Receipt.DateCreated,
+                    type = i.ReceiptDetail.Receipt.Type.ToString(),
+                    quantity = i.ReceiptDetail.Quantity
+                }).ToList();
+            }
+
+                const json = @Html.Raw(@JsonSerializer.Serialize(data))
+                console.log('data: ', json)
+
+            //
+            const data = json
+            // Tạo một đối tượng để lưu trữ dữ liệu theo loại và tháng
+            const dataByTypeAndMonth = {};
+
+            const defaultTypes = ['Import', 'Export', 'Transfer'];
+
+            // Lặp qua mỗi mục trong tập dữ liệu
+            data.forEach(item => {
+                // Phân tích ngày thành đối tượng Date
+                const date = new Date(item.date);
+
+                // Kiểm tra xem mục này có thuộc vào 12 tháng trong năm không
+                if (!isNaN(date.getMonth()) && date.getFullYear() === (new Date()).getFullYear()) {
+                    // Lấy loại và tháng của mục
+                    const type = item.type;
+                    const month = date.getMonth() + 1; // Tháng bắt đầu từ 0, cộng thêm 1 để lấy tháng từ 1 đến 12
+
+                    // Tạo khung dữ liệu nếu chưa tồn tại
+                    if (!dataByTypeAndMonth[type]) {
+                        dataByTypeAndMonth[type] = {};
+                    }
+
+                    // Tạo khung dữ liệu tháng nếu chưa tồn tại
+                    if (!dataByTypeAndMonth[type][month]) {
+                        dataByTypeAndMonth[type][month] = 0;
+                    }
+
+                    // Cộng thêm quantity vào khung dữ liệu tháng
+                    dataByTypeAndMonth[type][month] += item.quantity;
+
+
+                    for (const type of defaultTypes) {
+                        if (!dataByTypeAndMonth[type]) {
+                            dataByTypeAndMonth[type] = {};
+                        }
+
+                        // Đảm bảo rằng mọi tháng đã có giá trị, nếu không sẽ gán giá trị mặc định là 0
+                        for (const type in dataByTypeAndMonth) {
+                            for (let month = 1; month <= 12; month++) {
+                                if (!dataByTypeAndMonth[type][month]) {
+                                    dataByTypeAndMonth[type][month] = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // In ra kết quả
+            console.log(dataByTypeAndMonth);
+
+
+
+            var areaChartData = {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                datasets: [
+                    {
+                        label: 'Import',
+                        backgroundColor: 'rgba(60,141,188,0.9)',
+                        borderColor: 'rgba(60,141,188,0.8)',
+                        pointRadius: false,
+                        pointColor: '#3b8bba',
+                        pointStrokeColor: 'rgba(60,141,188,1)',
+                        pointHighlightFill: '#fff',
+                        pointHighlightStroke: 'rgba(60,141,188,1)',
+                        data: Object.values(dataByTypeAndMonth.Import)
+                    },
+                    {
+                        label: 'Export',
+                        backgroundColor: 'rgba(210, 214, 222, 1)',
+                        borderColor: 'rgba(210, 214, 222, 1)',
+                        pointRadius: false,
+                        pointColor: 'rgba(210, 214, 222, 1)',
+                        pointStrokeColor: '#c1c7d1',
+                        pointHighlightFill: '#fff',
+                        pointHighlightStroke: 'rgba(220,220,220,1)',
+                        data: Object.values(dataByTypeAndMonth.Export)
+                    },
+                    {
+                        label: 'Transfer',
+                        backgroundColor: 'rgba(16, 239, 230, 0.8)',
+                        borderColor: 'rgba(210, 214, 222, 1)',
+                        pointRadius: false,
+                        pointColor: 'rgba(210, 214, 222, 1)',
+                        pointStrokeColor: '#c1c7d1',
+                        pointHighlightFill: '#fff',
+                        pointHighlightStroke: 'rgba(220,220,220,1)',
+                        data: Object.values(dataByTypeAndMonth.Transfer)
+                    },
+                ]
+            }
+
+            var areaChartOptions = {
+                maintainAspectRatio: false,
+                responsive: true,
+                legend: {
+                    display: false
+                },
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            display: false,
+                        }
+                    }],
+                    yAxes: [{
+                        gridLines: {
+                            display: false,
+                        }
+                    }]
+                }
+            }
+
+            //-------------
+            //- BAR CHART -
+            //-------------
+            var barChartCanvas = $('#barChart').get(0).getContext('2d')
+            var barChartData = $.extend(true, {}, areaChartData)
+            var temp0 = areaChartData.datasets[0]
+            var temp1 = areaChartData.datasets[1]
+            barChartData.datasets[0] = temp1
+            barChartData.datasets[1] = temp0
+
+            var barChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                datasetFill: false
+            }
+
+            new Chart(barChartCanvas, {
+                type: 'bar',
+                data: barChartData,
+                options: barChartOptions
+            })
+        </script>
+    }
+}
+

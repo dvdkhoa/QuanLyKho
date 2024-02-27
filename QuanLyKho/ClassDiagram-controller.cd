@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="QuanLyKho.Controllers.CategoriesController">
+    <Position X="1.25" Y="1" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABBAAAAAAAAQAAAAEAAEACIAEAAAgAAAA=</HashCode>
+      <FileName>Controllers\CategoriesController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Controllers.CustomersController">
+    <Position X="11" Y="6" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABBAAAAAAAAQAAAAEAAAACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\CustomersController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Controllers.DetailConfigurationController">
+    <Position X="7" Y="5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABBAAAAAAAAAAAAAEAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\DetailConfigurationController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Controllers.HomeController">
+    <Position X="14" Y="4.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEABQAAAAAAAAAAIAAgAwAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\HomeController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Controllers.NewsController">
+    <Position X="17.25" Y="1" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABBACAAAAAAQAAAAAAAEACgAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\NewsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Controllers.OrdersController">
+    <Position X="17.25" Y="4.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABBAAAAAAAAAAAAAAAAAACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\OrdersController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Controllers.ProductsController">
+    <Position X="3.75" Y="1" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAwAUCABBAAAAAABAQAAAAAAAEACIEEBAACCCYA=</HashCode>
+      <FileName>Controllers\ProductsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Controllers.PromotionsController">
+    <Position X="14" Y="1" Width="3" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAABBABAAAAAAQAAAAEAAEACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\PromotionsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Controllers.ReceiptsController">
+    <Position X="11" Y="1" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAQDAAABhACAIAIAAAAAAAEAAEAiAAEAASAAAAA=</HashCode>
+      <FileName>Controllers\ReceiptsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Controllers.StaffsController">
+    <Position X="20" Y="2.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAJAAAAAABBACAAABAAwAgIACAAFACAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\StaffsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Controllers.StatisticController">
+    <Position X="1.25" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAABgQBAAAABAEAAACAgAAAAAAAAIAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\StatisticController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuanLyKho.Controllers.WareHousesController">
+    <Position X="7" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAABBAAAAAAAAQAAAAAAAEgCIAEAAAAACIA=</HashCode>
+      <FileName>Controllers\WareHousesController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

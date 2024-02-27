@@ -1,0 +1,135 @@
+﻿@model QuanLyKho.Models.Entities.Order
+@using QuanLyKho.Models.Entities;
+
+@{
+    ViewData["Title"] = "Edit";
+    ViewData["PrimaryTitle"] = "Orders";
+
+}
+
+
+
+<section class="content pb-2">
+    <form asp-action="Edit" method="post">
+
+        <div class="row ">
+            <div class="col-md-8 offset-2">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Update order information</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="display: block;">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+
+                        <input asp-for="Id" type="hidden">
+                        <input asp-for="CustomerId" type="hidden" />
+                        <input asp-for="StaffId" type="hidden" />
+                        <input asp-for="StoreId" type="hidden" />
+                        <input asp-for="PaymentMethod" type="hidden" />
+                        <input asp-for="PaymentStatus" type="hidden" />
+                        <input asp-for="CreatedTime" type="hidden" />
+                        <input asp-for="TmpTotal" type="hidden"/>
+                        <input asp-for="Total" type="hidden" />
+                        <input value="@Model.ShipStatus" name="oldShipStatus" type="hidden" />
+
+
+                        @if(Model.CustomerId != null)
+                        {
+                            <div class="form-group">
+                                <label asp-for="CustomerName">Customer name</label>
+                                <input asp-for="CustomerName" type="text" class="form-control">
+                                <span asp-validation-for="CustomerName" class="text-danger"></span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group">
+                                <label asp-for="CustomerName">Customer name</label>
+                                <input asp-for="CustomerName" type="hidden" />
+                                <input asp-for="CustomerName" type="text" disabled class="form-control">
+                            </div>
+                        }
+
+
+                        <div class="form-group">
+                            <label asp-for="Email">Email</label>
+                            <input asp-for="Email" class="form-control">
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber">PhoneNumber</label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Address">Address</label>
+                            <textarea asp-for="Address" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Note">Note</label>
+                            <textarea asp-for="Note" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Note" class="text-danger"></span>
+                        </div>
+
+                        @*@if (Model.ShipStatus != ShipStatus.NotApproved && Model.ShipStatus != ShipStatus.Canceled)*@
+                        @if (Model.ShipStatus == ShipStatus.BeingShipped)
+                        {
+                            <div class="form-group">
+                                <label asp-for="ShipStatus">Ship status</label>
+                                <select asp-for="ShipStatus" class="form-control custom-select">
+                                    @foreach (ShipStatus shipStatus in Enum.GetValues(typeof(ShipStatus)))
+                                    {
+                                        if (shipStatus != ShipStatus.NotApproved)
+                                        {
+                                            <option value="@shipStatus">@shipStatus.ToString()</option>
+                                        }
+                                    }
+                                </select>
+                                <span asp-validation-for="ShipStatus" class="text-danger"></span>
+                            </div>
+                        }
+                        else if (Model.ShipStatus == ShipStatus.NotApproved)
+                        {
+                            <div class="form-group">
+                                <label asp-for="ShipStatus">Ship status</label>
+                                <select asp-for="ShipStatus" class="form-control custom-select">
+                                    <option value="@ShipStatus.NotApproved">@ShipStatus.NotApproved.ToString()</option>
+                                    <option value="@ShipStatus.Canceled">@ShipStatus.Canceled.ToString()</option>
+
+                                </select>
+                                <span asp-validation-for="ShipStatus" class="text-danger"></span>
+                            </div>
+                        }
+                        else if (Model.ShipStatus == ShipStatus.Canceled)
+                        {
+                            <input asp-for="ShipStatus" type="hidden" />
+                        }
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                <input type="submit" value="Update" class="btn btn-success float-right">
+            </div>
+        </div>
+    </form>
+</section>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

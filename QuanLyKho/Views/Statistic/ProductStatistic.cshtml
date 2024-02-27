@@ -1,0 +1,263 @@
+﻿@{
+    ViewData["Title"] = "Product statistic";
+
+    var warehouses = ViewData["warehouses"] as List<QuanLyKho.Models.Entities.WareHouse>;
+}
+
+
+@section Styles{
+    <link rel="stylesheet" href="~/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+}
+
+<div class="card">
+    <div class="card-header">
+        <p class="card-title">Statistic</p>
+    </div>
+    <div class="card-body">
+        <div class="row mb-2">
+
+            <div class="col-lg-6">
+                <select id="base" name="type" class="form-control p-2" aria-label="Default select example">
+                    <option selected disabled>Choose warehouse</option>
+                    <option value="all">All</option>
+                    @foreach (var w in warehouses)
+                    {
+                        <option value="@w.Id">@w.Id</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-lg-6 mt-2 pl-5 row">
+                <div class="col form-group custom-control custom-radio">
+                    <input type="radio" name="type" id="inlineRadio1" value="inventory" checked class="custom-control-input custom-control-input-primary">
+                    <label for="inlineRadio1" class="custom-control-label">Inventory</label>
+                </div>
+                <div class="col form-group custom-control custom-radio">
+                    <input type="radio" name="type" id="inlineRadio3" value="out_of_stock" class="custom-control-input custom-control-input-danger">
+                    <label for="inlineRadio3" class="custom-control-label">Out of stock</label>
+                </div>
+                <div class="col form-group custom-control custom-radio">
+                    <input type="radio" name="type" id="inlineRadio2" value="recently_import" class="custom-control-input custom-control-input-success">
+                    <label for="inlineRadio2" class="custom-control-label">Recently imported</label>
+                </div>
+
+                @*<div class="col form-group">
+                <input type="radio" name="type" id="inlineRadio2" value="import" >
+                <label for="inlineRadio2">Import</label>
+                </div>
+
+                <div class="col form-group">
+                <input type="radio" name="type" id="inlineRadio3" value="export">
+                <label for="inlineRadio3">Export</label>
+                </div>*@
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-lg-6" id="select-type">
+                <select id="type" name="type" class="form-control p-2" aria-label="Default select example">
+                    <option selected>Choose the statistic type</option>
+                    <option value="d">In day</option>
+                    <option value="w">In week</option>
+                    <option value="m">In month</option>
+                    <option value="q">In Quarter</option>
+                    <option value="t">Other</option>
+                </select>
+            </div>
+        </div>
+        <div id="tuychon" class="row g-3 mb-3">
+            <div class="col">
+                <label for="dateFrom">From:</label>
+                <input type="date" id="dateFrom" name="dateFrom" class="form-control">
+            </div>
+            <div class="col">
+                <label class="form-label" for="dateTo">To:</label>
+                <input type="date" id="dateTo" name="dateTo" class="form-control">
+            </div>
+        </div>
+        <div class="row">
+            <button id="btnOK" class="btn btn-sm btn-primary ml-2 my-2">Statistic</button>
+        </div>
+
+        <table id="example1" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Unit</th>
+                    <th>Imported Number</th>
+                    <th>Imported Date</th>
+                    <th>Input Money</th>
+                    <th>Warehouse Id</th>
+                    <th>Inventory Number</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(() => {
+            const InputMa = $("input[name=ma]")
+            const tuychon = document.getElementById("tuychon")
+
+            tuychon.style.display = 'none'
+
+            InputMa.prop('disabled', true)
+
+            $("input[name=type]").on('change', () => { // Xử lý change radio trong này, để đó khoan hẳn sử lý.
+                if ($("input[name=type]:checked").val() === 'out_of_stock') {
+                    $('#select-type').hide(500)
+                }
+                else {
+                    $('#select-type').show(500)
+                }
+            })
+        })
+
+        $("#type").on('change', (e) => {
+
+            const value = e.target.value
+
+            if (!(value === 't')) {
+                tuychon.style.display = 'none'
+            }
+            else {
+                tuychon.style.display = 'flex'
+            }
+
+        })
+
+
+    </script>
+
+
+
+    <!-- DataTables  & Plugins -->
+    <script src="~/admin/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/admin/plugins/jszip/jszip.min.js"></script>
+    <script src="~/admin/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="~/admin/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/admin/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+    <script src="~/admin/plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+
+    <script src="~/admin/plugins/sweetalert2/sweetalert2.min.js"></script>
+
+     
+
+    <script>
+        $(function () {
+            const table = $("#example1").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", { 
+                    extend: 'excel',
+                    text: 'Excel',
+                    title: 'Product statistic',
+                    filename: 'ProductStatistic'
+                }, "pdf", "print", "colvis"]
+            })
+            table.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+            console.log(table)
+
+            $("#btnOK").on('click', () => {
+                console.log('bấm rồi')
+                submit()
+            })
+
+            function submit() {
+                const kieu = $("#type").val()
+                const base = $('#base').val()
+                let data = {
+                    time: kieu,
+                    type: $("input[name=type]:checked").val(),
+                    warehouseId: base,
+                }
+                if ($("input[name=type]:checked").val() == 1) {
+                    data = {
+                        ...data,
+                        masv: $("input[name=ma]").prop('disabled') ? "" : $("input[name=ma]").val(),
+                    }
+                }
+                else if ($("input[name=type]:checked").val() == 5) {
+                    data = {
+                        ...data,
+                        madausach: $("input[name=ma]").prop('disabled') ? "" : $("input[name=ma]").val(),
+                    }
+                }
+
+                if (kieu === 't') {
+                    data = { ...data, dateFrom: $("input[name=dateFrom]").val(), dateTo: $("input[name=dateTo]").val() }
+                }
+
+
+                console.log('dữ liệu gửi đi', data)
+
+                let dataShow = []
+
+                $.ajax({
+                    url: '/api/receipts/productStatistic',
+                    type: 'post',
+                    data: data
+                }).done((res) => {
+                    console.log('Kết quả trả về: ', res)
+
+                    Date.prototype.formatMMDDYYYY = function () {
+                        return this.getDate() +
+                            "/" + (this.getMonth() + 1) +
+                            "/" + this.getFullYear();
+                    }
+
+                    const datarows = res.map(i => {
+                        return [
+                            i.id,
+                            `<a href="/Products/Details/${i.id}">${i.name}</a>`,
+                            i.price?.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"),
+                            i.unit,
+                            i.imported,
+                            i.dateImported != null ? (new Date(i.dateImported)).formatMMDDYYYY() : '',
+                            i.inputMoney,
+                            `<a href="/Warehouses/Details/${i.warehouseId}">${i.warehouseId}</a>`,
+                            i.inventoryNumber
+                        ]
+                    })
+
+                    table.clear()
+
+                    // Thêm dữ liệu vào bảng
+                    table.rows.add(datarows).draw();
+                })
+            }
+
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+    </script>
+
+}
+
+
+
